@@ -1,0 +1,32 @@
+# Set directory (sample directory below)
+cd C:/SWIOMP/laragon/laragon/www
+
+# Download repo
+git clone https://github.com/THE-STRONGEST-ICE-FAIRY/riasz.git
+
+# Set directory to the cloned/downloaded repo
+cd C:/c/laragon/laragon/www/riasz
+
+# Updating changes (ALWAYS pull first BEFORE editing if there are new updates)
+git pull
+
+# Saving changes
+git add .
+git commit -m "Initial Commit"
+
+# Saving changes to the last commit
+git commit --amend
+
+# Uploading changes (only do this when finished, not adding more changes)
+git push -u origin main
+
+# Check files
+ls
+
+# Check commit log
+git log --oneline
+
+# Redoing last pushed commit
+git add .
+git commit --amend
+git push origin main --force
