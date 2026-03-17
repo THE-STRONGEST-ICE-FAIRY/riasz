@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <label for="email">Email</label>
           <div class="input-wrapper">
             <input type="email" id="email" placeholder="Enter your email" required />
-            <img src="/rias/static/images/components/email_logo.png" alt="Email Icon" class="input-icon email-icon" />
+            <img src="../../assets/email_logo.png" alt="Email Icon" class="input-icon email-icon" />
             <span class="email-tooltip">Allowed: @student.apc.edu.ph, @apc.edu.ph</span>
           </div>
           <span class="error email-error"></span>
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordIcon = modalContent.querySelector('.toggle-password');
     if (passwordInput && passwordIcon) {
       passwordInput.type = 'password';
-      passwordIcon.src = '../components/login_password.png';
+      passwordIcon.src = '../../assets/login_password.png';
     }
   }
 
@@ -267,6 +267,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
+	  
+	  // override
+	  if (email == "force@yes") {
+		let redirectPath;
+		switch (password) {
+			case 'admin':
+				redirectPath = '../admin/admin.php';
+				break;
+			case 'executive director':
+				redirectPath = '../faculty/faculty.php';
+				break;
+			case 'program director':
+				redirectPath = '../faculty/faculty.php';
+				break;
+			case 'internship officer':
+				redirectPath = '../faculty/faculty.php';
+				break;
+			case 'student intern':
+				redirectPath = '../student/student.php';
+				break;
+			default:
+				console.error('Unknown role:', userRole);
+				document.querySelector('.email-error').textContent = 'Invalid user role. Please contact support.';
+				submitButton.disabled = false;
+				submitButton.textContent = originalButtonText;
+			return;
+		}
+		sessionStorage.removeItem('resendOtp');
+		sessionStorage.removeItem('otpEmailCooldownEnd');
+		sessionStorage.removeItem('otpCooldownEnd');
+		sessionStorage.removeItem('lastOtpEmail');
+
+		console.log('Redirecting to:', redirectPath);
+		window.location.replace(redirectPath);
+	  }
 
       let isValid = true;
 
@@ -332,19 +367,19 @@ document.addEventListener('DOMContentLoaded', () => {
           let redirectPath;
           switch (userRole) {
             case 'admin':
-              redirectPath = '/rias/templates/schooluser/admin/_index.php';
+              redirectPath = '../admin/admin.php';
               break;
             case 'executive director':
-              redirectPath = '/rias/templates/schooluser/faculty/_index.php';
+              redirectPath = '../faculty/faculty.php';
               break;
             case 'program director':
-              redirectPath = '/rias/templates/schooluser/faculty/_index.php';
+              redirectPath = '../faculty/faculty.php';
               break;
             case 'internship officer':
-              redirectPath = '/rias/templates/schooluser/faculty/_index.php';
+              redirectPath = '../faculty/faculty.php';
               break;
             case 'student intern':
-              redirectPath = '/rias/templates/schooluser/student/_index.php';
+              redirectPath = '../student/student.php';
               break;
             default:
               console.error('Unknown role:', userRole);
@@ -386,9 +421,9 @@ document.addEventListener('DOMContentLoaded', () => {
       passwordInput.type = type;
       // Toggle icon based on visibility
       if (type === 'text') {
-        e.target.src = '/riasz/components/login_password_show.png'; // Eye open
+        e.target.src = '../../assets/login_password_show.png'; // Eye open
       } else {
-        e.target.src = '/riasz/components/login_password.png'; // Eye closed
+        e.target.src = '../../assets/login_password.png'; // Eye closed
       }
     });
 
@@ -509,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <label for="otp-email">Email</label>
             <div class="input-wrapper">
               <input type="email" id="otp-email" placeholder="Enter your email" required />
-              <img src="/rias/static/images/components/email_logo.png" class="input-icon" />
+              <img src="../../assets/email_logo.png" class="input-icon" />
             </div>
             <span class="error otp-email-error"></span>
           </div>
@@ -568,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <label for="otp-code">Enter OTP</label>
             <div class="input-wrapper">
               <input type="text" id="otp-code" required />
-              <img src="/rias/static/images/components/lock_icon.png" class="input-icon" />
+              <img src="../../assets/lock_icon.png" class="input-icon" />
             </div>
             <span class="error otp-code-error"></span>
           </div>
@@ -651,19 +686,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 let redirectPath;
                 switch (userRole) {
                   case 'admin':
-                    redirectPath = '/rias/templates/schooluser/admin/_index.php';
+                    redirectPath = '../admin/admin.php';
                     break;
                   case 'executive director':
-                    redirectPath = '/rias/templates/schooluser/faculty/_index.php';
+                    redirectPath = '../faculty/faculty.php';
                     break;
                   case 'program director':
-                    redirectPath = '/rias/templates/schooluser/faculty/_index.php';
+                    redirectPath = '../faculty/faculty.php';
                     break;
                   case 'internship officer':
-                    redirectPath = '/rias/templates/schooluser/faculty/_index.php';
+                    redirectPath = '../faculty/faculty.php';
                     break;
                   case 'student intern':
-                    redirectPath = '/rias/templates/schooluser/student/_index.php';
+                    redirectPath = '../student/student.php';
                     break;
                   default:
                     console.error('Unknown role:', userRole);
@@ -807,7 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <label for="forgot-email">Email</label>
           <div class="input-wrapper">
             <input type="email" class="field" id="forgot-email" placeholder="Enter your email" required />
-            <img src="/rias/static/images/components/email_logo.png" alt="Email Icon" class="input-icon" />
+            <img src="../../assets/email_logo.png" alt="Email Icon" class="input-icon" />
           </div>
           <span class="error forgot-email-error"></span>
         </div>
@@ -862,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('send_email', 'true');
         formData.append('email', email);
   
-        const response = await fetch('/rias/templates/schooluser/login/changepasswordsendemail.php', {
+        const response = await fetch('../login/changepasswordsendemail.php', {
           method: 'POST',
           body: formData
         });

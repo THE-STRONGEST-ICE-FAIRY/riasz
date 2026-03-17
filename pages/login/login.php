@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Internship Assessment System</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/png" href="../components/rias_icon.png">
+    <link rel="icon" type="image/png" href="../../assets/rias_icon.png">
   </head>
 
   <body>
@@ -18,8 +18,8 @@
 
     <header class="header">
       <div class="container header-content">
-        <img src="../components/header_apclogo_orange.png" alt="RIAS Logo" class="rias-logo" />
-        <img src="../components/header_apclogo.png" alt="APC Logo" class="header-logo" />
+        <img src="../../assets/header_apclogo_orange.png" alt="RIAS Logo" class="rias-logo" />
+        <img src="../../assets/header_apclogo.png" alt="APC Logo" class="header-logo" />
       </div>
     </header>
 
@@ -27,7 +27,7 @@
       
     <nav class="nav">
       <div class="container"> 
-        <img class="hidden-logo" src="../components/header_apclogo2.png" alt="RIAS Logo" class="rias-logo" />
+        <img class="hidden-logo" src="../../assets/header_apclogo2.png" alt="RIAS Logo" class="rias-logo" />
         <ul class="nav-list">
           <li><a href="#about">ABOUT</a></li>
           <li><a href="#privacy-policy">PRIVACY POLICY</a></li>
@@ -36,7 +36,7 @@
           <div class="nav-divider"></div> <!-- Floating line -->
           <li class="sign-in-container">
             <a href="#" class="sign-in-btn">SIGN IN
-              <img src="../components/signin_arrow.png" alt="Sign In Arrow" class="signin-arrow" />
+              <img src="../../assets/signin_arrow.png" alt="Sign In Arrow" class="signin-arrow" />
             </a>
           </li>
         </ul>
@@ -213,7 +213,7 @@
             <label for="email">Email</label>
             <div class="input-wrapper">
               <input type="email" id="email" placeholder="Enter your email" required />
-              <img src="/riasz/components/email_logo.png" alt="Email Icon" class="input-icon email-icon" />
+              <img src="../../assets/email_logo.png" alt="Email Icon" class="input-icon email-icon" />
               <span class="email-tooltip">Allowed: @student.apc.edu.ph, @apc.edu.ph</span>
             </div>
             <span class="error email-error"></span>
@@ -222,7 +222,7 @@
             <label for="password">Password</label>
             <div class="input-wrapper">
               <input type="password" id="password" placeholder="Enter your password" required />
-              <img src="/riasz/components/login_password.png" alt="Toggle Password" class="input-icon toggle-password" />
+              <img src="../../assets/login_password.png" alt="Toggle Password" class="input-icon toggle-password" />
             </div>
             <span class="error password-error"></span>
           </div>

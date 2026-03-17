@@ -222,7 +222,7 @@ body {
 /* -- (3.1) Landing Page (Background) -- */
 
 .hero {
-  background: url(../components/bg_login.png) no-repeat center center; /* Center the image */
+  background: url(../../assets/bg_login.png) no-repeat center center; /* Center the image */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;  background-attachment: fixed; /* Optional: Fix the background for a parallax effect */
@@ -954,7 +954,7 @@ body {
   
   .hero {
     padding-top: 160px; /* Add padding to push content down */
-    background: url(../components/bg_login.png) no-repeat center center; /* Center the image */
+    background: url(../../assets/bg_login.png) no-repeat center center; /* Center the image */
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;  background-attachment: fixed; /* Optional: Fix the background for a parallax effect */
@@ -1495,7 +1495,7 @@ body {
   
   /* Prevent background reset when modal closes */
   body.modal-open .hero {
-    background: url(../components/bg_login.png) no-repeat center center;
+    background: url(../../assets/bg_login.png) no-repeat center center;
     background-size: cover;
     background-attachment: fixed;
   
@@ -1555,7 +1555,7 @@ body {
 
 /* Prevent background reset when modal closes */
 body.modal-open .hero {
-  background: url(../components/bg_login.png) no-repeat center center;
+  background: url(../../assets/bg_login.png) no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
 
