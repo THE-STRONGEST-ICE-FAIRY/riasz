@@ -1,5 +1,6 @@
 # Set directory (sample directory below)
 cd C:/SWIOMP/laragon/laragon/www
+cd D:/Repositories/riasz
 
 # Download repo
 git clone https://github.com/THE-STRONGEST-ICE-FAIRY/riasz.git
@@ -30,3 +31,8 @@ git log --oneline
 git add .
 git commit --amend
 git push origin main --force
+
+# Vim Guide
+Insert -> Edit commit
+Esc -> Back to console
+:wq -> In console, save commit

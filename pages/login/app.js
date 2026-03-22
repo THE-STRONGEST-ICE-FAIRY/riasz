@@ -275,17 +275,17 @@ document.addEventListener('DOMContentLoaded', () => {
 			case 'admin':
 				redirectPath = '../admin/admin.php';
 				break;
-			case 'executive director':
-				redirectPath = '../faculty/faculty.php';
+			case 'executive':
+				redirectPath = '../executive/executive.php';
 				break;
-			case 'program director':
-				redirectPath = '../faculty/faculty.php';
+			case 'program':
+				redirectPath = '../program/program.php';
 				break;
-			case 'internship officer':
-				redirectPath = '../faculty/faculty.php';
+			case 'officer':
+				redirectPath = '../officer/officer.php';
 				break;
-			case 'student intern':
-				redirectPath = '../student/student.php';
+			case 'intern':
+				redirectPath = '../intern/intern.php';
 				break;
 			default:
 				console.error('Unknown role:', userRole);
