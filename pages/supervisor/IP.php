@@ -83,29 +83,7 @@
                         <div><div style="font-size: 10px;"><span style="color: #ff8a8a;">●</span> Undeployed</div><div style="font-size: 24px; color: #ff8a8a; font-weight: bold;">3</div></div>
                         <div><div style="font-size: 10px;"><span style="color: #999;">●</span> Unlisted</div><div style="font-size: 24px; color: #999; font-weight: bold;">31</div></div>
                     </div>
-                </div>
-                <div class="panel" style="padding: 20px;">
-                    <div style="color: #1e3b99; font-weight: bold; margin-bottom: 10px;">Progress</div>
-                    <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Evaluation Forms (Industry Partner)</div>
-                    <div style="background: #fdf5d3; padding: 10px; border-radius: 6px; display: flex; justify-content: space-around; text-align: center; margin-bottom: 10px;">
-                        <div><div style="font-size: 10px; color: #2e7d32;">Total Submitted</div><div style="font-weight: bold;">40</div></div>
-                        <div><div style="font-size: 10px; color: #c62828;">Not yet</div><div style="font-weight: bold; color: #c62828;">90</div></div>
-                    </div>
-                    <button style="width: 100%; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 8px; border-radius: 4px; color: #2e7d32;">Notify Remaining</button>
-                </div>
-                <div class="panel" style="padding: 20px; display: flex; flex-direction: column;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <div id="internTotalTitle" style="color: #1e3b99; font-weight: bold; font-size: 20px;">Intern Data</div>
-                        <label for="internDataUpload" style="background: #f0f2f5; color: #333; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; border: 1px solid #ddd; font-weight: bold;">Upload File</label>
-                        <input type="file" id="internDataUpload" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display: none;" />
-                    </div>
-                    <div id="pieChartContainer" style="flex: 1; min-height: 150px; display: flex; align-items: center; justify-content: center; position: relative;">
-                        <canvas id="internPieChart" style="display: none; max-height: 160px;"></canvas>
-                        <div id="chartPlaceholderText" style="color: #999; font-size: 12px; text-align: center; border: 1px dashed #ccc; width: 100%; padding: 30px 0; border-radius: 6px;">Upload a CSV/Excel file to generate a pie chart</div>
-                    </div>
-                    <div id="chartLegend" style="font-size: 12px; margin-top: 15px; line-height: 2;">
-                        <!-- Dynamic legend will be rendered here -->
-                    </div>
+                </div>  
                 </div>
             </div>
         </main>
