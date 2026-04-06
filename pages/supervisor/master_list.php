@@ -89,6 +89,7 @@
                                 <th>EMAIL</th>
                                 <th>INTERN</th>
                                 <th>STATUS</th>
+                                <th>ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,6 +101,9 @@
                                 <td>john.doe@student.apc.edu.ph</td>
                                 <td>Intern 1</td>
                                 <td class="status-complete">Complete</td>
+                                <td>
+                                    <button class="view-eval-btn" onclick="window.location.href='student_eval.php?id=1'">Evaluate</button>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Jane Smith</td>
@@ -109,6 +113,9 @@
                                 <td>jane.s@student.apc.edu.ph</td>
                                 <td>Intern 2</td>
                                 <td class="status-incomplete">Incomplete</td>
+                                <td>
+                                    <button class="view-eval-btn" onclick="window.location.href='student_eval.php?id=2'">Evaluate</button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
