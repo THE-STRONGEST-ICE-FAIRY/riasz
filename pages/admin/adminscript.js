@@ -253,6 +253,9 @@ if (saveTaskBtn) {
                 });
                 document.querySelectorAll('.task-modal .select-box').forEach(select => {
                     select.selectedIndex = 0;
+                    if (select.id === 'taskSchool' || select.id === 'taskProgram') {
+                        select.disabled = true;
+                    }
                 });
                 if (document.getElementById('taskProgram')) {
                     document.getElementById('taskProgram').innerHTML = '<option value="">All Programs</option>';
@@ -338,9 +341,9 @@ if (taskDateInput) {
 const pageNames = {
     '_index.php': 'Home',
     'master_list.php': 'Master List',
-    'reports.php': 'Reports',
-    'progress.php': 'Progress',
-    'mapping.php': 'Mapping'
+    'adminmasterlist.php': 'Master List',
+    'database.php': 'Database',
+    'log_activity.php': 'Log Activity'
 };
 
 // Get the exact filename from the URL, or default to Home if omitted
@@ -368,103 +371,34 @@ if (lastVisitedLink) {
     }
 }
 
-// --- 9. File Upload & Pie Chart Logic ---
-const fileUpload = document.getElementById('internDataUpload');
-let internChart = null;
-
-if (fileUpload) {
-    fileUpload.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = new Uint8Array(e.target.result);
-                // XLSX parses both Excel AND CSV automatically
-                const workbook = XLSX.read(data, {type: 'array'});
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
-                
-                processChartData(jsonData);
-            } catch (err) {
-                console.error("Error parsing file:", err);
-                alert("Failed to parse file. Ensure it is a valid CSV or Excel file.");
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    });
-}
-
-function processChartData(data) {
-    // Filter out completely empty rows
-    data = data.filter(row => row && row.length > 0);
-    if (!data || data.length === 0) return;
-    
-    const firstRow = data[0];
-    if (!firstRow || firstRow.length === 0) return;
-    
-    let labels = [];
-    let values = [];
-    
-    // Check if second column exists and next rows have numeric values in it (Key-Value format)
-    let isKeyValue = firstRow.length >= 2 && data.length > 1 && !isNaN(Number(data[1][1]));
-    
-    if (isKeyValue) {
-        // Skip header row if it's text-text, but data is text-number
-        let startIdx = isNaN(Number(data[0][1])) ? 1 : 0;
-        for(let i = startIdx; i < data.length; i++) {
-            labels.push(data[i][0] || 'Unknown');
-            values.push(Number(data[i][1]) || 0);
-        }
-    } else {
-        // Frequency map of the first column (e.g., flat list of programs row by row)
-        let counts = {};
-        // Assume first row is header, start at 1
-        for(let i = 1; i < data.length; i++) {
-            let val = data[i][0];
-            if (val !== undefined && val !== null && val !== '') {
-                counts[val] = (counts[val] || 0) + 1;
-            }
-        }
-        labels = Object.keys(counts);
-        values = Object.values(counts);
-    }
-    
-    renderPieChart(labels, values);
-}
-
-function renderPieChart(labels, values) {
-    const canvas = document.getElementById('internPieChart');
-    const placeholder = document.getElementById('chartPlaceholderText');
-    const legendContainer = document.getElementById('chartLegend');
-    const titleContainer = document.getElementById('internTotalTitle');
-    
+// --- 9. Admin User Login Activity Chart ---
+function renderLoginActivityChart() {
+    const canvas = document.getElementById('loginActivityChart');
     if (!canvas) return;
-    
-    canvas.style.display = 'block';
-    if (placeholder) placeholder.style.display = 'none';
-    
-    if (internChart) {
-        internChart.destroy();
-    }
-    
-    const backgroundColors = ['#ff8a8a', '#2e96ff', '#27bda1', '#f1b347', '#9b59b6', '#e67e22', '#34495e', '#16a085', '#e74c3c'];
-    
-    // Check if Chart is available via CDN
+
     if (typeof Chart === 'undefined') {
-        alert("Chart.js failed to load. Please check your internet connection.");
+        console.warn("Chart.js is not loaded.");
         return;
     }
 
-    internChart = new Chart(canvas, {
-        type: 'pie',
+    new Chart(canvas, {
+        type: 'line',
         data: {
-            labels: labels,
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [{
-                data: values,
-                backgroundColor: backgroundColors,
-                borderWidth: 1
+                label: 'INTERN1',
+                data: [12, 19, 14, 25, 22, 5, 8],
+                borderColor: '#2e96ff',
+                backgroundColor: 'rgba(46, 150, 255, 0.1)',
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'INTERN2',
+                data: [8, 11, 16, 18, 14, 3, 4],
+                borderColor: '#27bda1',
+                backgroundColor: 'rgba(39, 189, 161, 0.1)',
+                fill: true,
+                tension: 0.4
             }]
         },
         options: {
@@ -472,31 +406,38 @@ function renderPieChart(labels, values) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false // Hide default legend to use our custom formatted one
+                    position: 'bottom'
                 }
+            },
+            scales: {
+                y: { beginAtZero: true }
             }
         }
     });
-    
-    // Populate Custom Legend and dynamic title
-    if (legendContainer) {
-        let legendHTML = '';
-        let total = values.reduce((a, b) => a + b, 0);
-        if (titleContainer) titleContainer.innerText = `${total} Interns`;
-        
-        labels.forEach((label, i) => {
-            let color = backgroundColors[i % backgroundColors.length];
-            legendHTML += `<div><span style="color: ${color};">●</span> ${label} <span style="float: right; background: #1e3b99; color: white; padding: 2px 6px; border-radius: 4px;">${values[i]}</span></div>`;
-        });
-        legendContainer.innerHTML = legendHTML;
-    }
 }
+renderLoginActivityChart();
 
 // --- 10. Dynamic Program Dropdown based on School ---
+const taskRoleSelect = document.getElementById('taskRole');
 const taskSchoolSelect = document.getElementById('taskSchool');
 const taskProgramSelect = document.getElementById('taskProgram');
 
-if (taskSchoolSelect && taskProgramSelect) {
+if (taskRoleSelect && taskSchoolSelect && taskProgramSelect) {
+    taskRoleSelect.addEventListener('change', function() {
+        const role = this.value;
+        const allowedRoles = ['Student Intern', 'Executive Director', 'Program Director'];
+        
+        if (allowedRoles.includes(role)) {
+            taskSchoolSelect.disabled = false;
+            taskProgramSelect.disabled = false;
+        } else {
+            taskSchoolSelect.disabled = true;
+            taskProgramSelect.disabled = true;
+            taskSchoolSelect.selectedIndex = 0;
+            taskProgramSelect.innerHTML = '<option value="">All Programs</option>';
+        }
+    });
+
     const programsBySchool = {
         'SoE': ['Civil Engineering', 'Computer Engineering', 'Electronics Engineering'],
         'SoCIT': ['Computer Science', 'Information Technologies'],

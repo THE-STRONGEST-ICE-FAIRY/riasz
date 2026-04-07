@@ -61,6 +61,10 @@
                 <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                 <span class="nav-label">Progress</span>
             </div>
+            <div class="nav-item" onclick="window.location.href='mapping.php'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                <span class="nav-label">Mapping</span>
+            </div>
         </aside>
 
         <main class="main-content">
@@ -84,7 +88,7 @@
                 <div class="stat-card"><span class="stat-label">Industry Partner</span><span class="stat-value">42</span></div>
             </div>
 
-            <div class="panel">
+            <div class="panel" style="overflow: visible;">
                 <div class="panel-header">
                     <div class="panel-title">Internship Calendar Events for the Academic Year <b id="display-acad-year">2024-2025</b></div>
                     <svg style="width: 20px; height: 20px; stroke: #1e3b99; fill: none; stroke-width: 2;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -135,7 +139,8 @@
                         <div><div style="font-size: 10px; color: #2e7d32;">Total Submitted</div><div style="font-weight: bold;">40</div></div>
                         <div><div style="font-size: 10px; color: #c62828;">Not yet</div><div style="font-weight: bold; color: #c62828;">90</div></div>
                     </div>
-                    <button style="width: 100%; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 8px; border-radius: 4px; color: #2e7d32;">Notify Remaining</button>
+                    <button id="openDetailedReportBtn" style="width: 100%; background: #e3f2fd; border: 1px solid #bbdefb; padding: 8px; border-radius: 4px; color: #1e88e5; margin-bottom: 10px; cursor: pointer; font-weight: 500;">Detailed Report</button>
+                    <button style="width: 100%; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 8px; border-radius: 4px; color: #2e7d32; cursor: pointer; font-weight: 500;">Notify Remaining</button>
                 </div>
                 <div class="panel" style="padding: 20px; display: flex; flex-direction: column;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -234,6 +239,86 @@
         </div>
     </div>
 
+    <!-- Detailed Report Modal -->
+    <div class="modal-overlay" id="detailedReportModal">
+        <div class="task-modal" style="max-width: 600px;">
+            <span class="modal-close" id="closeDetailedReportModal">&times;</span>
+            <h2 style="font-weight: 500; color: #1e3b99; margin-bottom: 5px;">Detailed Report</h2>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">Submission status for Evaluation Forms by Industry Partners.</p>
+            
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="master-table">
+                    <thead>
+                        <tr>
+                            <th>SUPERVISOR</th>
+                            <th>COMPANY</th>
+                            <th>EMAIL</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="position: relative;">
+                                <span class="supervisor-name" style="color: #1e3b99; cursor: pointer; text-decoration: underline;">Mark Johnson</span>
+                                <div class="tag-drop" style="display: none; position: absolute; background: white; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 6px; z-index: 100;">
+                                    <button class="tag-supervisor-btn" style="padding: 10px 15px; border: none; background: none; font-size: 13px; cursor: pointer; color: #333; width: 100%; text-align: left; white-space: nowrap; transition: background 0.2s;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
+                                        Tag Supervisor
+                                    </button>
+                                </div>
+                            </td>
+                            <td>Creative Studio</td>
+                            <td>mark.j@creativestudio.com</td>
+                            <td><span style="color:#27bda1; font-weight:bold;">Submitted</span></td>
+                        </tr>
+                        <tr>
+                            <td style="position: relative;">
+                                <span class="supervisor-name" style="color: #1e3b99; cursor: pointer; text-decoration: underline;">Sarah Connor</span>
+                                <div class="tag-drop" style="display: none; position: absolute; background: white; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 6px; z-index: 100;">
+                                    <button class="tag-supervisor-btn" style="padding: 10px 15px; border: none; background: none; font-size: 13px; cursor: pointer; color: #333; width: 100%; text-align: left; white-space: nowrap; transition: background 0.2s;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
+                                        Tag Supervisor
+                                    </button>
+                                </div>
+                            </td>
+                            <td>TechCorp</td>
+                            <td>sarah.c@techcorp.com</td>
+                            <td><span style="color:#e74c3c; font-weight:bold;">Not Yet</span></td>
+                        </tr>
+                        <tr>
+                            <td style="position: relative;">
+                                <span class="supervisor-name" style="color: #1e3b99; cursor: pointer; text-decoration: underline;">Alan Turing</span>
+                                <div class="tag-drop" style="display: none; position: absolute; background: white; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 6px; z-index: 100;">
+                                    <button class="tag-supervisor-btn" style="padding: 10px 15px; border: none; background: none; font-size: 13px; cursor: pointer; color: #333; width: 100%; text-align: left; white-space: nowrap; transition: background 0.2s;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
+                                        Tag Supervisor
+                                    </button>
+                                </div>
+                            </td>
+                            <td>Innovate Inc</td>
+                            <td>alant@innovate.inc</td>
+                            <td><span style="color:#27bda1; font-weight:bold;">Submitted</span></td>
+                        </tr>
+                        <tr>
+                            <td style="position: relative;">
+                                <span class="supervisor-name" style="color: #1e3b99; cursor: pointer; text-decoration: underline;">Ada Lovelace</span>
+                                <div class="tag-drop" style="display: none; position: absolute; background: white; border: 1px solid #eaeaea; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 6px; z-index: 100;">
+                                    <button class="tag-supervisor-btn" style="padding: 10px 15px; border: none; background: none; font-size: 13px; cursor: pointer; color: #333; width: 100%; text-align: left; white-space: nowrap; transition: background 0.2s;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px; margin-top: -2px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
+                                        Tag Supervisor
+                                    </button>
+                                </div>
+                            </td>
+                            <td>Analytical Engine</td>
+                            <td>ada@analytical.com</td>
+                            <td><span style="color:#e74c3c; font-weight:bold;">Not Yet</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="footer-links"><a href="#">ABOUT US</a> <a href="#">PRIVACY POLICY</a> <a href="#">TERMS OF USE</a></div>
         <div class="footer-copy">Copyright © <span id="current-year"></span> <a href="#">Asia Pacific College</a>. All rights reserved.</div>
@@ -243,5 +328,62 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="adminscript.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportModal = document.getElementById('detailedReportModal');
+            document.getElementById('openDetailedReportBtn')?.addEventListener('click', () => reportModal?.classList.add('active'));
+            document.getElementById('closeDetailedReportModal')?.addEventListener('click', () => reportModal?.classList.remove('active'));
+            reportModal?.addEventListener('click', (e) => e.target === reportModal && reportModal.classList.remove('active'));
+
+            // Tag Supervisor Logic
+            document.addEventListener('click', (e) => {
+                const isName = e.target.closest('.supervisor-name');
+                
+                // Toggle Dropdown when clicking name
+                if (isName) {
+                    e.stopPropagation();
+                    const drop = isName.nextElementSibling;
+                    const isActive = drop && drop.classList.contains('active');
+                    
+                    // Close any other open dropdowns
+                    document.querySelectorAll('.tag-drop').forEach(d => {
+                        d.style.display = 'none';
+                        d.classList.remove('active');
+                    });
+                    
+                    if (!isActive && drop) {
+                        // Use Fixed positioning so it escapes the table-responsive container clipping
+                        const rect = isName.getBoundingClientRect();
+                        drop.style.position = 'fixed';
+                        drop.style.top = `${rect.bottom + 5}px`;
+                        drop.style.left = `${rect.left}px`; 
+                        drop.style.display = 'block';
+                        drop.classList.add('active');
+                    }
+                } else {
+                    // Close everywhere else
+                    document.querySelectorAll('.tag-drop').forEach(d => {
+                        d.style.display = 'none';
+                        d.classList.remove('active');
+                    });
+                }
+                
+                // Handle Tag Action
+                const isTagBtn = e.target.closest('.tag-supervisor-btn');
+                if (isTagBtn) {
+                    const supervisorName = isTagBtn.closest('td').querySelector('.supervisor-name').innerText;
+                    alert(`You have successfully tagged ${supervisorName}!`);
+                }
+            });
+
+            // Close dropdowns if the user scrolls the inner container
+            document.querySelector('.table-responsive')?.addEventListener('scroll', () => {
+                document.querySelectorAll('.tag-drop').forEach(d => {
+                    d.style.display = 'none';
+                    d.classList.remove('active');
+                });
+            }, { capture: true });
+        });
+    </script>
 </body>
 </html>

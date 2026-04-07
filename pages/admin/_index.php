@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIAS Internship Officer Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="adminstyle.css">
+</head>
+<body>
+
+    <header class="top-nav">
+        <div class="logo-section">
+            <div class="logo-rias">RIAS</div>
+            <div class="logo-text"><span>Rams</span><span>Internship</span><span>Assessment System</span></div>
+        </div>
+        <div class="top-nav-right">
+            <span class="role-text">ADMINISTRATOR</span>
+            <div class="bell-wrapper">
+                <svg class="nav-icon" id="bellIcon" viewBox="0 0 24 24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                </svg>
+                <span id="notifBadge" class="notif-badge" style="display: none;">0</span>
+            </div>
+            <div class="notification-dropdown" id="notifDropdown">
+                <div class="notif-header">Recent Notifications</div>
+                <div id="noNotifMsg" style="padding: 15px; font-size: 13px; color: #999; text-align: center;">No new notifications</div>
+            </div>
+            <!-- Notification Detail Panel -->
+            <div class="notif-detail-panel" id="notifDetailPanel" style="display: none;">
+                <h4 style="margin-bottom: 15px; color: #1e3b99; font-size: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Notification Details</h4>
+                <div id="detailBody" style="font-size: 13px; color: #555; line-height: 1.6;"></div>
+            </div>
+            <div class="profile-circle"></div>
+        </div>
+    </header>
+
+    <div class="layout-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="nav-item" id="menuToggle">
+                <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                <span class="nav-label">Menu</span>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='_index.php'">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='master_list.php'">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="nav-label">Master List</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='database.php'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                <span class="nav-label">Database</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='log_activity.php'">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <span class="nav-label">Log Activity</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <div class="date-container">
+                    <div class="huge-date" id="real-time-date">03/12/2025</div>
+                    <div class="live-time" id="real-time-clock"></div>
+                </div>
+                <div class="header-links" style="display: flex; align-items: center; gap: 20px;">
+                    <div>
+                        <span>You previously logged in on <span id="login-date">Saturday, March 09, 2025</span> ⟲</span>
+                        <a href="#" id="last-visited-link" style="display: block; margin-top: 3px;">Go to your last visited page: Master List ↩</a>
+                    </div>
+                    
+                    <!-- Scope Management (Moved to Upper Right as per spec) -->
+                    <span class="action-btn" id="changeYearBtn" style="position: relative; display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px 15px; border-radius: 6px; background: #fff; border: 1px solid #eaeaea; font-weight: bold; color: #1e3b99; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <svg style="width: 16px; height: 16px; stroke: #1e3b99; fill: none; stroke-width: 2;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        AY: <b id="display-acad-year">2024-2025</b> ▾
+                        <div class="year-dropdown" id="yearDropdown">
+                            <div style="margin-bottom: 10px; font-weight: bold; color: #333; font-size: 14px;">Set Academic Year</div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="font-size: 11px; color: #666; display: block; margin-bottom: 3px;">Start Date</label>
+                                <input type="date" id="acadStartDate" class="input-box" style="padding: 6px 10px;">
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <label style="font-size: 11px; color: #666; display: block; margin-bottom: 3px;">End Date</label>
+                                <input type="date" id="acadEndDate" class="input-box" style="padding: 6px 10px;">
+                            </div>
+                            <button id="applyAcadYearBtn" class="add-btn" style="width: 100%; color: #1e3b99; font-weight: bold;">Apply</button>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Global Metrics -->
+            <div class="stats-row">
+                <div class="stat-card"><span class="stat-label">Total Users</span><span class="stat-value">214</span></div>
+                <div class="stat-card"><span class="stat-label">Student Intern</span><span class="stat-value">130</span></div>
+                <div class="stat-card"><span class="stat-label">Internship Officer</span><span class="stat-value">1</span></div>
+                <div class="stat-card"><span class="stat-label">Program Director</span><span class="stat-value">36</span></div>
+                <div class="stat-card"><span class="stat-label">Executive Director</span><span class="stat-value">5</span></div>
+                <div class="stat-card"><span class="stat-label">Industry Partner</span><span class="stat-value">42</span></div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <!-- Center-Left: Internship Calendar -->
+                <div class="panel" style="margin-bottom: 0;">
+                    <div class="panel-header">
+                        <div class="panel-title">Internship Calendar Events</div>
+                    </div>
+                    <table class="calendar-table">
+                        <thead><tr><th>Date</th><th>Event</th></tr></thead>
+                        <tbody id="calendar-events-tbody">
+                            <tr><td>September 1</td><td>INTERN2 End</td></tr>
+                            <tr><td>August 30</td><td>INTERN1 End</td></tr>
+                            <tr><td>December 16</td><td>Internship consultation</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="panel-footer" style="justify-content: flex-end;">
+                        <span class="action-btn" id="openTaskModalBtn">
+                            <svg style="width: 16px; height: 16px; stroke: #1e3b99; fill: none; stroke-width: 2;" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            Set Event
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Center-Right: Recent Activity Summary -->
+                <div class="panel" style="margin-bottom: 0;">
+                    <div class="panel-header" style="border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
+                        <div class="panel-title">Recent Activity Summary</div>
+                    </div>
+                    <div style="padding: 10px 20px; background: #fdfdfd; border-bottom: 1px solid #eaeaea; display: flex; gap: 10px;">
+                        <button class="add-btn" style="background: #1e3b99; color: white;">All</button>
+                        <button class="add-btn">Admin</button>
+                        <button class="add-btn">Intern</button>
+                        <button class="add-btn">Partner</button>
+                    </div>
+                    <div style="max-height: 250px; overflow-y: auto;">
+                        <div class="log-item">
+                            <div class="log-header">
+                                <span class="log-role">Internship Officer</span>
+                                <span class="log-time">2 mins ago</span>
+                            </div>
+                            <div class="log-action">Changed the master-list directory settings.</div>
+                        </div>
+                        <div class="log-item">
+                            <div class="log-header">
+                                <span class="log-role">Program Director</span>
+                                <span class="log-time">1 hr ago</span>
+                            </div>
+                            <div class="log-action">Approved final grade for Student ID 2021-1004.</div>
+                        </div>
+                        <div class="log-item">
+                            <div class="log-header">
+                                <span class="log-role">Student Intern</span>
+                                <span class="log-time">3 hrs ago</span>
+                            </div>
+                            <div class="log-action">Submitted self-evaluation form for Week 4.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                <!-- Bottom-Left: User Administration -->
+                <div class="panel" style="margin-bottom: 0;">
+                    <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 15px; border-bottom: 1px solid #eaeaea; padding-bottom: 15px;">
+                        <div class="panel-title">User Administration</div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="add-btn">+ Add/Remove Student Interns</button>
+                            <button class="add-btn">+ Manage Industry Partners</button>
+                            <button class="add-btn">+ Manage Directors/Staff</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="master-table">
+                            <thead><tr><th>Name</th><th>Company</th><th>Department</th><th>Contact Email</th><th>Role</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td>John Doe</td><td>TechCorp</td><td>BSIT</td><td>john@student.apc.edu.ph</td>
+                                    <td><span class="role-badge badge-intern">STUDENT INTERN</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Mark Johnson</td><td>Creative Studio</td><td>Design</td><td>mark@creativestudio.com</td>
+                                    <td><span class="role-badge badge-industry">INDUSTRY PARTNER</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Ada Lovelace</td><td>APC</td><td>SoCIT</td><td>ada@apc.edu.ph</td>
+                                    <td><span class="role-badge badge-officer">INTERN OFFICER</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer" style="justify-content: flex-end;">
+                        <span class="action-btn" onclick="window.location.href='master_list.php'">Go to Full Master List &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- Bottom-Right: Config and Chart -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div class="panel" style="margin-bottom: 0; padding: 20px;">
+                        <div class="panel-title" style="margin-bottom: 15px; font-size: 16px;">High-Level System Configuration</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="config-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                Academic Year
+                            </div>
+                            <div class="config-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                                School/Program
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel" style="margin-bottom: 0; padding: 20px; flex: 1; display: flex; flex-direction: column;">
+                        <div class="panel-title" style="margin-bottom: 15px; font-size: 16px;">User Login Activity</div>
+                        <div style="flex: 1; position: relative; min-height: 180px;">
+                            <canvas id="loginActivityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="taskModalOverlay">
+        <div class="task-modal">
+            <span class="modal-close" id="closeModalBtn">&times;</span>
+            
+            <div style="position: relative;">
+                <input type="text" class="input-box" id="taskTitle" placeholder="Enter title...">
+                <span style="position: absolute; right: 10px; top: 12px; font-size: 11px; color: #999;">0/30</span>
+            </div>
+
+            <div class="tabs-row">
+                <button class="tab-btn inactive"><svg style="width: 16px; height: 16px; stroke: currentColor; fill: none;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> EVENT</button>
+                <button class="tab-btn active"><svg style="width: 16px; height: 16px; stroke: currentColor; fill: none;" viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 21v-4"/><path d="M12 3a5 5 0 0 0-5 5c0 2 1.5 3.5 2 5.5v1.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.5c.5-2 2-3.5 2-5.5a5 5 0 0 0-5-5z"/></svg> TASK</button>
+            </div>
+
+            <select class="select-box" style="width: 100%; margin-top: 5px;">
+                <option>Evaluation Forms (Industry Partners)</option>
+                <option>Accomplishment Reports</option>
+            </select>
+            
+            <div><button class="add-btn">Add task +</button></div>
+
+            <div class="form-row">
+                <svg class="form-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <input type="date" class="input-box" id="taskDate" style="flex: 2; cursor:pointer;">
+                <input type="time" class="input-box" id="taskStartTime" style="flex: 1; cursor:pointer;">
+                <span>-</span>
+                <input type="time" class="input-box" id="taskEndTime" style="flex: 1; cursor:pointer;">
+            </div>
+
+            <div class="form-row">
+                <svg class="form-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <select class="select-box" id="taskRole" style="flex: 1;">
+                    <option value="">Select Role</option>
+                    <option>Industry Partner</option>
+                    <option>Student Intern</option>
+                    <option>Executive Director</option>
+                    <option>Program Director</option>
+                </select>
+                <select class="select-box" id="taskSchool" style="flex: 1;" disabled>
+                    <option value="">Select School</option>
+                    <option value="SoA">School of Architecture</option>
+                    <option value="SoMA">School of Multimedia and Arts</option>
+                    <option value="SoE">School of Engineering</option>
+                    <option value="SoCIT">School of Computing and Information Technologies</option>
+                    <option value="SoM">School Of Management</option>
+                </select>
+                <span>-</span>
+                <select class="select-box" id="taskProgram" style="flex: 1;" disabled>
+                    <option value="">All Programs</option>
+                </select>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-left: 25px;">
+                <input type="checkbox" id="notifyAll" style="width: 18px; height: 18px;">
+                <label for="notifyAll" style="font-size: 14px;">Notify All</label>
+            </div>
+
+            <div class="form-row" style="margin-left: 25px;">
+                <select class="select-box" style="flex: 1;"><option>Email</option><option>System</option></select>
+                <select class="select-box" style="flex: 2;"><option>Wednesday, March 21</option></select>
+                <span style="color: #999; cursor: pointer;">&times;</span>
+            </div>
+            
+            <div style="margin-left: 25px;"><button class="add-btn">Add Notification +</button></div>
+
+            <div class="form-row">
+                <svg class="form-icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                <input type="text" class="input-box" placeholder="Additional details..." style="border: none; border-bottom: 1px solid #ccc; border-radius: 0;">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px;">
+                <button class="add-btn" style="display: flex; gap: 5px; align-items: center;">
+                    <span style="color: #27bda1;">●</span> <svg style="width: 14px; height: 14px; stroke: #333; fill: none;" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <button class="save-btn" id="saveTaskBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links"><a href="#">ABOUT US</a> <a href="#">PRIVACY POLICY</a> <a href="#">TERMS OF USE</a></div>
+        <div class="footer-copy">Copyright © <span id="current-year"></span> <a href="#">Asia Pacific College</a>. All rights reserved.</div>
+    </footer>
+
+    <!-- Load Chart.js for Pie Graph & SheetJS for parsing CSV/Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="adminscript.js"></script>
+</body>
+</html>
