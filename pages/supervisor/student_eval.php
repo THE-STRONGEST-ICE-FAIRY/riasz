@@ -81,7 +81,85 @@
                     <div class="panel-title">Performance Assessment Form</div>
                 </div>
                 <div class="evaluation-container">
-                    <p>Please rate the intern's performance based on the criteria below...</p>
+                    <div class="rating-legend">
+                        RATING SCALE: 5-HIGHEST, 0-LOWEST; NA = NOT APPLICABLE
                     </div>
+                    
+                    <table class="evaluation-table">
+                        <thead>
+                            <tr>
+                                <th class="col-num">#</th>
+                                <th class="col-criteria">CRITERIA FOR EVALUATION</th>
+                                <th>5</th>
+                                <th>4</th>
+                                <th>3</th>
+                                <th>2</th>
+                                <th>1</th>
+                                <th>0</th>
+                                <th>NA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-num">1</td>
+                                <td class="col-criteria">The intern reports to the office with regular punctuality.</td>
+                                <td><input type="radio" name="q1" value="5"></td>
+                                <td><input type="radio" name="q1" value="4"></td>
+                                <td><input type="radio" name="q1" value="3"></td>
+                                <td><input type="radio" name="q1" value="2"></td>
+                                <td><input type="radio" name="q1" value="1"></td>
+                                <td><input type="radio" name="q1" value="0"></td>
+                                <td><input type="radio" name="q1" value="NA"></td>
+                            </tr>
+                            <tr>
+                                <td class="col-num">2</td>
+                                <td class="col-criteria">The intern demonstrates initiative and follows instructions accurately.</td>
+                                <td><input type="radio" name="q2" value="5"></td>
+                                <td><input type="radio" name="q2" value="4"></td>
+                                <td><input type="radio" name="q2" value="3"></td>
+                                <td><input type="radio" name="q2" value="2"></td>
+                                <td><input type="radio" name="q2" value="1"></td>
+                                <td><input type="radio" name="q2" value="0"></td>
+                                <td><input type="radio" name="q2" value="NA"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="form-actions">
+                        <button class="btn-cancel">CANCEL CHANGES</button>
+                        <button class="btn-save">SAVE CHANGES</button>
+                        <button class="btn-submit">SUBMIT CHANGES</button>
+                    </div>
+                </div>
             </div>
         </main>
+
+        <script>
+    // 1. Cancel Button: Clears all radio selections
+    document.querySelector('.btn-cancel').addEventListener('click', function() {
+        if(confirm("Are you sure you want to clear all selections?")) {
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => radio.checked = false);
+        }
+    });
+
+    // 2. Save Button: Shows a "Saved" popup
+    document.querySelector('.btn-save').addEventListener('click', function() {
+        // In a real app, you'd trigger an AJAX save here
+        alert("Draft saved successfully!");
+    });
+
+    // 3. Submit Button: Shows a "Submitted" popup
+    document.querySelector('.btn-submit').addEventListener('click', function() {
+        // You can add logic here to check if all criteria are filled
+        const totalQuestions = 2; // Update this to your actual count
+        const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+
+        if (answered < totalQuestions) {
+            alert("Please complete all evaluation criteria before submitting.");
+        } else {
+            alert("Evaluation submitted successfully to RIAS!");
+            // window.location.href = 'master_list.php'; // Redirect after submit
+        }
+    });
+</script>
