@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
         blockClicks();
-        fetch("/rias/templates/_components/sendemail.php", {
+        fetch("sendemail.php", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({ email: email, send_email: 1 })
@@ -803,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem('resendOtp', true);
       verifyBtn.disabled = true;
   
-      fetch("/rias/templates/_components/sendemail.php", {
+      fetch("sendemail.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ email: email, send_email: 1 })
@@ -897,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('send_email', 'true');
         formData.append('email', email);
   
-        const response = await fetch('../login/changepasswordsendemail.php', {
+        const response = await fetch('changepasswordsendemail.php', {
           method: 'POST',
           body: formData
         });

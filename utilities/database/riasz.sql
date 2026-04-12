@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 06, 2026 at 02:44 PM
+-- Generation Time: Apr 12, 2026 at 12:49 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -478,6 +478,17 @@ CREATE TABLE `passwordresets` (
   `passreset_is_used` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `passwordresets`
+--
+
+INSERT INTO `passwordresets` (`passreset_id`, `schooluser_id`, `passreset_token`, `passreset_date_created`, `passreset_date_expiry`, `passreset_is_used`) VALUES
+(1, 1, '81d087c72bbed5107f49f6fc64ae974faca062586d7d9c2ef1972f349c796440', '2026-04-12 12:18:09', '2026-04-12 12:33:09', 0),
+(2, 1, '8abd1664d6ffd8c925347551fc3d9f03859ed6fc345dc8a17e1a8e50e709ba9c', '2026-04-12 12:21:49', '2026-04-12 12:36:49', 0),
+(3, 1, '1ab1a2b0d7b20bdb8ecfc639ec2a8988882f02c8a821d40629a43fd3317b3101', '2026-04-12 12:26:48', '2026-04-12 12:41:48', 0),
+(4, 1, '227479f26ccdaf2a79c9afc1ab345c36165481518fde1514137cc8836138d543', '2026-04-12 12:42:22', '2026-04-12 12:57:22', 0),
+(5, 1, '84fb3e9b94242d5b538cc1d134145bfbfc8b5cd391ea372ae8376d96524abbf7', '2026-04-12 12:44:53', '2026-04-12 20:59:53', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -570,8 +581,15 @@ CREATE TABLE `schoolusers` (
   `schooluser_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `schooluser_given_id` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `shooluser_password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `schooluser_password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `schoolusers`
+--
+
+INSERT INTO `schoolusers` (`schooluser_id`, `user_id`, `schooluser_given_id`, `schooluser_password`) VALUES
+(1, 1, 'A001', '$2y$10$arJA9x3VKuNTGNEkPwRI4OoNOfp4vy5/fiT4LazXzIDZfMi37HGpy');
 
 -- --------------------------------------------------------
 
@@ -686,6 +704,13 @@ CREATE TABLE `users` (
   `user_role` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `user_first_name`, `user_last_name`, `user_email`, `user_date_created`, `user_date_updated`, `user_role`, `user_is_archived`) VALUES
+(1, 'Addy', 'Min', 'addymin@apc.edu.ph', '2026-04-12 11:09:09', '2026-04-12 11:11:14', 'admin', 0);
 
 --
 -- Indexes for dumped tables
@@ -1219,13 +1244,13 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `onetimepasswords`
 --
 ALTER TABLE `onetimepasswords`
-  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `passwordresets`
 --
 ALTER TABLE `passwordresets`
-  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `programdirectors`
@@ -1267,7 +1292,7 @@ ALTER TABLE `schools`
 -- AUTO_INCREMENT for table `schoolusers`
 --
 ALTER TABLE `schoolusers`
-  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sendassessments`
@@ -1315,7 +1340,7 @@ ALTER TABLE `userlogs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
