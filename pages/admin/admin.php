@@ -1,14 +1,36 @@
 <?php
 require '../../utilities/database/database.php';
 
-// Fetch users for the Masterlist section based on the specific schema provided
+// Fetch users for the Masterlist section
 $users = [];
 try {
-    // Querying specific columns: user_id, user_first_name, user_last_name, user_email, user_role, user_is_archived, user_date_created
     $stmt = $conn->query("SELECT user_id, user_first_name, user_last_name, user_email, user_role, user_is_archived, user_date_created FROM users");
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $db_error = "Could not fetch users: " . $e->getMessage();
+}
+
+// Fetch Schools and Programs for the new visualization
+$schoolsData = [];
+try {
+    // Fetch all schools
+    $schoolStmt = $conn->query("SELECT * FROM schools ORDER BY school_name ASC");
+    $tempSchools = $schoolStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch all programs
+    $programStmt = $conn->query("SELECT * FROM programs ORDER BY program_name ASC");
+    $tempPrograms = $programStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Organize programs under schools
+    foreach ($tempSchools as $school) {
+        $schoolId = $school['school_id'];
+        $school['programs'] = array_filter($tempPrograms, function($p) use ($schoolId) {
+            return $p['school_id'] == $schoolId;
+        });
+        $schoolsData[] = $school;
+    }
+} catch (Exception $e) {
+    $db_error = "Could not fetch schools/programs: " . $e->getMessage();
 }
 ?>
 
@@ -484,6 +506,91 @@ try {
         .footer-nav-link:hover {
             opacity: 0.7;
         }
+		
+		    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 16px;
+			border-radius: 6px;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.2s;
+			border: none;
+			text-decoration: none;
+			gap: 8px;
+		}
+
+		.btn-primary { background: var(--primary); color: white; }
+		.btn-primary:hover { background: var(--primary-hover); }
+
+		.btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); }
+		.btn-outline:hover { background: var(--bg-subtle); }
+
+		.btn-sm { padding: 4px 8px; font-size: 12px; }
+		
+		.btn-danger-text { color: var(--danger); background: transparent; }
+		.btn-danger-text:hover { background: #fef2f2; }
+
+		/* Schools & Programs Visualization */
+		.schools-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+			gap: 20px;
+			margin-bottom: 40px;
+		}
+
+		.school-card {
+			background: white;
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 20px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+		}
+
+		.school-title {
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--text-main);
+			margin-bottom: 12px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.program-list {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			border-top: 1px solid var(--border);
+			padding-top: 12px;
+		}
+
+		.program-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 8px 0;
+			font-size: 14px;
+			color: var(--text-muted);
+		}
+
+		.program-item:not(:last-child) {
+			border-bottom: 1px dashed var(--border);
+		}
+
+		.empty-state {
+			font-style: italic;
+			color: #9ca3af;
+			padding: 10px 0;
+		}
     </style>
 </head>
 <body>
@@ -491,8 +598,7 @@ try {
     <!-- Header -->
     <header>
         <div class="logo-container">
-            <img src="https://via.placeholder.com/32" alt="Logo" class="logo-img">
-            <span style="font-weight: 800; font-size: 18px; letter-spacing: -0.5px;">NexusCore</span>
+            <img src="../../assets/header_apclogo2.png" alt="Logo">
         </div>
 
         <div class="header-actions">
@@ -584,6 +690,8 @@ try {
 
         <!-- Masterlist Section -->
         <section id="masterlist">
+            <h1>Schools and Programs</h1>
+			
             <h1>User Masterlist</h1>
             
             <?php if (isset($db_error)): ?>
