@@ -70,99 +70,83 @@
                 </div>
             </div>
 
-            <div class="panel" style="overflow: visible;">
-                <div class="panel-header" style="justify-content: space-between; align-items: center;">
-                    <div class="panel-title">SO & CO Evaluation Criteria Linkages</div>
-                    <button class="add-user-btn" id="addMappingBtn">
-                        + Add Mapping
-                    </button>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="master-table">
-                        <thead>
-                            <tr>
-                                <th>Criteria</th>
-                                <th>Student Outcome (SO)</th>
-                                <th>Course Outcome (CO)</th>
-                                <th style="width: 40px;"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Applies technical knowledge to real-world problems</td><td>SO1</td><td>CO1</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Communicates effectively in professional environments</td><td>SO3</td><td>CO2</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Demonstrates ethical responsibility</td><td>SO4</td><td>CO3</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="header-actions">
+                <button id="newMappingBtn" class="add-btn-box" onclick="alert('Open New Mapping Modal')">
+                    + NEW MAPPING
+                </button>
             </div>
-        </main>
-    </div>
 
-    <!-- Edit Mapping Modal -->
-    <div class="modal-overlay" id="editMappingModal">
-        <div class="task-modal">
-            <span class="modal-close" id="closeEditMappingModal">&times;</span>
-            <h2 style="font-weight: 500; color: #1e3b99; margin-bottom: 5px;">Edit Mapping</h2>
-            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">Update the linkages between criteria, SOs, and COs.</p>
-            
-            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
-                <div>
-                    <label style="font-size: 12px; font-weight: bold; color: #555; display: block; margin-bottom: 5px;">Evaluation Criteria</label>
-                    <input type="text" id="mappingCriteria" class="input-box" placeholder="e.g. Applies technical knowledge...">
-                </div>
-                <div style="display: flex; gap: 15px;">
-                    <div style="flex: 1;">
-                        <label style="font-size: 12px; font-weight: bold; color: #555; display: block; margin-bottom: 5px;">Student Outcome (SO)</label>
-                        <select id="mappingSO" class="input-box"><option value="SO1" selected>SO1</option><option value="SO2">SO2</option><option value="SO3">SO3</option><option value="SO4">SO4</option></select>
+            <div id="selectionGrid" class="card-grid">
+                    <div class="landing-box">
+                        <h2>School Of Engineering</h2>
+                        <button class="view-btn"  onclick="showMapping('SOE')">VIEW MAP</button>
                     </div>
-                    <div style="flex: 1;">
-                        <label style="font-size: 12px; font-weight: bold; color: #555; display: block; margin-bottom: 5px;">Course Outcome (CO)</label>
-                        <select id="mappingCO" class="input-box"><option value="CO1" selected>CO1</option><option value="CO2">CO2</option><option value="CO3">CO3</option></select>
+
+                    <div class="landing-box" onclick="showMapping('SOMA')">
+                        <h2>School Of Multimedia And Arts</h2>
+                        <button class="view-btn">VIEW MAP</button>
+                    </div>
+                </div>
+
+                <div id="SOEContent" class="mapping-view" style="display: none;">
+                    <div class="panel"> 
+                        <div class="panel-header">
+                            <div class="panel-title">SOE Mapping</div>
+                        </div>
+                        
+                        <div class="view-header-actions">
+                            <button onclick="showGrid()" class="back-btn-box">
+                                ← BACK TO MENU
+                            </button>
+                        </div>
+
+                        <div class="evaluation-container">
+                            <p>Select locations to map internships...</p>
+                        </div>
+                    </div>
+
+                        <div class="panel-footer-actions">
+                            <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
+                            <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
+                            <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                        </div>
+                    </div>
+
+                    <div id="SOMAContent" class="mapping-view" style="display: none;">
+                    <div class="panel"> 
+                        <div class="panel-header">
+                            <div class="panel-title">SOMA Mapping</div>
+                        </div>
+                        
+                        <div class="view-header-actions">
+                            <button onclick="showGrid()" class="back-btn-box">
+                                ← BACK TO MENU
+                            </button>
+                        </div>
+
+                        <div class="evaluation-container">
+                            <p>Select locations to map internships...</p>
+                        </div>
+                    </div>
+
+                        <div class="panel-footer-actions">
+                            <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
+                            <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
+                            <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <button class="save-btn" id="saveMappingBtn" style="width: 100%;">Save Changes</button>
-        </div>
-    </div>
 
     <footer class="footer">
-        <div class="footer-links"><a href="#">ABOUT US</a> <a href="#">PRIVACY POLICY</a> <a href="#">TERMS OF USE</a></div>
-        <div class="footer-copy">Copyright © <span id="current-year"></span> <a href="#">Asia Pacific College</a>. All rights reserved.</div>
+        <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2026 <a href="#">RIAS</a>. All rights reserved.
+        </div>
     </footer>
     <script src="adminscript.js"></script>
     <script>
@@ -256,6 +240,36 @@
             
             document.addEventListener('scroll', () => document.querySelectorAll('.meatball-drop.active').forEach(d => d.classList.remove('active')), true);
         });
+        
     </script>
+
+    <script>
+   function showMapping(type) {
+    document.getElementById('selectionGrid').style.display = 'none';
+    document.getElementById('newMappingBtn').style.display = 'none'; // Hide "New" button
+    
+    document.querySelectorAll('.mapping-view').forEach(view => {
+        view.style.display = 'none';
+    });
+
+    document.getElementById(type + 'Content').style.display = 'block';
+    document.getElementById('backContainer').style.display = 'block';
+
+    const titles = {
+        'SOE': 'SOE Mapping',
+        'SOMA': 'SOMA Mapping'
+    };
+    document.getElementById('pageTitle').innerText = titles[type];
+}
+
+function showGrid() {
+    document.getElementById('selectionGrid').style.display = 'flex';
+    document.getElementById('newMappingBtn').style.display = 'block'; // Show "New" button again
+    
+    document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
+    document.getElementById('backContainer').style.display = 'none';
+    document.getElementById('pageTitle').innerText = 'System Mapping';
+}
+</script>
 </body>
 </html>

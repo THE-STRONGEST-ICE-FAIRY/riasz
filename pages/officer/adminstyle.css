@@ -259,3 +259,151 @@ button {
 .footer-links a { color: white; text-decoration: none; margin-right: 20px; }
 .footer-links a:hover { text-decoration: underline; }
 .footer-copy a { color: white; text-decoration: underline; }
+
+.mapping-view {
+    animation: fadeIn 0.4s ease; /* Reuses your existing fadeIn animation */
+}
+
+/* Ensure the back button aligns with your RIAS theme */
+.back-btn-box {
+    background-color: #29429c; 
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.panel-footer-actions {
+    padding: 20px;
+    background-color: #f9fafc;
+    border-top: 1px solid #eaeaea;
+    display: flex;
+    gap: 15px;
+}
+
+/* Button Styling matching your design language */
+.btn-cancel, .btn-save, .btn-submit {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.btn-cancel { background-color: #e0e0e0; color: #333; }
+.btn-save { background-color: #f1b347; color: #000; } /* Matches RIAS Yellow */
+.btn-submit { background-color: #28a745; color: white; } /* Success Green */
+
+.btn-cancel:hover, .btn-save:hover, .btn-submit:hover {
+    opacity: 0.8;
+}
+
+.landing-box {
+    background-color: #f1b347; /* Yellow */
+    width: 200px;
+    height: 140px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    margin: 10px 0;
+}
+
+.landing-box:hover {
+    transform: translateY(-5px);
+}
+
+.landing-box h2 {
+    color: #000;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.view-btn {
+    background: #29429c;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.add-user-btn { 
+    background: #29429c; color: white; border: none; 
+    padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;
+}
+
+.back-btn-box {
+    background-color: #2600ff; 
+    color: #fff; 
+    border: none; /* Fixed: Added missing semicolon */
+    padding: 8px 16px; 
+    border-radius: 8px; 
+    font-weight: 500; 
+    cursor: pointer;
+}
+
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Container to give some breathing room */
+.view-header-actions {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+
+.back-btn-box {
+    background-color: #29429c; /* RIAS Blue */
+    margin-left: 15px;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-btn-box:active {
+    transform: scale(0.95);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-btn-box {
+    background-color: #29429c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background 0.2s, transform 0.1s;
+}
+
+.add-btn-box:active {
+    transform: translateY(0);
+}
