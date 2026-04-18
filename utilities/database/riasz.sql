@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 12, 2026 at 12:49 PM
+-- Generation Time: Apr 18, 2026 at 09:05 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -513,6 +513,13 @@ CREATE TABLE `programs` (
   `school_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `programs`
+--
+
+INSERT INTO `programs` (`program_id`, `program_name`, `school_id`) VALUES
+(5, 'Architecture', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -570,6 +577,15 @@ CREATE TABLE `schools` (
   `school_id` int NOT NULL,
   `school_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `schools`
+--
+
+INSERT INTO `schools` (`school_id`, `school_name`) VALUES
+(1, 'Architecture'),
+(3, 'Engineering'),
+(13, 'Management');
 
 -- --------------------------------------------------------
 
@@ -990,7 +1006,8 @@ ALTER TABLE `reports`
 -- Indexes for table `schools`
 --
 ALTER TABLE `schools`
-  ADD PRIMARY KEY (`school_id`);
+  ADD PRIMARY KEY (`school_id`),
+  ADD UNIQUE KEY `school_name` (`school_name`);
 
 --
 -- Indexes for table `schoolusers`
@@ -1262,7 +1279,7 @@ ALTER TABLE `programdirectors`
 -- AUTO_INCREMENT for table `programs`
 --
 ALTER TABLE `programs`
-  MODIFY `program_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `program_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `reportformats`
@@ -1286,7 +1303,7 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `school_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `school_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `schoolusers`

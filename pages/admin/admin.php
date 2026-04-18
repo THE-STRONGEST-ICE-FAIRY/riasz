@@ -692,6 +692,351 @@ try {
         <section id="masterlist">
             <h1>Schools and Programs</h1>
 			
+			<h3>Add School</h3>
+			<form id="schoolForm">
+				<input type="text" name="school_name" placeholder="School Name" required>
+				<input type="hidden" name="action" value="add_school">
+				<button type="submit">Add School</button>
+			</form>
+
+			<p id="schoolResult"></p>
+
+			<hr>
+
+			<h3>Add Program</h3>
+			<form id="programForm">
+				<input type="text" name="program_name" placeholder="Program Name" required>
+
+				<select name="school_id" id="schoolDropdown" required>
+					<option value="">Loading schools...</option>
+				</select>
+
+				<input type="hidden" name="action" value="add_program">
+				<button type="submit">Add Program</button>
+			</form>
+
+			<p id="programResult"></p>
+			
+			<h3>Schools and Programs</h3>
+
+			<button id="refreshBtn">Refresh List</button>
+
+			<div id="listContainer">Loading...</div>
+
+			<script>
+			document.getElementById("refreshBtn").addEventListener("click", loadAllData);
+			
+			document.addEventListener("DOMContentLoaded", function() {
+				loadSchools();
+				loadAllData();
+
+				// ✅ SCHOOL FORM
+				const schoolForm = document.getElementById("schoolForm");
+				if (schoolForm) {
+					schoolForm.addEventListener("submit", function(e) {
+						e.preventDefault();
+
+						let formData = new FormData(this);
+
+						fetch("handler.php", {
+							method: "POST",
+							body: formData
+						})
+						.then(res => res.text())
+						.then(data => {
+							document.getElementById("schoolResult").innerText = data;
+							loadSchools();
+							loadAllData();
+							this.reset();
+						})
+						.catch(err => console.error(err));
+					});
+				}
+
+				// ✅ PROGRAM FORM
+				const programForm = document.getElementById("programForm");
+				if (programForm) {
+					programForm.addEventListener("submit", function(e) {
+						e.preventDefault();
+
+						let formData = new FormData(this);
+
+						fetch("handler.php", {
+							method: "POST",
+							body: formData
+						})
+						.then(res => res.text())
+						.then(data => {
+							document.getElementById("programResult").innerText = data;
+							loadAllData();
+							this.reset();
+						})
+						.catch(err => console.error(err));
+					});
+				}
+			});
+			
+			function loadSchools() {
+				fetch("handler.php", {
+					method: "POST",
+					body: new URLSearchParams({ action: "get_schools" })
+				})
+				.then(res => res.text())
+				.then(text => {
+					console.log("RAW RESPONSE:", text); // 👈 LOOK HERE
+
+					try {
+						let data = JSON.parse(text);
+
+						let dropdown = document.getElementById("schoolDropdown");
+						dropdown.innerHTML = '<option value="">Select School</option>';
+
+						data.forEach(school => {
+							let option = document.createElement("option");
+							option.value = school.id;
+							option.textContent = school.school_name;
+							dropdown.appendChild(option);
+						});
+
+					} catch (e) {
+						console.error("JSON PARSE FAILED:", e);
+						document.getElementById("schoolDropdown").innerHTML =
+							'<option>JSON Error - check console</option>';
+					}
+				})
+				.catch(err => console.error("FETCH ERROR:", err));
+			}
+			
+			function loadAllData() {
+				fetch("handler.php", {
+					method: "POST",
+					body: new URLSearchParams({ action: "get_all_data" })
+				})
+				.then(res => res.text())
+				.then(text => {
+					console.log("RAW DATA:", text);
+					return JSON.parse(text);
+				})
+				.then(data => {
+					let container = document.getElementById("listContainer");
+					container.innerHTML = "";
+
+					if (data.length === 0) {
+						container.innerHTML = "No data found.";
+						return;
+					}
+
+					data.forEach(school => {
+						let schoolDiv = document.createElement("div");
+
+						let schoolTitle = document.createElement("h4");
+						schoolTitle.textContent = school.school_name;
+						schoolDiv.appendChild(schoolTitle);
+
+						// === EDIT MODE INPUT (hidden initially)
+						let editInput = document.createElement("input");
+						editInput.value = school.school_name;
+						editInput.style.display = "none";
+						schoolDiv.appendChild(editInput);
+
+						// === EDIT BUTTON
+						let editBtn = document.createElement("button");
+						editBtn.textContent = "Edit";
+
+						editBtn.onclick = () => {
+							schoolTitle.style.display = "none";
+							editInput.style.display = "inline-block";
+
+							editBtn.style.display = "none";
+							saveBtn.style.display = "inline-block";
+							cancelBtn.style.display = "inline-block";
+						};
+
+						schoolDiv.appendChild(editBtn);
+
+						// === SAVE BUTTON (hidden initially)
+						let saveBtn = document.createElement("button");
+						saveBtn.textContent = "Save";
+						saveBtn.style.display = "none";
+
+						saveBtn.onclick = () => {
+
+							if (!confirm("Save changes to this school?")) return;
+
+							fetch("handler.php", {
+								method: "POST",
+								body: new URLSearchParams({
+									action: "edit_school",
+									school_id: school.school_id,
+									school_name: editInput.value
+								})
+							})
+							.then(res => res.text())
+							.then(() => loadAllData());
+						};
+
+						schoolDiv.appendChild(saveBtn);
+						
+						let cancelBtn = document.createElement("button");
+						cancelBtn.textContent = "Cancel";
+						cancelBtn.style.display = "none";
+						
+						cancelBtn.onclick = () => {
+							editInput.value = school.school_name;
+
+							schoolTitle.style.display = "block";
+							editInput.style.display = "none";
+
+							editBtn.style.display = "inline-block";
+							saveBtn.style.display = "none";
+							cancelBtn.style.display = "none";
+							delSchoolBtn.style.display = "inline-block";
+						};
+						
+						schoolDiv.appendChild(cancelBtn);
+
+						// toggle edit/save visibility
+						editBtn.onclick = () => {
+							schoolTitle.style.display = "none";
+							editInput.style.display = "inline-block";
+							editBtn.style.display = "none";
+							saveBtn.style.display = "inline-block";
+							cancelBtn.style.display = "inline-block";
+							delSchoolBtn.style.display = "none";
+						};
+
+						// 🗑 DELETE SCHOOL
+						let delSchoolBtn = document.createElement("button");
+						delSchoolBtn.textContent = "Delete School";
+
+						delSchoolBtn.onclick = () => {
+							if (!confirm("Delete this school and all its programs?")) return;
+
+							fetch("handler.php", {
+								method: "POST",
+								body: new URLSearchParams({
+									action: "delete_school",
+									school_id: school.school_id
+								})
+							})
+							.then(res => res.text())
+							.then(() => {
+								loadAllData();
+								loadSchools();
+							});
+						};
+
+						schoolDiv.appendChild(delSchoolBtn);
+
+						if (school.programs && school.programs.length > 0) {
+							let ul = document.createElement("ul");
+
+							school.programs.forEach(program => {
+								let li = document.createElement("li");
+
+								// display text
+								let text = document.createElement("span");
+								text.textContent = program.program_name;
+								li.appendChild(text);
+
+								// input (hidden)
+								let input = document.createElement("input");
+								input.value = program.program_name;
+								input.style.display = "none";
+								li.appendChild(input);
+
+								// EDIT button
+								let editBtn = document.createElement("button");
+								editBtn.textContent = "Edit";
+
+								let saveBtn = document.createElement("button");
+								saveBtn.textContent = "Save";
+								saveBtn.style.display = "none";
+								
+								let cancelBtn = document.createElement("button");
+								cancelBtn.textContent = "Cancel";
+								cancelBtn.style.display = "none";
+
+								editBtn.onclick = () => {
+									text.style.display = "none";
+									input.style.display = "inline-block";
+									editBtn.style.display = "none";
+									saveBtn.style.display = "inline-block";
+									cancelBtn.style.display = "inline-block";
+									delBtn.style.display = "none";
+								};
+
+								saveBtn.onclick = () => {
+									if (!confirm("Save changes to this program?")) return;
+
+									fetch("handler.php", {
+										method: "POST",
+										body: new URLSearchParams({
+											action: "edit_program",
+											program_id: program.program_id,
+											program_name: input.value
+										})
+									})
+									.then(res => res.text())
+									.then(() => loadAllData());
+								};
+								
+								cancelBtn.onclick = () => {
+									input.value = program.program_name;
+
+									text.style.display = "inline-block";
+									input.style.display = "none";
+
+									editBtn.style.display = "inline-block";
+									saveBtn.style.display = "none";
+									cancelBtn.style.display = "none";
+									delBtn.style.display = "inline-block";
+								};
+
+								li.appendChild(editBtn);
+								li.appendChild(saveBtn);
+								li.appendChild(cancelBtn);
+
+								// DELETE PROGRAM
+								let delBtn = document.createElement("button");
+								delBtn.textContent = "X";
+
+								delBtn.onclick = () => {
+									if (!confirm("Delete this program?")) return;
+
+									fetch("handler.php", {
+										method: "POST",
+										body: new URLSearchParams({
+											action: "delete_program",
+											program_id: program.program_id
+										})
+									})
+									.then(res => res.text())
+									.then(() => loadAllData());
+								};
+
+								li.appendChild(delBtn);
+
+								ul.appendChild(li);
+							});
+
+							schoolDiv.appendChild(ul);
+						} else {
+							let none = document.createElement("p");
+							none.textContent = "No programs.";
+							schoolDiv.appendChild(none);
+						}
+
+						container.appendChild(schoolDiv);
+					});
+				})
+				.catch(err => {
+					console.error(err);
+					document.getElementById("listContainer").innerText = "Error loading data.";
+				});
+			}
+			</script>
+			
             <h1>User Masterlist</h1>
             
             <?php if (isset($db_error)): ?>
