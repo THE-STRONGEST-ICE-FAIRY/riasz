@@ -407,3 +407,65 @@ button {
 .add-btn-box:active {
     transform: translateY(0);
 }
+
+/* --- Excel-like Mapping Table --- */
+.excel-mapping-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #c0c0c0; /* Excel-style grey border */
+}
+
+.excel-mapping-table th {
+    background-color: #e6e6e6; /* Excel header grey */
+    color: #333;
+    font-weight: 600;
+    border: 1px solid #c0c0c0;
+    padding: 8px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.excel-mapping-table td {
+    border: 1px solid #dcdcdc;
+    padding: 10px;
+    font-size: 13px;
+}
+
+/* Criteria Column (Fixed Width) */
+.criteria-col {
+    width: 40%;
+    text-align: left !important;
+}
+
+.criteria-text {
+    color: #444;
+    line-height: 1.4;
+}
+
+/* Alignment for checkboxes */
+.cell-center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Hover effect like a spreadsheet */
+.excel-mapping-table tbody tr:hover {
+    background-color: #f2f7ff;
+}
+
+/* Checkbox styling to look cleaner */
+.excel-mapping-table input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #29429c; /* RIAS Blue */
+}
+
+/* SO Header grouping */
+.so-header {
+    background-color: #d9e1f2 !important; /* Soft blue for grouping */
+    color: #29429c;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

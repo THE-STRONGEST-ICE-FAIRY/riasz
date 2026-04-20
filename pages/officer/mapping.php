@@ -88,22 +88,56 @@
                     </div>
                 </div>
 
-                <div id="SOEContent" class="mapping-view" style="display: none;">
+              <div id="SOEContent" class="mapping-view" style="display: none;">
                     <div class="panel"> 
                         <div class="panel-header">
                             <div class="panel-title">SOE Mapping</div>
                         </div>
                         
-                        <div class="view-header-actions">
-                            <button onclick="showGrid()" class="back-btn-box">
-                                ← BACK TO MENU
+                        <div class="view-header-actions" style="padding: 0 20px;">
+                            <button onclick="showGrid()" class="back-btn-box">← BACK TO MENU</button>
+                            <button class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openOutcomeModal()">
+                                + ADD COURSE OUTCOME
                             </button>
                         </div>
 
                         <div class="evaluation-container">
-                            <p>Select locations to map internships...</p>
+                            <div class="table-responsive">
+                                <table class="excel-mapping-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
+                                            <th colspan="8" class="so-header">Student Outcomes (SO)</th>
+                                        </tr>
+                                        <tr>
+                                            <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
+                                            <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="criteria-text">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <span class="criteria-text-content">Apply knowledge of mathematics and science to solve engineering problems.</span>
+                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
+                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
 
                         <div class="panel-footer-actions">
                             <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
@@ -111,23 +145,58 @@
                             <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
                         </div>
                     </div>
+                </div>
 
-                    <div id="SOMAContent" class="mapping-view" style="display: none;">
+                <div id="SOMAContent" class="mapping-view" style="display: none;">
                     <div class="panel"> 
                         <div class="panel-header">
                             <div class="panel-title">SOMA Mapping</div>
                         </div>
                         
-                        <div class="view-header-actions">
-                            <button onclick="showGrid()" class="back-btn-box">
-                                ← BACK TO MENU
+                        <div class="view-header-actions" style="padding: 0 20px;">
+                            <button onclick="showGrid()" class="back-btn-box">← BACK TO MENU</button>
+                            <button class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openOutcomeModal()">
+                                + ADD COURSE OUTCOME
                             </button>
                         </div>
 
                         <div class="evaluation-container">
-                            <p>Select locations to map internships...</p>
+                            <div class="table-responsive">
+                                <table class="excel-mapping-table">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
+                                            <th colspan="8" class="so-header">Student Outcomes (SO)</th>
+                                        </tr>
+                                        <tr>
+                                            <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
+                                            <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="criteria-text">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <span class="criteria-text-content">Apply knowledge of mathematics and science to solve engineering problems.</span>
+                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
+                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
 
                         <div class="panel-footer-actions">
                             <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
@@ -135,6 +204,25 @@
                             <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
                         </div>
                     </div>
+                </div>
+
+    <div id="outcomeModal" class="modal-overlay">
+            <div class="task-modal">
+                <span class="modal-close" onclick="closeOutcomeModal()">&times;</span>
+                <h2 id="modalTitle">Add Course Outcome</h2>
+                <input type="hidden" id="editRowIndex">
+                
+                <div class="form-row">
+                    <label>Outcome Description:</label>
+                    <textarea id="outcomeDesc" class="input-box" rows="4" placeholder="Enter course learning outcome..."></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button class="btn-cancel" onclick="closeOutcomeModal()">Cancel</button>
+                    <button class="btn-submit" id="saveOutcomeBtn" onclick="saveOutcome()">Save Outcome</button>
+                </div>
+            </div>
+        </div>
                 </div>
             </div>
 
@@ -150,125 +238,88 @@
     </footer>
     <script src="adminscript.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let editingRow = null;
-            const addMappingBtn = document.getElementById('addMappingBtn');
-            const editMappingModal = document.getElementById('editMappingModal');
-            const saveMappingBtn = document.getElementById('saveMappingBtn');
-            
-            const mappingCriteria = document.getElementById('mappingCriteria');
-            const mappingSO = document.getElementById('mappingSO');
-            const mappingCO = document.getElementById('mappingCO');
+let editingRow = null;
 
-            addMappingBtn?.addEventListener('click', () => {
-                editingRow = null;
-                document.querySelector('#editMappingModal h2').innerText = "Add Mapping";
-                saveMappingBtn.innerText = "Add Mapping";
-                mappingCriteria.value = "";
-                mappingSO.selectedIndex = 0;
-                mappingCO.selectedIndex = 0;
-                editMappingModal.classList.add('active');
-            });
-
-            document.getElementById('closeEditMappingModal')?.addEventListener('click', () => document.getElementById('editMappingModal').classList.remove('active'));
-            
-            saveMappingBtn?.addEventListener('click', () => {
-                const criteriaVal = mappingCriteria.value.trim();
-                const soVal = mappingSO.value;
-                const coVal = mappingCO.value;
-
-                if (!criteriaVal) { alert("Please enter a criteria description."); return; }
-
-                if (editingRow) {
-                    editingRow.children[0].innerText = criteriaVal;
-                    editingRow.children[1].innerText = soVal;
-                    editingRow.children[2].innerText = coVal;
-                } else {
-                    const tbody = document.querySelector('.master-table tbody');
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${criteriaVal}</td><td>${soVal}</td><td>${coVal}</td>
-                        <td>
-                            <div class="row-meatball">
-                                <button class="meatball-btn">⋮</button>
-                                <div class="meatball-drop">
-                                    <button class="edit-btn">Edit</button>
-                                    <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                </div>
-                            </div>
-                        </td>`;
-                    tbody.appendChild(tr);
-                }
-                editMappingModal.classList.remove('active');
-            });
-
-            // Meatball and Actions Logic
-            document.addEventListener('click', (e) => {
-                const isMeatball = e.target.closest('.meatball-btn');
-                if (isMeatball) {
-                    e.stopPropagation();
-                    const drop = isMeatball.nextElementSibling;
-                    const isActive = drop.classList.contains('active');
-                    document.querySelectorAll('.meatball-drop').forEach(d => d.classList.remove('active'));
-                    if (!isActive) {
-                        const rect = isMeatball.getBoundingClientRect();
-                        drop.style.position = 'fixed';
-                        drop.style.top = `${rect.bottom}px`;
-                        drop.style.left = `${rect.right - 100}px`; 
-                        drop.style.right = 'auto';
-                        drop.classList.add('active');
-                    }
-                } else {
-                    document.querySelectorAll('.meatball-drop').forEach(d => d.classList.remove('active'));
-                }
-                
-                if (e.target.closest('.remove-btn') && confirm("Are you sure you want to remove this mapping?")) {
-                    e.target.closest('tr').remove();
-                }
-                
-                if (e.target.closest('.edit-btn')) {
-                    editingRow = e.target.closest('tr');
-                    const cols = editingRow.querySelectorAll('td');
-                    document.querySelector('#editMappingModal h2').innerText = "Edit Mapping";
-                    saveMappingBtn.innerText = "Save Changes";
-                    mappingCriteria.value = cols[0].innerText;
-                    mappingSO.value = cols[1].innerText;
-                    mappingCO.value = cols[2].innerText;
-                    editMappingModal.classList.add('active');
-                }
-            });
-            
-            document.addEventListener('scroll', () => document.querySelectorAll('.meatball-drop.active').forEach(d => d.classList.remove('active')), true);
-        });
-        
-    </script>
-
-    <script>
-   function showMapping(type) {
-    document.getElementById('selectionGrid').style.display = 'none';
-    document.getElementById('newMappingBtn').style.display = 'none'; // Hide "New" button
+// 1. Modal Logic
+function openOutcomeModal(isEdit = false, btn = null) {
+    const modal = document.getElementById('outcomeModal');
+    const title = document.getElementById('modalTitle');
+    const descInput = document.getElementById('outcomeDesc');
     
-    document.querySelectorAll('.mapping-view').forEach(view => {
-        view.style.display = 'none';
-    });
+    if (isEdit) {
+        editingRow = btn.closest('tr');
+        const currentText = editingRow.querySelector('.criteria-text-content').innerText;
+        title.innerText = "Edit Course Outcome";
+        descInput.value = currentText;
+    } else {
+        editingRow = null;
+        title.innerText = "Add Course Outcome";
+        descInput.value = "";
+    }
+    modal.classList.add('active');
+}
 
-    document.getElementById(type + 'Content').style.display = 'block';
-    document.getElementById('backContainer').style.display = 'block';
+function closeOutcomeModal() {
+    document.getElementById('outcomeModal').classList.remove('active');
+}
 
-    const titles = {
-        'SOE': 'SOE Mapping',
-        'SOMA': 'SOMA Mapping'
-    };
-    document.getElementById('pageTitle').innerText = titles[type];
+// 2. Save Logic (Create & Update)
+function saveOutcome() {
+    const desc = document.getElementById('outcomeDesc').value.trim();
+    if (!desc) return alert("Please enter a description.");
+
+    if (editingRow) {
+        // UPDATE Existing Row
+        editingRow.querySelector('.criteria-text-content').innerText = desc;
+    } else {
+        // CREATE New Row
+        const tbody = document.querySelector('#SOEContent .excel-mapping-table tbody');
+        const newRow = document.createElement('tr');
+        
+        let checkboxes = '';
+        for(let i=1; i<=8; i++) {
+            checkboxes += `<td class="cell-center"><input type="checkbox"></td>`;
+        }
+
+        newRow.innerHTML = `
+            <td class="criteria-text">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span class="criteria-text-content">${desc}</span>
+                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
+                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
+                    </div>
+                </div>
+            </td>
+            ${checkboxes}
+        `;
+        tbody.appendChild(newRow);
+    }
+    closeOutcomeModal();
+}
+
+// 3. Delete Logic
+function deleteRow(btn) {
+    if (confirm("Are you sure you want to delete this outcome?")) {
+        btn.closest('tr').remove();
+    }
+}
+
+// 4. View Switching Logic
+function showMapping(type) {
+    document.getElementById('selectionGrid').style.display = 'none';
+    document.getElementById('newMappingBtn').style.display = 'none';
+    
+    document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
+    
+    const target = document.getElementById(type + 'Content');
+    if(target) target.style.display = 'block';
 }
 
 function showGrid() {
     document.getElementById('selectionGrid').style.display = 'flex';
-    document.getElementById('newMappingBtn').style.display = 'block'; // Show "New" button again
-    
+    document.getElementById('newMappingBtn').style.display = 'block';
     document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
-    document.getElementById('backContainer').style.display = 'none';
-    document.getElementById('pageTitle').innerText = 'System Mapping';
 }
 </script>
 </body>
