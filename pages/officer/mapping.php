@@ -66,25 +66,30 @@
         <main class="main-content">
             <div class="page-header">
                 <div class="date-container">
-                    <div class="huge-date">Curriculum Mapping</div>
+                    <div class="huge-date">Evaluation Forms and Outcomes Mapping</div>
                 </div>
             </div>
 
             <div class="header-actions">
                 <button id="newMappingBtn" class="add-btn-box" onclick="alert('Open New Mapping Modal')">
-                    + NEW MAPPING
+                    + NEW FILE
                 </button>
             </div>
 
             <div id="selectionGrid" class="card-grid">
                     <div class="landing-box">
                         <h2>School Of Engineering</h2>
-                        <button class="view-btn"  onclick="showMapping('SOE')">VIEW MAP</button>
+                        <button class="view-btn"  onclick="showMapping('SOE')">VIEW OUTCOMES</button>
                     </div>
 
                     <div class="landing-box" onclick="showMapping('SOMA')">
                         <h2>School Of Multimedia And Arts</h2>
-                        <button class="view-btn">VIEW MAP</button>
+                        <button class="view-btn">VIEW OUTCOMES</button>
+                    </div>
+
+                    <div class="landing-box" onclick="showMapping('EvalForm')">
+                        <h2>2025 Evaluation Form</h2>
+                        <button class="view-btn">VIEW FORM</button>
                     </div>
                 </div>
 
@@ -118,7 +123,47 @@
                                         <tr>
                                             <td class="criteria-text">
                                                 <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                                    <span class="criteria-text-content">Apply knowledge of mathematics and science to solve engineering problems.</span>
+                                                    <span class="criteria-text-content">Accomplishment of tasks/projects assigned by their respective internship companies. </span>
+                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
+                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="criteria-text">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <span class="criteria-text-content">Development of acceptable workplace behavior. </span>
+                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
+                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                            <td class="cell-center"><input type="checkbox"></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="criteria-text">
+                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                    <span class="criteria-text-content">Absorption and Employment. </span>
                                                     <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
                                                         <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
                                                         <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
@@ -206,6 +251,65 @@
                     </div>
                 </div>
 
+                <div id="EvalFormContent" class="mapping-view" style="display: none;">
+                    <div class="panel"> 
+                        <div class="panel-header">
+                            <div class="panel-title">Industry Partner Evaluation Form Builder</div>
+                        </div>
+                        
+                        <div class="view-header-actions" style="padding: 0 20px;">
+                            <button onclick="showGrid()" class="back-btn-box">← BACK TO MENU</button>
+                            <button class="add-btn-box" onclick="openOutcomeModal()">+ ADD COURSE OUTCOME</button>
+                            <button class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openEvalModal()">+ ADD EVALUATION CRITERIA</button>
+                        </div>
+
+                        <div class="evaluation-container">
+                            <div class="table-responsive">
+                                <table class="excel-mapping-table" id="evalTable">
+                                    <thead>
+                                        <tr>
+                                            <tr>
+                                                <td class="criteria-text">
+                                                    <strong>Overall Performance Improvement</strong><br>
+                                                    <small>Since previous evaluation, did the Intern’s over-all performance improve?</small>
+                                                </td>
+                                                <td class="cell-center">
+                                                    <label><input type="radio" name="improve" value="yes"> YES</label>
+                                                    <label style="margin-left:10px;"><input type="radio" name="improve" value="no"> NO</label>
+                                                </td>
+                                                <td>
+                                                    <textarea class="input-box" rows="2" placeholder="Provide justification & indicate strong/weak points"></textarea>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td class="criteria-text">
+                                                    <strong>Continued Employment/Internship</strong><br>
+                                                    <small>Would you be willing to let the Intern continue or absorb them as an employee?</small>
+                                                </td>
+                                                <td class="cell-center">
+                                                    <label><input type="radio" name="continue" value="yes"> YES</label>
+                                                    <label style="margin-left:10px;"><input type="radio" name="continue" value="no"> NO</label>
+                                                </td>
+                                                <td>
+                                                    <textarea class="input-box" rows="2" placeholder="Provide justification"></textarea>
+                                                </td>
+                                            </tr>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer-actions">
+                            <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL</button>
+                            <button type="button" class="btn-save" onclick="saveFormToDB()">SAVE FORM STRUCTURE</button>
+                        </div>
+                    </div>
+                </div>
+
     <div id="outcomeModal" class="modal-overlay">
             <div class="task-modal">
                 <span class="modal-close" onclick="closeOutcomeModal()">&times;</span>
@@ -243,6 +347,14 @@ let editingRow = null;
 // 1. Modal Logic
 function openOutcomeModal(isEdit = false, btn = null) {
     const modal = document.getElementById('outcomeModal');
+    
+    // CLEANUP: Remove the weight field if it was added by the Eval Modal
+    const weightRow = document.getElementById('weightRow');
+    if (weightRow) weightRow.remove();
+    
+    // RESET: Ensure the button points back to the standard saveOutcome
+    document.getElementById('saveOutcomeBtn').onclick = saveOutcome;
+
     const title = document.getElementById('modalTitle');
     const descInput = document.getElementById('outcomeDesc');
     
@@ -269,11 +381,12 @@ function saveOutcome() {
     if (!desc) return alert("Please enter a description.");
 
     if (editingRow) {
-        // UPDATE Existing Row
         editingRow.querySelector('.criteria-text-content').innerText = desc;
     } else {
-        // CREATE New Row
-        const tbody = document.querySelector('#SOEContent .excel-mapping-table tbody');
+        // FIX: Find which view is currently visible
+        const activeView = document.querySelector('.mapping-view[style*="display: block"]');
+        const tbody = activeView.querySelector('.excel-mapping-table tbody');
+        
         const newRow = document.createElement('tr');
         
         let checkboxes = '';
@@ -320,6 +433,73 @@ function showGrid() {
     document.getElementById('selectionGrid').style.display = 'flex';
     document.getElementById('newMappingBtn').style.display = 'block';
     document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
+}
+
+let editingEvalRow = null;
+
+function openEvalModal(isEdit = false, btn = null) {
+    const modal = document.getElementById('outcomeModal');
+    const title = document.getElementById('modalTitle');
+    const descInput = document.getElementById('outcomeDesc');
+    
+    // Ensure the Weight field exists
+    if (!document.getElementById('weightRow')) {
+        const weightHTML = `
+            <div class="form-row" id="weightRow" style="margin-top:15px;">
+                <label>Weight (%):</label>
+                <input type="number" id="criteriaWeight" class="input-box" style="width: 80px;" min="1" max="100">
+            </div>`;
+        document.querySelector('.task-modal .form-row').insertAdjacentHTML('afterend', weightHTML);
+    }
+    const weightInput = document.getElementById('criteriaWeight');
+
+    if (isEdit) {
+        editingEvalRow = btn.closest('tr');
+        title.innerText = "Edit Evaluation Criteria";
+        descInput.value = editingEvalRow.cells[0].innerText;
+        weightInput.value = parseInt(editingEvalRow.cells[1].innerText);
+    } else {
+        editingEvalRow = null;
+        title.innerText = "Add Evaluation Criteria";
+        descInput.value = "";
+        weightInput.value = "";
+    }
+
+    document.getElementById('saveOutcomeBtn').onclick = saveEvalCriteria;
+    modal.classList.add('active');
+}
+
+function saveEvalCriteria() {
+    const desc = document.getElementById('outcomeDesc').value.trim();
+    const weight = document.getElementById('criteriaWeight').value.trim();
+    
+    if (!desc || !weight) return alert("Please fill in both fields.");
+
+    if (editingEvalRow) {
+        // UPDATE
+        editingEvalRow.cells[0].innerText = desc;
+        editingEvalRow.cells[1].innerText = weight + "%";
+    } else {
+        // CREATE
+        const tbody = document.querySelector('#EvalFormContent #evalTable tbody');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td class="criteria-text">${desc}</td>
+            <td class="cell-center">${weight}%</td>
+            <td class="cell-center">
+                <button onclick="openEvalModal(true, this)" style="color: #29429c; font-weight: bold; margin-right: 10px;">EDIT</button>
+                <button onclick="deleteRow(this)" style="color: #e74c3c; font-weight: bold;">DEL</button>
+            </td>
+        `;
+        tbody.appendChild(newRow);
+    }
+    closeOutcomeModal();
+}
+
+// Ensure the "Save Form Structure" links to your PHP backend
+function saveFormToDB() {
+    // In your real app, loop through table rows and send via AJAX to a PHP saving script
+    alert('Saving evaluation structure to database...');
 }
 </script>
 </body>
