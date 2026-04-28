@@ -449,8 +449,8 @@ button {
 /* Evaluation Table Specifics */
 .rating-legend {
     text-align: right;
-    font-size: 12px;
-    color: #666;
+    font-size: 14px;
+    color: #000000;
     margin-bottom: 10px;
     letter-spacing: 1px;
 }
@@ -505,3 +505,21 @@ button {
 .btn-submit { background: #1eb972; color: #000; } /* Matches the green */
 
 .form-actions button:hover { opacity: 0.9; }
+
+.welcome-section h1 {
+    font-size: 26px; /* Slightly smaller to fit the panel aesthetic */
+    font-weight: 500;
+    color: #1e3b99; /* Dark blue from your stats value style */
+    margin-bottom: 4px;
+}
+
+.welcome-section .supervisor-name {
+    font-weight: 700;
+    color: #f1b347; /* Gold color from your top-nav */
+}
+
+.welcome-section p {
+    font-size: 14px;
+    color: #000000;
+    margin: 0;
+}

@@ -76,6 +76,13 @@
                 </div>
             </div>
 
+            <div class="panel" style="padding: 25px; margin-bottom: 20px;">
+                <div class="welcome-section">
+                    <h1>Welcome back, <span class="supervisor-name">Prof. [Name]</span>!</h1>
+                    <p>Here’s an overview of your intern assessments for today.</p>
+                </div>
+            </div>
+
             <div class="stats-row">
                 <div class="stat-card">
                     <span class="stat-label">Student Intern</span>

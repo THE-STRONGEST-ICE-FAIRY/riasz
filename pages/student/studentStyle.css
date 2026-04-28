@@ -688,7 +688,7 @@ button {
 }
 
 .form-section h3 {
-    font-size: 16px;
+    font-size: 18px;
     color: #1e3b99;
     margin-bottom: 15px;
     border-bottom: 2px solid #f1b347;
@@ -704,7 +704,7 @@ button {
 }
 
 .input-group label {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: #555;
 }
@@ -769,4 +769,68 @@ button {
 .evaluation-table .btn-action {
     padding: 6px 12px;
     font-size: 11px;
+}
+
+/* --- Compact Status Selector --- */
+.status-selector-mini {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+}
+
+.s-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #999;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Active States using your Dashboard colors */
+.s-btn.s-deployed.active { background: #27bda1; color: white; border-color: #27bda1; }
+.s-btn.s-waiting.active { background: #2e96ff; color: white; border-color: #2e96ff; }
+.s-btn.s-no-progress.active { background: #ff8a8a; color: white; border-color: #ff8a8a; }
+
+.s-btn:hover:not(.active) {
+    background: #f0f0f0;
+    border-color: #ccc;
+}
+
+/* Add this to your existing input/textarea styles in studentStyle.css */
+input, textarea, .btn-save, .btn-submit {
+    transition: all 0.3s ease;
+}
+
+/* Optional: force a specific style for disabled state if inline JS isn't enough */
+input:disabled, textarea:disabled {
+    background-color: #f5f5f5 !important;
+    border-color: #ddd !important;
+    color: #aaa !important;
+}
+
+.welcome-section h1 {
+    font-size: 26px; /* Slightly smaller to fit the panel aesthetic */
+    font-weight: 500;
+    color: #1e3b99; /* Dark blue from your stats value style */
+    margin-bottom: 4px;
+}
+
+.welcome-section .supervisor-name {
+    font-weight: 700;
+    color: #f1b347; /* Gold color from your top-nav */
+}
+
+.welcome-section p {
+    font-size: 14px;
+    color: #000000;
+    margin: 0;
 }
