@@ -490,3 +490,112 @@ button {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
+/* Add to adminstyle.css */
+.status-tag.tag-no-progress {
+    background-color: #ffe8e8;
+    color: #ff8a8a;
+}
+
+/* Ensure the sidebar active state is visible */
+.nav-item.active {
+    background-color: rgba(241, 179, 71, 0.1);
+    border-left: 4px solid #f1b347;
+    color: #29429c;
+    font-weight: bold;
+}
+
+/* Stat Panel Styling */
+.stat-panel-accent {
+    padding: 18px;
+    border-left: 5px solid #29429c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.stat-main {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.stat-number {
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+}
+
+.stat-total {
+    font-size: 14px;
+    color: #999;
+}
+
+.stat-subtext {
+    font-size: 11px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Pulsing effect for 'Active' Attendance */
+.pulse-icon {
+    color: #27bda1;
+    font-size: 10px;
+    margin-left: 8px;
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+/* Better interaction for the new controls */
+#studentSearch:focus {
+    width: 220px !important; /* Expands slightly when clicking */
+    border-color: #29429c;
+    outline: none;
+    box-shadow: 0 0 5px rgba(41, 66, 156, 0.1);
+}
+
+.filter-select {
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.filter-select:hover {
+    border-color: #f1b347;
+}
+
+.notify-btn {
+    background-color: transparent;
+    color: #29429c; /* RIAS Blue */
+    border: 1px solid #29429c;
+    padding: 5px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.notify-btn:hover {
+    background-color: #29429c;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(41, 66, 156, 0.2);
+}
+
+.notify-btn:active {
+    transform: scale(0.95);
+}
