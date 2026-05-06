@@ -370,15 +370,19 @@ document.addEventListener('DOMContentLoaded', () => {
               redirectPath = '../admin/admin.php';
               break;
             case 'executive director':
-              redirectPath = '../faculty/faculty.php';
+            case 'executive':
+              redirectPath = '../executive/_index.php';
               break;
             case 'program director':
-              redirectPath = '../faculty/faculty.php';
+            case 'program':
+              redirectPath = '../Programdi/_index.php';
               break;
             case 'internship officer':
-              redirectPath = '../faculty/faculty.php';
+            case 'officer':
+              redirectPath = '../officer/_index.php';
               break;
             case 'student intern':
+            case 'intern':
               redirectPath = '../student/student.php';
               break;
             default:
@@ -490,21 +494,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Enable Checkbox Only After Scrolling Through All Content
-  scrollableBoxes.forEach((box) => {
-    box.addEventListener('scroll', () => {
-      const isAtBottom = box.scrollTop + box.clientHeight >= box.scrollHeight;
-      if (isAtBottom) {
-        // Check if all scrollable boxes have been scrolled to the bottom
-        const allScrolled = Array.from(scrollableBoxes).every((b) =>
-          b.scrollTop + b.clientHeight >= b.scrollHeight
-        );
-        if (allScrolled) {
-          agreeCheckbox.disabled = false; // Enable the checkbox
-        }
-      }
-    });
-  });
+  // Enable Checkbox Only After Scrolling Through All Content NEW
+	function checkAllScrolled() {
+	  const allScrolled = Array.from(scrollableBoxes).every((box) => {
+		const isScrollable = box.scrollHeight > box.clientHeight;
+
+		// If not scrollable, treat it as already "scrolled"
+		if (!isScrollable) return true;
+
+		// Otherwise require actual scroll to bottom
+		return box.scrollTop + box.clientHeight >= box.scrollHeight;
+	  });
+
+	  agreeCheckbox.disabled = !allScrolled;
+	}
+
+	// Attach scroll listeners
+	scrollableBoxes.forEach((box) => {
+	  box.addEventListener('scroll', checkAllScrolled);
+	});
+
+	// Run once on load (important for zoom / already-short content)
+	checkAllScrolled();
+
+	// Optional: also rerun after layout changes (resize/zoom)
+	window.addEventListener('resize', checkAllScrolled);
 
   // Open OTP Modal (Reusing the Sign-In Modal)
   document.getElementById('receive-otp').addEventListener('click', (e) => {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 18, 2026 at 09:05 AM
+-- Generation Time: May 06, 2026 at 09:12 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -256,6 +256,13 @@ CREATE TABLE `executivedirectors` (
   `school_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `executivedirectors`
+--
+
+INSERT INTO `executivedirectors` (`exd_id`, `schooluser_id`, `school_id`) VALUES
+(8, 83, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -483,11 +490,7 @@ CREATE TABLE `passwordresets` (
 --
 
 INSERT INTO `passwordresets` (`passreset_id`, `schooluser_id`, `passreset_token`, `passreset_date_created`, `passreset_date_expiry`, `passreset_is_used`) VALUES
-(1, 1, '81d087c72bbed5107f49f6fc64ae974faca062586d7d9c2ef1972f349c796440', '2026-04-12 12:18:09', '2026-04-12 12:33:09', 0),
-(2, 1, '8abd1664d6ffd8c925347551fc3d9f03859ed6fc345dc8a17e1a8e50e709ba9c', '2026-04-12 12:21:49', '2026-04-12 12:36:49', 0),
-(3, 1, '1ab1a2b0d7b20bdb8ecfc639ec2a8988882f02c8a821d40629a43fd3317b3101', '2026-04-12 12:26:48', '2026-04-12 12:41:48', 0),
-(4, 1, '227479f26ccdaf2a79c9afc1ab345c36165481518fde1514137cc8836138d543', '2026-04-12 12:42:22', '2026-04-12 12:57:22', 0),
-(5, 1, '84fb3e9b94242d5b538cc1d134145bfbfc8b5cd391ea372ae8376d96524abbf7', '2026-04-12 12:44:53', '2026-04-12 20:59:53', 1);
+(18, 1, 'fbde5f5e78c4a922904e73a85285608f1bb688810be034741909dba0c2f0f866', '2026-05-06 09:04:42', '2026-05-06 17:19:42', 1);
 
 -- --------------------------------------------------------
 
@@ -500,6 +503,14 @@ CREATE TABLE `programdirectors` (
   `schooluser_id` int DEFAULT NULL,
   `program_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `programdirectors`
+--
+
+INSERT INTO `programdirectors` (`pd_id`, `schooluser_id`, `program_id`) VALUES
+(2, 84, 6),
+(3, 85, 7);
 
 -- --------------------------------------------------------
 
@@ -518,7 +529,9 @@ CREATE TABLE `programs` (
 --
 
 INSERT INTO `programs` (`program_id`, `program_name`, `school_id`) VALUES
-(5, 'Architecture', 1);
+(6, 'Computer Engineering', 3),
+(7, 'Electrical Engineering', 3),
+(8, 'Civil Engineering', 3);
 
 -- --------------------------------------------------------
 
@@ -583,7 +596,7 @@ CREATE TABLE `schools` (
 --
 
 INSERT INTO `schools` (`school_id`, `school_name`) VALUES
-(1, 'Architecture'),
+(14, 'Architecture'),
 (3, 'Engineering'),
 (13, 'Management');
 
@@ -605,7 +618,11 @@ CREATE TABLE `schoolusers` (
 --
 
 INSERT INTO `schoolusers` (`schooluser_id`, `user_id`, `schooluser_given_id`, `schooluser_password`) VALUES
-(1, 1, 'A001', '$2y$10$arJA9x3VKuNTGNEkPwRI4OoNOfp4vy5/fiT4LazXzIDZfMi37HGpy');
+(1, 1, 'A001', '$2y$10$XLZN8DuRQkaQqjgAYILRneHPKxWVpGRhN4sCMVo4DoJsvcRQw2omG'),
+(82, 105, 'inteoffi1', '$2y$10$P9VVfi7ltIG78hlI0VhQBunnH3Cb8TGv/T9B3/eFZfXxiDqOfVnwu'),
+(83, 106, 'engiexe1', '$2y$10$VdROczK2HfdTIKjWcdEhC.oOnc7EflU2brOP/BmXSh11WMUW5Z70S'),
+(84, 107, 'cpeprog1', '$2y$10$z5j7Skvqf.A3VA79wPDlQenyH1javhq7oMGiWLbssadtLOAwcWnWq'),
+(85, 108, 'eceprog1', '$2y$10$gu8sasqfrgyiCwGeDm0cqegmb1j5brFTl5ttf7u0d92Ko00RdkTIe');
 
 -- --------------------------------------------------------
 
@@ -726,7 +743,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_first_name`, `user_last_name`, `user_email`, `user_date_created`, `user_date_updated`, `user_role`, `user_is_archived`) VALUES
-(1, 'Addy', 'Min', 'addymin@apc.edu.ph', '2026-04-12 11:09:09', '2026-04-12 11:11:14', 'admin', 0);
+(1, 'Addy', 'Min', 'addymin@apc.edu.ph', '2026-04-12 11:09:09', '2026-04-12 11:11:14', 'admin', 0),
+(105, 'Inte', 'Offi', 'inteoffi@apc.edu.ph', '2026-05-06 03:45:53', '2026-05-06 03:45:53', 'officer', 0),
+(106, 'Engi', 'Exe', 'engiexe@apc.edu.ph', '2026-05-06 04:00:50', '2026-05-06 04:00:50', 'executive', 0),
+(107, 'Comp Engi', 'Prog', 'cpeprog@apc.edu.ph', '2026-05-06 04:14:44', '2026-05-06 04:14:44', 'program', 0),
+(108, 'Elec Engi', 'Prog', 'eceprog@apc.edu.ph', '2026-05-06 04:18:02', '2026-05-06 04:18:02', 'program', 0);
 
 --
 -- Indexes for dumped tables
@@ -851,8 +872,8 @@ ALTER TABLE `events`
 --
 ALTER TABLE `executivedirectors`
   ADD PRIMARY KEY (`exd_id`),
-  ADD KEY `schooluser_id` (`schooluser_id`),
-  ADD KEY `school_id` (`school_id`);
+  ADD KEY `school_id` (`school_id`),
+  ADD KEY `executivedirectors_ibfk_1` (`schooluser_id`);
 
 --
 -- Indexes for table `feedback`
@@ -964,15 +985,15 @@ ALTER TABLE `onetimepasswords`
 --
 ALTER TABLE `passwordresets`
   ADD PRIMARY KEY (`passreset_id`),
-  ADD KEY `schooluser_id` (`schooluser_id`);
+  ADD KEY `passwordresets_ibfk_1` (`schooluser_id`);
 
 --
 -- Indexes for table `programdirectors`
 --
 ALTER TABLE `programdirectors`
   ADD PRIMARY KEY (`pd_id`),
-  ADD KEY `schooluser_id` (`schooluser_id`),
-  ADD KEY `program_id` (`program_id`);
+  ADD KEY `program_id` (`program_id`),
+  ADD KEY `programdirectors_ibfk_1` (`schooluser_id`);
 
 --
 -- Indexes for table `programs`
@@ -1014,7 +1035,7 @@ ALTER TABLE `schools`
 --
 ALTER TABLE `schoolusers`
   ADD PRIMARY KEY (`schooluser_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `schoolusers_ibfk_1` (`user_id`);
 
 --
 -- Indexes for table `sendassessments`
@@ -1177,7 +1198,7 @@ ALTER TABLE `events`
 -- AUTO_INCREMENT for table `executivedirectors`
 --
 ALTER TABLE `executivedirectors`
-  MODIFY `exd_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `exd_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -1261,25 +1282,25 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `onetimepasswords`
 --
 ALTER TABLE `onetimepasswords`
-  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `passwordresets`
 --
 ALTER TABLE `passwordresets`
-  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `programdirectors`
 --
 ALTER TABLE `programdirectors`
-  MODIFY `pd_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `pd_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `programs`
 --
 ALTER TABLE `programs`
-  MODIFY `program_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `program_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `reportformats`
@@ -1303,13 +1324,13 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `school_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `school_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `schoolusers`
 --
 ALTER TABLE `schoolusers`
-  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT for table `sendassessments`
@@ -1357,7 +1378,7 @@ ALTER TABLE `userlogs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- Constraints for dumped tables
@@ -1455,7 +1476,7 @@ ALTER TABLE `events`
 -- Constraints for table `executivedirectors`
 --
 ALTER TABLE `executivedirectors`
-  ADD CONSTRAINT `executivedirectors_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`),
+  ADD CONSTRAINT `executivedirectors_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `executivedirectors_ibfk_2` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`);
 
 --
@@ -1543,13 +1564,13 @@ ALTER TABLE `onetimepasswords`
 -- Constraints for table `passwordresets`
 --
 ALTER TABLE `passwordresets`
-  ADD CONSTRAINT `passwordresets_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`);
+  ADD CONSTRAINT `passwordresets_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `programdirectors`
 --
 ALTER TABLE `programdirectors`
-  ADD CONSTRAINT `programdirectors_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`),
+  ADD CONSTRAINT `programdirectors_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `programdirectors_ibfk_2` FOREIGN KEY (`program_id`) REFERENCES `programs` (`program_id`);
 
 --
@@ -1580,7 +1601,7 @@ ALTER TABLE `reports`
 -- Constraints for table `schoolusers`
 --
 ALTER TABLE `schoolusers`
-  ADD CONSTRAINT `schoolusers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `schoolusers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `sendassessments`

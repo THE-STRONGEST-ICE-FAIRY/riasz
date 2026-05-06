@@ -28,7 +28,12 @@ try {
     }
 
     // Find user
-    $stmt = $conn->prepare("SELECT user_id FROM users WHERE user_email = ?");
+    $stmt = $conn->prepare("
+		SELECT s.schooluser_id
+		FROM users u
+		JOIN schoolusers s ON s.user_id = u.user_id
+		WHERE u.user_email = ?
+	");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -46,7 +51,7 @@ try {
         (schooluser_id, otp_code, otp_date_created, otp_date_expiry, otp_attempts)
         VALUES (?, ?, NOW(), ?, 0)
     ");
-    $insert->execute([$user['user_id'], $otp, $expiry]);
+    $insert->execute([$user['schooluser_id'], $otp, $expiry]);
 
     // MAIL via Mailpit
     $mail = new PHPMailer(true);

@@ -1,37 +1,5 @@
 <?php
 require '../../utilities/database/database.php';
-
-// Fetch users for the Masterlist section
-$users = [];
-try {
-    $stmt = $conn->query("SELECT user_id, user_first_name, user_last_name, user_email, user_role, user_is_archived, user_date_created FROM users");
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    $db_error = "Could not fetch users: " . $e->getMessage();
-}
-
-// Fetch Schools and Programs for the new visualization
-$schoolsData = [];
-try {
-    // Fetch all schools
-    $schoolStmt = $conn->query("SELECT * FROM schools ORDER BY school_name ASC");
-    $tempSchools = $schoolStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Fetch all programs
-    $programStmt = $conn->query("SELECT * FROM programs ORDER BY program_name ASC");
-    $tempPrograms = $programStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Organize programs under schools
-    foreach ($tempSchools as $school) {
-        $schoolId = $school['school_id'];
-        $school['programs'] = array_filter($tempPrograms, function($p) use ($schoolId) {
-            return $p['school_id'] == $schoolId;
-        });
-        $schoolsData[] = $school;
-    }
-} catch (Exception $e) {
-    $db_error = "Could not fetch schools/programs: " . $e->getMessage();
-}
 ?>
 
 <!DOCTYPE html>
@@ -734,6 +702,8 @@ try {
 				const schoolForm = document.getElementById("schoolForm");
 				if (schoolForm) {
 					schoolForm.addEventListener("submit", function(e) {
+						if (!confirm("Add this school?")) return;
+					
 						e.preventDefault();
 
 						let formData = new FormData(this);
@@ -757,6 +727,8 @@ try {
 				const programForm = document.getElementById("programForm");
 				if (programForm) {
 					programForm.addEventListener("submit", function(e) {
+						if (!confirm("Add this program?")) return;
+					
 						e.preventDefault();
 
 						let formData = new FormData(this);
@@ -1035,10 +1007,209 @@ try {
 					document.getElementById("listContainer").innerText = "Error loading data.";
 				});
 			}
+
+			loadSchools();
+			loadAllData();
+			</script>
+			
+			<h3>Add User</h3>
+			
+			<!-- User Creation Form -->
+			<form id="userForm" action="createuser.php" method="POST" onsubmit="handleFormSubmit(event)">
+				<label for="user_first_name">First Name:</label>
+				<input type="text" id="user_first_name" name="user_first_name" required><br><br>
+
+				<label for="user_last_name">Last Name:</label>
+				<input type="text" id="user_last_name" name="user_last_name" required><br><br>
+
+				<label for="user_email">Email:</label>
+				<input type="email" id="user_email" name="user_email" required><br><br>
+
+				<label for="schooluser_given_id">Given ID:</label>
+				<input type="text" id="schooluser_given_id" name="schooluser_given_id" required><br><br>
+
+				<label for="user_role">Role:</label>
+				<select id="user_role" name="user_role" required>
+					<option value="officer">Officer</option>
+					<option value="program">Program</option>
+					<option value="executive">Executive</option>
+				</select><br><br>
+
+				<div id="schoolDropdownContainer" style="display: none;">
+					<label for="school_id">School:</label>
+					<select id="school_id" name="school_id" disabled>
+						<!-- Schools will be dynamically loaded here -->
+					</select><br><br>
+				</div>
+
+				<div id="programDropdownContainer" style="display: none;">
+					<label for="program_id">Program:</label>
+					<select id="program_id" name="program_id" disabled>
+						<!-- Programs will be dynamically loaded here -->
+					</select><br><br>
+				</div>
+
+				<input type="submit" value="Create User">
+			</form>
+
+			<script>
+			function handleFormSubmit(event) {
+				event.preventDefault();  // Prevent form from submitting normally
+
+				const formData = new FormData(event.target);  // Collect form data
+				
+				fetch('createuser.php', {
+				  method: 'POST',
+				  body: formData
+				})
+				.then(response => { if (response.ok) {  // Check if the response status is OK (200)
+					console.log('User created successfully!');
+					event.target.reset();
+					reloadUserTable();
+					updateDropdowns();
+					alert('User created successfully.');
+				  } else {
+					console.error('Error creating user:', response.statusText);
+					alert('Oops! Something went wrong.');
+				  }
+				});
+		    }
+				
+			let role;
+			
+			function updateDropdowns() {
+				role = document.getElementById('user_role').value;
+				console.log(role);
+				
+				// Hide all dropdowns initially and disable them
+				document.getElementById('schoolDropdownContainer').style.display = 'none';
+				document.getElementById('programDropdownContainer').style.display = 'none';
+				disableRequiredFields();
+
+				if (role === 'executive') {
+					// Show school dropdown for Executive role
+					document.getElementById('schoolDropdownContainer').style.display = 'block';
+					loadSchools(); // Function to load schools
+				} else if (role === 'program') {
+					// Show school and program dropdown for Program role
+					document.getElementById('schoolDropdownContainer').style.display = 'block';
+					document.getElementById('programDropdownContainer').style.display = 'block';
+					loadSchools(); // Function to load schools
+				}
+			}
+			
+			document.getElementById('user_role').addEventListener('change', function() {
+				updateDropdowns();
+			});
+
+			// Function to disable required fields when they are not visible
+			function disableRequiredFields() {
+				const programSelect = document.getElementById('program_id');
+				const schoolSelect = document.getElementById('school_id');
+				
+				// Disable the required fields and remove from validation
+				programSelect.disabled = true;
+				schoolSelect.disabled = true;
+
+				// Remove 'required' attribute to prevent validation errors
+				programSelect.removeAttribute('required');
+				schoolSelect.removeAttribute('required');
+				
+				// Hide dropdowns by setting display to none
+				document.getElementById('schoolDropdownContainer').style.display = 'none';
+				document.getElementById('programDropdownContainer').style.display = 'none';
+			}
+
+			// Function to load schools
+			function loadSchools() {
+				const xhr = new XMLHttpRequest();
+				xhr.open('GET', 'createuser.php?action=load_schools', true);
+				xhr.onload = function() {
+					if (xhr.status === 200) {
+						const schools = JSON.parse(xhr.responseText);
+						const schoolSelect = document.getElementById('school_id');
+						schoolSelect.innerHTML = '<option value="">Select a School</option>'; // Clear previous options
+
+						schools.forEach(function(school) {
+							const option = document.createElement('option');
+							option.value = school.school_id;
+							option.textContent = school.school_name;
+							schoolSelect.appendChild(option);
+						});
+
+						// Re-enable the school select and set it as required if visible
+						if (document.getElementById('schoolDropdownContainer').style.display === 'block') {
+							schoolSelect.disabled = false;
+							schoolSelect.required = true;
+							console.log(role);
+							if (role == 'program') schoolSelect.addEventListener('change', loadPrograms);
+						}
+					}
+				};
+				xhr.send();
+			}
+
+			// Function to load programs for the selected school
+			function loadPrograms() {
+				if (role == 'executive') {
+					document.getElementById('school_id').removeEventListener('change', loadPrograms);
+					return;
+				}
+				
+				const school_id = document.getElementById('school_id').value;
+				
+				if (!school_id) {
+					return;
+				}
+				
+				const xhr = new XMLHttpRequest();
+				xhr.open('GET', 'createuser.php?action=load_programs&school_id=' + school_id, true);
+				xhr.onload = function() {
+					if (xhr.status === 200) {
+						const programs = JSON.parse(xhr.responseText);
+						const programSelect = document.getElementById('program_id');
+						programSelect.innerHTML = '<option value="">Select a Program</option>'; // Clear previous options
+
+						if (programs.length === 0) {
+							// If no programs are found, disable the program select dropdown
+							programSelect.disabled = true;
+							programSelect.removeAttribute('required');
+						} else {
+							// Populate program options
+							programs.forEach(function(program) {
+								const option = document.createElement('option');
+								option.value = program.program_id;
+								option.textContent = program.program_name;
+								programSelect.appendChild(option);
+							});
+							// Enable the dropdown if programs are found
+							programSelect.disabled = false;
+							programSelect.required = true;
+						}
+					}
+				};
+				xhr.send();
+			}
 			</script>
 			
             <h1>User Masterlist</h1>
-            
+			
+            <button class="refresh-btn" onclick="reloadUserTable()">Refresh Table</button>
+
+			<script>
+				function reloadUserTable() {
+					fetch('getUserTable.php') // The PHP script that will return the updated user table HTML
+						.then(response => response.text())
+						.then(data => {
+							document.querySelector('.table-container table').innerHTML = data;
+						})
+						.catch(error => console.error('Error:', error));
+				}
+
+				// Optionally, you can trigger the reload on page load to populate the table initially
+				window.onload = reloadUserTable;
+			</script>
+			
             <?php if (isset($db_error)): ?>
                 <div style="background: #fef2f2; border: 1px solid #fee2e2; color: #991b1b; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
                     <?php echo $db_error; ?>
@@ -1100,6 +1271,17 @@ try {
                 </table>
             </div>
         
+			<script>
+			function reloadUserTable() {
+				fetch('getusertable.php') // The PHP script that will return the updated user table HTML
+					.then(response => response.text())
+					.then(data => {
+						document.querySelector('.table-container table').innerHTML = data;
+					})
+					.catch(error => console.error('Error:', error));
+			}
+			</script>
+		
 			<?php
 				// get all tables
 				$tables = $conn->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
@@ -1231,7 +1413,7 @@ try {
         });
 
         function handleLogout() {
-            window.location.replace('../login/login.php');
+            window.location.replace('../login_be/login.php');
         }
 
         window.addEventListener('resize', () => updateLayout(isCollapsed));
