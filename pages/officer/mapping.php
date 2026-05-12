@@ -310,6 +310,11 @@
                         <div class="panel-footer-actions">
                             <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL</button>
                             <button type="button" class="btn-save" onclick="saveFormToDB()">SAVE FORM STRUCTURE</button>
+                            <button type="button" class="btn-save" 
+                                    style="background-color: #29429c; color: white; margin-right: 10px;" 
+                                    onclick="openPreview()">
+                                PREVIEW FINAL LOOK
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -505,6 +510,78 @@ function saveFormToDB() {
     // In your real app, loop through table rows and send via AJAX to a PHP saving script
     alert('Saving evaluation structure to database...');
 }
+
+function openPreview() {
+    const previewContent = document.getElementById('previewContent');
+    // Select the rows from your existing mapping table (evalTable)
+    const mappedRows = document.querySelectorAll('#evalTable tbody tr');
+    
+    previewContent.innerHTML = ''; // Clear previous preview
+
+    if (mappedRows.length === 0) {
+        previewContent.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #999;">No criteria mapped yet. Add items to see the preview.</td></tr>';
+    } else {
+        mappedRows.forEach(row => {
+            const criteriaDesc = row.cells[0].innerText;
+            const weight = row.cells[1].innerText;
+            
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid #eee";
+            tr.innerHTML = `
+                <td style="padding: 15px; text-align: left;">
+                    <div style="font-weight: 500;">${criteriaDesc}</div>
+                    <div style="font-size: 11px; color: #29429c;">Weight: ${weight}</div>
+                </td>
+                <td style="text-align: center;"><input type="radio" disabled></td>
+                <td style="text-align: center;"><input type="radio" disabled></td>
+                <td style="text-align: center;"><input type="radio" disabled></td>
+                <td style="text-align: center;"><input type="radio" disabled></td>
+                <td style="text-align: center;"><input type="radio" disabled></td>
+            `;
+            previewContent.appendChild(tr);
+        });
+    }
+
+    document.getElementById('previewModal').classList.add('active');
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.remove('active');
+}
 </script>
+    <div class="modal-overlay" id="previewModal">
+        <div class="task-modal" style="max-width: 900px; width: 95%; padding: 0; overflow: hidden;">
+            <div class="modal-header" style="padding: 20px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="color: #29429c; margin: 0;">Industry Professor View Preview</h2>
+                <button class="close-btn" onclick="closePreview()" style="font-size: 24px; background: none; border: none; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div class="modal-body" style="padding: 30px; max-height: 70vh; overflow-y: auto;">
+                <div style="margin-bottom: 20px; border-left: 4px solid #f1b347; padding-left: 15px;">
+                    <h3 style="margin: 0;">Student Internship Performance Evaluation</h3>
+                    <p style="color: #666; font-size: 13px;">Rating Scale: 5 (Excellent) to 1 (Poor)</p>
+                </div>
+
+                <table class="preview-eval-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="background-color: #29429c; color: white;">
+                            <th style="padding: 12px; text-align: left; width: 60%;">Performance Criteria</th>
+                            <th style="padding: 12px; text-align: center;">1</th>
+                            <th style="padding: 12px; text-align: center;">2</th>
+                            <th style="padding: 12px; text-align: center;">3</th>
+                            <th style="padding: 12px; text-align: center;">4</th>
+                            <th style="padding: 12px; text-align: center;">5</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewContent">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer" style="padding: 15px 25px; background: #f8f9fa; border-top: 1px solid #dee2e6; text-align: right;">
+                <button class="btn-cancel" onclick="closePreview()" style="padding: 10px 20px; background: #6c757d; color: white; border-radius: 4px; border: none;">CLOSE PREVIEW</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
