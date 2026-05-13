@@ -65,32 +65,7 @@ try {
 				}
 			}
 
-			$redirect = "";
-			switch ($user['user_role']) {
-				case 'admin':
-					$redirect = "../admin/admin.php";
-					break;
-
-				case 'officer':
-					$redirect = "../officer/_index.php";
-					break;
-
-				case 'executive':
-					$redirect = "../executive/executive.php";
-					break;
-
-				case 'program':
-					$redirect = "../Programdi/_index.php";
-					break;
-
-				case 'intern':
-					$redirect = "../student/student.php";
-					break;
-
-				default:
-					$redirect = "/login.php";
-					break;
-			}
+			$redirect = roleswitch($user['user_role']);
 
 			echo json_encode([
 				"status" => "success",
@@ -282,32 +257,7 @@ try {
 			$del = $conn->prepare("DELETE FROM onetimepasswords WHERE otp_id = ?");
 			$del->execute([$data['otp_id']]);
 
-			$redirect = "";
-			switch ($data['user_role']) {
-				case 'admin':
-					$redirect = "../admin/admin.php";
-					break;
-
-				case 'officer':
-					$redirect = "../officer/_index.php";
-					break;
-
-				case 'executive':
-					$redirect = "../executive/executive.php";
-					break;
-
-				case 'program':
-					$redirect = "../Programdi/_index.php";
-					break;
-
-				case 'intern':
-					$redirect = "../student/student.php";
-					break;
-
-				default:
-					$redirect = "/login.php";
-					break;
-			}
+			$redirect = roleswitch($data['user_role']);
 
 			echo json_encode([
 				"message" => "OTP verified successfully",
@@ -363,7 +313,7 @@ try {
 			$stmt->execute([$schooluser_id, $token, $created, $expiry]);
 
 			// 4. build reset link
-			$resetLink = "http://localhost/pages/login_be/reset.php?token=" . $token;
+			$resetLink = "http://localhost/pages/login/reset.php?token=" . $token;
 
 			// 5. send email
 			$mail = new PHPMailer(true);
@@ -414,4 +364,35 @@ catch (Exception $e) {
         "status" => "error",
         "message" => "Server error: " . $e->getMessage()
     ]);
+}
+
+function roleswitch($role) {
+	$redirect = '';
+	
+	switch ($role) {
+		case 'admin':
+			$redirect = "../admin/admin.php";
+			break;
+
+		case 'officer':
+			$redirect = "../officer/officer.php";
+			break;
+
+		case 'executive':
+			$redirect = "../executive/executive.php";
+			break;
+
+		case 'program':
+			$redirect = "../Programdi/_index.php";
+			break;
+
+		case 'intern':
+			$redirect = "../student/student.php";
+			break;
+
+		default:
+			$redirect = "/login.php";
+			break;
+	}
+    return $redirect;
 }

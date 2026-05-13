@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 06, 2026 at 09:12 AM
+-- Generation Time: May 20, 2026 at 03:03 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `accomplishmentlogs` (
   `acclog_id` int NOT NULL,
   `accomplishment_id` int DEFAULT NULL,
-  `acclog_text` text COLLATE utf8mb4_general_ci
+  `acclog_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -42,10 +42,10 @@ CREATE TABLE `accomplishmentlogs` (
 CREATE TABLE `accomplishmentreports` (
   `accreport_id` int NOT NULL,
   `internship_id` int DEFAULT NULL,
-  `accrep_month` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `accrep_position` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `accrep_filename` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `accrep_file_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `accrep_month` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `accrep_position` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `accrep_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `accrep_file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `accrep_date_uploaded` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -58,7 +58,7 @@ CREATE TABLE `accomplishmentreports` (
 CREATE TABLE `assessmentcontents` (
   `assessment_content_id` int NOT NULL,
   `assessment_id` int DEFAULT NULL,
-  `ass_content_question` text COLLATE utf8mb4_general_ci
+  `ass_content_question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -69,7 +69,7 @@ CREATE TABLE `assessmentcontents` (
 
 CREATE TABLE `assessmentfeedback` (
   `afeedback_content_id` int NOT NULL,
-  `afeedback_question` text COLLATE utf8mb4_general_ci
+  `afeedback_question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -95,7 +95,7 @@ CREATE TABLE `assessments` (
   `assessment_id` int NOT NULL,
   `io_id` int DEFAULT NULL,
   `ass_version_number` int DEFAULT NULL,
-  `ass_version_comments` text COLLATE utf8mb4_general_ci,
+  `ass_version_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `ass_date_created` datetime DEFAULT NULL,
   `ass_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -123,10 +123,10 @@ CREATE TABLE `attendancelogs` (
 CREATE TABLE `attendancereports` (
   `attrep_id` int NOT NULL,
   `internship_id` int DEFAULT NULL,
-  `attrep_month` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `attrep_position` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `attrep_filename` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `attrep_file_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `attrep_month` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `attrep_position` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `attrep_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `attrep_file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `attrep_date_uploaded` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -139,12 +139,12 @@ CREATE TABLE `attendancereports` (
 CREATE TABLE `companies` (
   `company_id` int NOT NULL,
   `company_date_added` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `company_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `company_email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `company_website` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `company_address` text COLLATE utf8mb4_general_ci,
+  `company_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `company_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `intern_allowance` decimal(15,2) DEFAULT NULL,
-  `partnership_status` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `partnership_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `max_internslots` int DEFAULT NULL,
   `revenue_growth` decimal(15,2) DEFAULT NULL,
   `profit_margins` decimal(15,2) DEFAULT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE `courseoutcomes` (
   `co_id` int NOT NULL,
   `io_id` int DEFAULT NULL,
   `co_version_number` int DEFAULT NULL,
-  `co_version_comments` text COLLATE utf8mb4_general_ci,
+  `co_version_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `co_date_created` datetime DEFAULT NULL,
   `co_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -188,7 +188,7 @@ CREATE TABLE `courseoutcomesassessments` (
 CREATE TABLE `courseoutcomescontents` (
   `co_content_id` int NOT NULL,
   `co_id` int DEFAULT NULL,
-  `co_content_text` text COLLATE utf8mb4_general_ci
+  `co_content_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -211,7 +211,7 @@ CREATE TABLE `courseoutcomesstudentoutcomes` (
 
 CREATE TABLE `departments` (
   `department_id` int NOT NULL,
-  `department_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `department_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `company_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -240,8 +240,8 @@ CREATE TABLE `events` (
   `event_date` date DEFAULT NULL,
   `event_year` int DEFAULT NULL,
   `event_intern_year` int DEFAULT NULL,
-  `event_title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `event_description` text COLLATE utf8mb4_general_ci
+  `event_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `event_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -273,7 +273,7 @@ CREATE TABLE `feedback` (
   `feedback_id` int NOT NULL,
   `internship_id` int DEFAULT NULL,
   `afeedback_content_id` int DEFAULT NULL,
-  `feedback_answer` text COLLATE utf8mb4_general_ci,
+  `feedback_answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `feedback_yesno` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -287,7 +287,7 @@ CREATE TABLE `finalnarratives` (
   `finalnarrative_id` int NOT NULL,
   `finalreport_id` int DEFAULT NULL,
   `fp_id` int DEFAULT NULL,
-  `finalnarrative_answer` text COLLATE utf8mb4_general_ci
+  `finalnarrative_answer` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -298,7 +298,7 @@ CREATE TABLE `finalnarratives` (
 
 CREATE TABLE `finalpapercontents` (
   `fp_id` int NOT NULL,
-  `fp_content_question` text COLLATE utf8mb4_general_ci
+  `fp_content_question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -311,10 +311,10 @@ CREATE TABLE `finalpapers` (
   `fp_id` int NOT NULL,
   `io_id` int DEFAULT NULL,
   `fp_version_number` int DEFAULT NULL,
-  `fp_version_comments` text COLLATE utf8mb4_general_ci,
+  `fp_version_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `fp_date_created` datetime DEFAULT NULL,
-  `fp_filename` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `fp_file_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `fp_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `fp_file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -327,9 +327,9 @@ CREATE TABLE `finalpapers` (
 CREATE TABLE `finalreports` (
   `finalreport_id` int NOT NULL,
   `internship_id` int DEFAULT NULL,
-  `finalreport_specialization` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `finalreport_filename` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `finalreport_file_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `finalreport_specialization` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `finalreport_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `finalreport_file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `finalreport_date_uploaded` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -344,12 +344,21 @@ CREATE TABLE `interns` (
   `schooluser_id` int DEFAULT NULL,
   `program_id` int DEFAULT NULL,
   `intern_birthdate` date DEFAULT NULL,
-  `intern_gender` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `intern_city` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `intern_province_or_state` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `intern_postal_code` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `intern_country` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `intern_gender` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `intern_city` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `intern_province_or_state` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `intern_postal_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `intern_country` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `interns`
+--
+
+INSERT INTO `interns` (`intern_id`, `schooluser_id`, `program_id`, `intern_birthdate`, `intern_gender`, `intern_city`, `intern_province_or_state`, `intern_postal_code`, `intern_country`) VALUES
+(3, 90, 6, '2004-05-12', 'Male', 'Vancouver', 'BC', 'V6B 1P1', 'Canada'),
+(4, 91, 8, '2003-11-20', 'Female', 'New York', 'NY', '10001', 'USA'),
+(5, 92, 7, '2005-02-28', 'Male', 'Toronto', 'ON', 'M5H 2N2', 'Canada');
 
 -- --------------------------------------------------------
 
@@ -391,7 +400,7 @@ CREATE TABLE `internships` (
   `internship_year` int DEFAULT NULL,
   `internship_date_started` date DEFAULT NULL,
   `internship_date_ended` date DEFAULT NULL,
-  `internship_job_role` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `internship_job_role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -405,7 +414,7 @@ CREATE TABLE `mapping` (
   `coassessment_id` int DEFAULT NULL,
   `coso_id` int DEFAULT NULL,
   `map_version_number` int DEFAULT NULL,
-  `map_version_comments` text COLLATE utf8mb4_general_ci,
+  `map_version_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `map_date_created` datetime DEFAULT NULL,
   `map_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -451,8 +460,8 @@ CREATE TABLE `notifications` (
   `notification_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `notif_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `notif_type` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `notif_message` text COLLATE utf8mb4_general_ci
+  `notif_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `notif_message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -464,7 +473,7 @@ CREATE TABLE `notifications` (
 CREATE TABLE `onetimepasswords` (
   `otp_id` int NOT NULL,
   `schooluser_id` int DEFAULT NULL,
-  `otp_code` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `otp_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `otp_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `otp_date_expiry` datetime DEFAULT NULL,
   `otp_attempts` int DEFAULT '0'
@@ -479,7 +488,7 @@ CREATE TABLE `onetimepasswords` (
 CREATE TABLE `passwordresets` (
   `passreset_id` int NOT NULL,
   `schooluser_id` int DEFAULT NULL,
-  `passreset_token` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `passreset_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `passreset_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `passreset_date_expiry` datetime DEFAULT NULL,
   `passreset_is_used` tinyint(1) DEFAULT '0'
@@ -490,7 +499,9 @@ CREATE TABLE `passwordresets` (
 --
 
 INSERT INTO `passwordresets` (`passreset_id`, `schooluser_id`, `passreset_token`, `passreset_date_created`, `passreset_date_expiry`, `passreset_is_used`) VALUES
-(18, 1, 'fbde5f5e78c4a922904e73a85285608f1bb688810be034741909dba0c2f0f866', '2026-05-06 09:04:42', '2026-05-06 17:19:42', 1);
+(23, 90, '51360664fdeb44fcf269663837d9a595b92956977032b3dd6d7f04e7106c5790', '2026-05-13 10:44:27', '2026-05-14 10:44:27', 1),
+(24, 91, '3d5fd1b285615ab4978be7b29beb0e973193667a5fff5f03f65e10b0a81d0536', '2026-05-13 10:44:27', '2026-05-14 10:44:27', 1),
+(25, 92, '8f1a73ee3e5304a2e310f7f2741b318f1fe0d03de7a8f66e98efbccce6501a4a', '2026-05-13 10:44:27', '2026-05-13 18:45:27', 0);
 
 -- --------------------------------------------------------
 
@@ -520,7 +531,7 @@ INSERT INTO `programdirectors` (`pd_id`, `schooluser_id`, `program_id`) VALUES
 
 CREATE TABLE `programs` (
   `program_id` int NOT NULL,
-  `program_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `program_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `school_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -543,9 +554,9 @@ CREATE TABLE `reportformats` (
   `reportformat_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `reportf_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `report_title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `report_description` text COLLATE utf8mb4_general_ci,
-  `report_template` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `report_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `report_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `report_template` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `report_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -558,7 +569,7 @@ CREATE TABLE `reportformats` (
 CREATE TABLE `reportparameters` (
   `reportparam_id` int NOT NULL,
   `reportformat_id` int DEFAULT NULL,
-  `report_parameter` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `report_parameter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -569,13 +580,13 @@ CREATE TABLE `reportparameters` (
 
 CREATE TABLE `reports` (
   `report_id` int NOT NULL,
-  `report_title` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `report_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `report_year` int DEFAULT NULL,
   `report_intern_year` int DEFAULT NULL,
-  `report_filename` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `report_file_path` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `report_filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `report_file_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `report_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `report_remarks_text` text COLLATE utf8mb4_general_ci,
+  `report_remarks_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `io_id` int DEFAULT NULL,
   `report_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -588,7 +599,7 @@ CREATE TABLE `reports` (
 
 CREATE TABLE `schools` (
   `school_id` int NOT NULL,
-  `school_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `school_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -609,8 +620,8 @@ INSERT INTO `schools` (`school_id`, `school_name`) VALUES
 CREATE TABLE `schoolusers` (
   `schooluser_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
-  `schooluser_given_id` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `schooluser_password` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `schooluser_given_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `schooluser_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -622,7 +633,10 @@ INSERT INTO `schoolusers` (`schooluser_id`, `user_id`, `schooluser_given_id`, `s
 (82, 105, 'inteoffi1', '$2y$10$P9VVfi7ltIG78hlI0VhQBunnH3Cb8TGv/T9B3/eFZfXxiDqOfVnwu'),
 (83, 106, 'engiexe1', '$2y$10$VdROczK2HfdTIKjWcdEhC.oOnc7EflU2brOP/BmXSh11WMUW5Z70S'),
 (84, 107, 'cpeprog1', '$2y$10$z5j7Skvqf.A3VA79wPDlQenyH1javhq7oMGiWLbssadtLOAwcWnWq'),
-(85, 108, 'eceprog1', '$2y$10$gu8sasqfrgyiCwGeDm0cqegmb1j5brFTl5ttf7u0d92Ko00RdkTIe');
+(85, 108, 'eceprog1', '$2y$10$gu8sasqfrgyiCwGeDm0cqegmb1j5brFTl5ttf7u0d92Ko00RdkTIe'),
+(90, 114, 'STU-9921', '$2y$10$eePwhaM4YLtNNTs2ySfj8.olqXfuTR8SvUjZus8UAI0btK2mSavBO'),
+(91, 115, '2023-8842', '$2y$10$qwfcvRCG6lyyGXBqkkUUte/q6zscna/Xwo7i/YijOWIec2.Q53Fym'),
+(92, 116, 'MT-00451', NULL);
 
 -- --------------------------------------------------------
 
@@ -635,7 +649,7 @@ CREATE TABLE `sendassessments` (
   `internship_id` int DEFAULT NULL,
   `sendass_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `sendass_date` date DEFAULT NULL,
-  `sendass_token` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+  `sendass_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -648,8 +662,8 @@ CREATE TABLE `statuses` (
   `status_id` int NOT NULL,
   `internship_id` int DEFAULT NULL,
   `status_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `status_text` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `status_remarks` text COLLATE utf8mb4_general_ci
+  `status_text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `status_remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -660,8 +674,8 @@ CREATE TABLE `statuses` (
 
 CREATE TABLE `stringliterals` (
   `string_literal_id` int NOT NULL,
-  `string_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `string_content` text COLLATE utf8mb4_general_ci,
+  `string_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `string_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `string_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `schooluser_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -676,7 +690,7 @@ CREATE TABLE `studentoutcomes` (
   `so_id` int NOT NULL,
   `program_id` int DEFAULT NULL,
   `so_version_number` int DEFAULT NULL,
-  `so_version_comments` text COLLATE utf8mb4_general_ci,
+  `so_version_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `so_date_created` datetime DEFAULT NULL,
   `so_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -690,7 +704,7 @@ CREATE TABLE `studentoutcomes` (
 CREATE TABLE `studentoutcomescontents` (
   `so_content_id` int NOT NULL,
   `so_id` int DEFAULT NULL,
-  `so_content_text` text COLLATE utf8mb4_general_ci
+  `so_content_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -702,7 +716,7 @@ CREATE TABLE `studentoutcomescontents` (
 CREATE TABLE `supervisors` (
   `supervisor_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
-  `supervisor_jobrole` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `supervisor_jobrole` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `department_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -715,10 +729,10 @@ CREATE TABLE `supervisors` (
 CREATE TABLE `userlogs` (
   `userlog_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
-  `userlog_type` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `userlog_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `userlog_timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `userlog_ip_address` varchar(45) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `userlog_device_info` text COLLATE utf8mb4_general_ci
+  `userlog_ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `userlog_device_info` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -729,12 +743,12 @@ CREATE TABLE `userlogs` (
 
 CREATE TABLE `users` (
   `user_id` int NOT NULL,
-  `user_first_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `user_last_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `user_email` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `user_date_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_role` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `user_role` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_is_archived` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -747,7 +761,10 @@ INSERT INTO `users` (`user_id`, `user_first_name`, `user_last_name`, `user_email
 (105, 'Inte', 'Offi', 'inteoffi@apc.edu.ph', '2026-05-06 03:45:53', '2026-05-06 03:45:53', 'officer', 0),
 (106, 'Engi', 'Exe', 'engiexe@apc.edu.ph', '2026-05-06 04:00:50', '2026-05-06 04:00:50', 'executive', 0),
 (107, 'Comp Engi', 'Prog', 'cpeprog@apc.edu.ph', '2026-05-06 04:14:44', '2026-05-06 04:14:44', 'program', 0),
-(108, 'Elec Engi', 'Prog', 'eceprog@apc.edu.ph', '2026-05-06 04:18:02', '2026-05-06 04:18:02', 'program', 0);
+(108, 'Elec Engi', 'Prog', 'eceprog@apc.edu.ph', '2026-05-06 04:18:02', '2026-05-06 04:18:02', 'program', 0),
+(114, 'Liam', 'Chen', 'l.chen@edu.com', '2026-05-13 10:44:27', '2026-05-13 10:44:27', 'intern', 0),
+(115, 'Sophia', 'Rodriguez', 'sophia.r@webmail.org', '2026-05-13 10:44:27', '2026-05-13 10:44:27', 'intern', 0),
+(116, 'Marcus', 'Thorne', 'mthorne@campus.edu', '2026-05-13 10:44:27', '2026-05-13 10:44:27', 'intern', 0);
 
 --
 -- Indexes for dumped tables
@@ -1035,6 +1052,7 @@ ALTER TABLE `schools`
 --
 ALTER TABLE `schoolusers`
   ADD PRIMARY KEY (`schooluser_id`),
+  ADD UNIQUE KEY `schooluser_given_id` (`schooluser_given_id`),
   ADD KEY `schoolusers_ibfk_1` (`user_id`);
 
 --
@@ -1234,7 +1252,7 @@ ALTER TABLE `finalreports`
 -- AUTO_INCREMENT for table `interns`
 --
 ALTER TABLE `interns`
-  MODIFY `intern_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `intern_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `internshipgrades`
@@ -1282,13 +1300,13 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `onetimepasswords`
 --
 ALTER TABLE `onetimepasswords`
-  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `passwordresets`
 --
 ALTER TABLE `passwordresets`
-  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `programdirectors`
@@ -1330,7 +1348,7 @@ ALTER TABLE `schools`
 -- AUTO_INCREMENT for table `schoolusers`
 --
 ALTER TABLE `schoolusers`
-  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT for table `sendassessments`
@@ -1378,7 +1396,7 @@ ALTER TABLE `userlogs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
 
 --
 -- Constraints for dumped tables
@@ -1509,7 +1527,7 @@ ALTER TABLE `finalreports`
 -- Constraints for table `interns`
 --
 ALTER TABLE `interns`
-  ADD CONSTRAINT `interns_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`),
+  ADD CONSTRAINT `interns_ibfk_1` FOREIGN KEY (`schooluser_id`) REFERENCES `schoolusers` (`schooluser_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `interns_ibfk_2` FOREIGN KEY (`program_id`) REFERENCES `programs` (`program_id`);
 
 --
