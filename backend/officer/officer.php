@@ -100,7 +100,7 @@ require '../../utilities/database/database.php';
             align-items: center;
             gap: 16px;
         }
-s
+
         .admin-label {
             font-weight: 700;
             font-size: 14px;
@@ -610,7 +610,7 @@ s
         </div>
 
         <div class="header-actions">
-            <span class="admin-label"></span>
+            <span class="admin-label">OFFICER</span>
             <div class="header-divider"></div>
             <button class="notification-btn">
                 <i data-lucide="bell" style="width: 20px; height: 20px;"></i>
@@ -1057,6 +1057,8 @@ s
 
 					  // recreate single empty row
 					  tbody.appendChild(createRow());
+					  
+					  loadInterns();
 					}
 				}
 				
@@ -1281,6 +1283,7 @@ s
 			  placeholder="Search interns..."
 			  style="margin-bottom: 10px; padding: 6px; width: 300px;"
 			>
+			<button id="columnFilterBtn">Columns</button>
 			<button id="refreshBtn">Refresh Table</button>
 			<div style="overflow-x:auto;">
 				<table border="1" id="internTable" border="1" cellpadding="4" cellspacing="0" style="min-width: 1400px;">
@@ -1306,6 +1309,19 @@ s
 					</tbody>
 				</table>
 				
+				<div id="columnModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+				background:rgba(0,0,0,0.5);">
+
+				  <div style="background:#fff; width:300px; margin:10% auto; padding:20px; border-radius:8px;">
+					<h3>Select Columns</h3>
+
+					<div id="columnCheckboxes"></div>
+
+					<br>
+					<button id="closeColumnModal">Close</button>
+				  </div>
+				</div>
+				
 				<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
 				background:rgba(0,0,0,0.5);">
 				  
@@ -1315,20 +1331,46 @@ s
 
 					<input type="hidden" id="edit_intern_id">
 
+					<label>First Name</label>
 					<input id="edit_first_name" placeholder="First Name"><br><br>
+
+					<label>Last Name</label>
 					<input id="edit_last_name" placeholder="Last Name"><br><br>
 
+					<label>Email</label>
 					<input id="edit_email" placeholder="Email"><br><br>
 
+					<label>Birthdate</label>
 					<input id="edit_birthdate" type="date"><br><br>
 
-					<input id="edit_gender" placeholder="Gender"><br><br>
+					<label>Gender</label>
+					<select id="edit_gender">
+					  <option value="">Select Gender</option>
+					  <option value="Male">Male</option>
+					  <option value="Female">Female</option>
+					</select><br><br>
+
+					<label>City</label>
 					<input id="edit_city" placeholder="City"><br><br>
+
+					<label>Province / State</label>
 					<input id="edit_province" placeholder="Province/State"><br><br>
+
+					<label>Postal Code</label>
 					<input id="edit_postal" placeholder="Postal Code"><br><br>
+
+					<label>Country</label>
 					<input id="edit_country" placeholder="Country"><br><br>
 
-					<input id="edit_program" placeholder="Program Name"><br><br>
+					<label>School</label>
+					<select id="edit_school">
+					  <option value="">Select School</option>
+					</select><br><br>
+
+					<label>Program</label>
+					<select id="edit_program">
+					  <option value="">Select Program</option>
+					</select><br><br>
 
 					<button id="cancelEdit">Cancel</button>
 					<button id="saveEdit">Save Changes</button>
@@ -1354,6 +1396,10 @@ s
 					document.getElementById('refreshBtn').addEventListener('click', loadInterns);
 					
 					const searchInput = document.getElementById('searchInput');
+					
+					let currentData = [];
+					let sortState = {};
+					let activeSortKey = null;
 
 					function filterTable() {
 						const query = searchInput.value.toLowerCase();
@@ -1369,10 +1415,6 @@ s
 					
 					// filtering by columns 
 					if (true) {
-						let currentData = [];
-						let sortState = {};
-						let activeSortKey = null;
-
 						function updateSortIndicators() {
 							document.querySelectorAll('#internTable thead th').forEach(th => {
 								const key = th.dataset.key;
@@ -1446,6 +1488,7 @@ s
 
 							renderTable(currentData);
 							updateSortIndicators();
+							filterTable();
 						}
 
 						document.querySelectorAll('#internTable thead th').forEach(th => {
@@ -1461,6 +1504,15 @@ s
 					
 					// edit intern functions
 					if (true) {
+						window.addEventListener('DOMContentLoaded', () => {
+							loadSchools();
+							loadPrograms();
+							loadInterns();
+						});
+
+						let schools = [];
+						let programs = [];
+
 						document.addEventListener('click', async (e) => {
 							if (e.target.classList.contains('editBtn')) {
 								const id = e.target.dataset.id;
@@ -1470,7 +1522,9 @@ s
 
 								document.getElementById('edit_intern_id').value = intern.intern_id;
 
-								const [firstName = '', lastName = ''] = (intern.full_name || '').split(' ');
+								const parts = (intern.full_name || '').split(' ');
+								const firstName = parts.shift() || '';
+								const lastName = parts.join(' ');
 
 								document.getElementById('edit_first_name').value = firstName;
 								document.getElementById('edit_last_name').value = lastName;
@@ -1482,8 +1536,26 @@ s
 								document.getElementById('edit_province').value = intern.province_or_state || '';
 								document.getElementById('edit_postal').value = intern.postal_code || '';
 								document.getElementById('edit_country').value = intern.country || '';
-								document.getElementById('edit_program').value = intern.program_name || '';
+								document.getElementById('edit_school').value = intern.school_id;
 
+								// 🔥 SCHOOL FIRST
+								document.getElementById('edit_school').value = intern.school_id;
+
+								// 🔥 FILTER PROGRAMS
+								const programSelect = document.getElementById('edit_program');
+								programSelect.innerHTML = `<option value="">Select Program</option>`;
+
+								const filteredPrograms = programs.filter(p => p.school_id == intern.school_id);
+
+								filteredPrograms.forEach(p => {
+									programSelect.innerHTML += `
+										<option value="${p.program_id}">${p.program_name}</option>
+									`;
+								});
+
+								// 🔥 THEN SET PROGRAM
+								document.getElementById('edit_program').value = intern.program_id;
+								
 								document.getElementById('editModal').style.display = 'block';
 							}
 						});
@@ -1504,7 +1576,7 @@ s
 								province_or_state: document.getElementById('edit_province').value,
 								postal_code: document.getElementById('edit_postal').value,
 								country: document.getElementById('edit_country').value,
-								program_name: document.getElementById('edit_program').value
+								program_id: document.getElementById('edit_program').value
 							};
 
 							try {
@@ -1527,6 +1599,121 @@ s
 								alert('Server error');
 							}
 						});
+						
+						async function loadSchools() {
+							const res = await fetch('get_schools.php');
+							schools = await res.json();
+
+							const schoolSelect = document.getElementById('edit_school');
+							schoolSelect.innerHTML = `<option value="">Select School</option>`;
+
+							schools.forEach(s => {
+								schoolSelect.innerHTML += `
+									<option value="${s.school_id}">${s.school_name}</option>
+								`;
+							});
+						}
+						
+						async function loadPrograms() {
+							const res = await fetch('get_programs.php');
+							programs = await res.json();
+						}
+						
+						document.getElementById('edit_school').addEventListener('change', function () {
+							const schoolId = this.value;
+
+							const programSelect = document.getElementById('edit_program');
+							programSelect.innerHTML = `<option value="">Select Program</option>`;
+
+							const filtered = programs.filter(p => p.school_id == schoolId);
+
+							filtered.forEach(p => {
+								programSelect.innerHTML += `
+									<option value="${p.program_id}">${p.program_name}</option>
+								`;
+							});
+						});
+					}
+					
+					// column checkboxes
+					if (true) {
+						let selectedColumns = [];
+						const columnMap = [
+						{ label: "Full Name", key: "full_name" },
+						{ label: "School User ID", key: "schooluser_id" },
+						{ label: "Program Name", key: "program_name" },
+						{ label: "School Name", key: "school_name" },
+						{ label: "Email", key: "email" },
+						{ label: "Birthdate", key: "birthdate" },
+						{ label: "Gender", key: "gender" },
+						{ label: "City", key: "city" },
+						{ label: "Province/State", key: "province_or_state" },
+						{ label: "Postal Code", key: "postal_code" },
+						{ label: "Country", key: "country" },
+						{ label: "Account Status", key: "account_status" }
+						];
+						
+						document.getElementById('columnFilterBtn').addEventListener('click', () => {
+							const container = document.getElementById('columnCheckboxes');
+							container.innerHTML = '';
+
+							columnMap.forEach(col => {
+								const checked = selectedColumns.includes(col.key) ? 'checked' : '';
+
+								container.innerHTML += `
+									<label>
+										<input type="checkbox" value="${col.key}" ${checked}>
+										${col.label}
+									</label><br>
+								`;
+							});
+
+							document.getElementById('columnModal').style.display = 'block';
+						});
+						
+						document.getElementById('closeColumnModal').addEventListener('click', () => {
+
+							const checkboxes = document.querySelectorAll('#columnCheckboxes input[type="checkbox"]');
+
+							selectedColumns = [];
+
+							checkboxes.forEach(cb => {
+								if (cb.checked) {
+									selectedColumns.push(cb.value);
+								}
+							});
+
+							document.getElementById('columnModal').style.display = 'none';
+
+							filterTable(); // reapply filter immediately
+						});
+						
+						function filterTable() {
+							const query = searchInput.value.toLowerCase();
+							const rows = document.querySelectorAll('#internTable tbody tr');
+
+							rows.forEach(row => {
+								const cells = row.querySelectorAll('td');
+
+								let match = false;
+
+								// if no columns selected → search ALL
+								if (selectedColumns.length === 0) {
+									match = row.textContent.toLowerCase().includes(query);
+								} else {
+									selectedColumns.forEach(key => {
+										const colIndex = columnMap.findIndex(c => c.key === key);
+
+										const cell = cells[colIndex];
+										if (cell && cell.textContent.toLowerCase().includes(query)) {
+											match = true;
+										}
+									});
+								}
+
+								row.style.display = match ? '' : 'none';
+							});
+						}
 					}
 					
 				</script>

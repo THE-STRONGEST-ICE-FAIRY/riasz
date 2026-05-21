@@ -21,6 +21,7 @@ try {
 	$otp = $_POST['otp'] ?? $input['otp'] ?? null;
 	$action = $_POST['action'] ?? $input['action'] ?? '';
 	$user = '';
+	$tabId = $_POST['tabId'] ?? $input['tabId'] ?? 'default';
 
     switch ($action) {
 		case 'login': {
@@ -64,6 +65,18 @@ try {
 					exit;
 				}
 			}
+			
+			session_regenerate_id(true);
+
+			if (!isset($_SESSION['accounts'])) {
+				$_SESSION['accounts'] = [];
+			}
+
+			$_SESSION['accounts'][$tabId] = [
+				'user_id' => $user['user_id']
+			];
+
+			$_SESSION['active_tab'] = $tabId;
 
 			$redirect = roleswitch($user['user_role']);
 
@@ -203,7 +216,7 @@ try {
 			$email = $_SESSION['user_email'];
 
 			$stmt = $conn->prepare("
-				SELECT otp.otp_id, otp.otp_code, otp.otp_attempts, otp.otp_date_expiry, u.user_role
+				SELECT otp.otp_id, otp.otp_code, otp.otp_attempts, otp.otp_date_expiry, u.user_role, u.user_id
 				FROM users u
 				INNER JOIN schoolusers su ON u.user_id = su.user_id
 				INNER JOIN onetimepasswords otp ON su.schooluser_id = otp.schooluser_id
@@ -256,6 +269,18 @@ try {
 			// ✅ success			
 			$del = $conn->prepare("DELETE FROM onetimepasswords WHERE otp_id = ?");
 			$del->execute([$data['otp_id']]);
+			
+			session_regenerate_id(true);
+
+			if (!isset($_SESSION['accounts'])) {
+			$_SESSION['accounts'] = [];
+			}
+
+			$_SESSION['accounts'][$tabId] = [
+				'user_id' => $data['user_id'],
+			];
+
+			$_SESSION['active_tab'] = $tabId;
 
 			$redirect = roleswitch($data['user_role']);
 
@@ -351,6 +376,24 @@ try {
 		}
 			break;
 		
+		case 'logout': {
+			$tabId = $_POST['tabId'] ?? $input['tabId'] ?? null;
+
+			if ($tabId && isset($_SESSION['accounts'][$tabId])) {
+				unset($_SESSION['accounts'][$tabId]);
+			}
+
+			if (isset($_SESSION['active_tab']) && $_SESSION['active_tab'] === $tabId) {
+				unset($_SESSION['active_tab']);
+			}
+
+			echo json_encode([
+				"status" => "success",
+				"message" => "Logged out"
+			]);
+			break;
+		}
+		
 		default:
 			echo json_encode(['error' => 'Invalid action']);
 			break;
@@ -387,7 +430,7 @@ function roleswitch($role) {
 			break;
 
 		case 'intern':
-			$redirect = "../student/student.php";
+			$redirect = "../intern/intern.php";
 			break;
 
 		default:
@@ -395,4 +438,30 @@ function roleswitch($role) {
 			break;
 	}
     return $redirect;
+}
+
+function currentUser($tabId) {
+    return $_SESSION['accounts'][$tabId] ?? null;
+}
+
+function getUserFromTab($conn, $tabId) {
+
+    if (!isset($_SESSION['accounts'][$tabId]['user_id'])) {
+        return null;
+    }
+
+    $user_id = $_SESSION['accounts'][$tabId]['user_id'];
+
+    $stmt = $conn->prepare("
+        SELECT 
+            u.user_id,
+            u.user_email,
+            u.user_role
+        FROM users u
+        WHERE u.user_id = ?
+        LIMIT 1
+    ");
+
+    $stmt->execute([$user_id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }

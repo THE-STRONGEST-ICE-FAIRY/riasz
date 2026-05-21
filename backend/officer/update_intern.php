@@ -54,8 +54,8 @@ try {
     ]);
 
     // 3. Get program_id
-    $stmt = $conn->prepare("SELECT program_id FROM programs WHERE program_name = ?");
-    $stmt->execute([$data['program_name']]);
+    $stmt = $conn->prepare("SELECT program_id FROM programs WHERE program_id = ?");
+    $stmt->execute([$data['program_id']]);
     $program = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$program) {

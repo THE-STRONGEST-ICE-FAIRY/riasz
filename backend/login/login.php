@@ -2,6 +2,18 @@
 <html>
 <head>
     <title>Login</title>
+	<script>
+		function getTabId() {
+			let tabId = sessionStorage.getItem("tabId");
+
+			if (!tabId) {
+				tabId = crypto.randomUUID();
+				sessionStorage.setItem("tabId", tabId);
+			}
+
+			return tabId;
+		}
+	</script>
 </head>
 <body>
 
@@ -25,7 +37,10 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 	document.getElementById("message").innerText = "";
 
     const formData = new FormData(this);
+	const tabId = getTabId();
+
 	formData.append('action', 'login');
+	formData.append('tabId', tabId);
 
     try {
         const response = await fetch("handler.php", {
@@ -74,7 +89,11 @@ document.getElementById("otpForm").addEventListener("submit", async function (e)
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ email, action: 'sendotp' })
+    body: JSON.stringify({ 
+		email, 
+		action: 'sendotp',
+		tabId: getTabId()
+	})
   });
 
   const data = await res.json();
@@ -100,7 +119,11 @@ function submitOTP() {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ otp, action: 'useotp' })
+        body: JSON.stringify({ 
+			otp, 
+			action: 'useotp',
+			tabId: getTabId()
+		})
     })
     .then(res => res.json())
     .then(data => {
@@ -130,7 +153,11 @@ function requestReset() {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ email, action: 'resetp' })
+        body: JSON.stringify({ 
+			email, 
+			action: 'resetp',
+			tabId: getTabId()
+		})
     })
     .then(res => res.json())
     .then(data => {

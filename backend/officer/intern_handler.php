@@ -15,9 +15,12 @@ require '../../utilities/database/database.php';
 // Fetch intern data
 $sql = "
 SELECT 
+    i.intern_id,
     CONCAT(u.user_first_name, ' ', u.user_last_name) AS full_name,
     su.schooluser_id,
+    p.program_id,
     p.program_name,
+    s.school_id,
     s.school_name,
     u.user_email AS email,
     i.intern_birthdate AS birthdate,
@@ -60,6 +63,7 @@ while ($row = $stmt->fetch()) {
     }
 
     $interns[] = [
+		'intern_id' => $row['intern_id'],
         'full_name' => $row['full_name'],
         'schooluser_id' => $row['schooluser_id'],
         'program_name' => $row['program_name'],
@@ -71,7 +75,9 @@ while ($row = $stmt->fetch()) {
         'province_or_state' => $row['province_or_state'],
         'postal_code' => $row['postal_code'],
         'country' => $row['country'],
-        'account_status' => $status
+        'account_status' => $status,
+		'school_id' => $row['school_id'],
+		'program_id' => $row['program_id'],
     ];
 }
 
