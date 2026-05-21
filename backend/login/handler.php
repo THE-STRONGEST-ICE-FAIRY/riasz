@@ -313,7 +313,7 @@ try {
 			$stmt->execute([$schooluser_id, $token, $created, $expiry]);
 
 			// 4. build reset link
-			$resetLink = "http://localhost/pages/login/reset.php?token=" . $token;
+			$resetLink = "http://localhost/backend/login/reset.php?token=" . $token;
 
 			// 5. send email
 			$mail = new PHPMailer(true);

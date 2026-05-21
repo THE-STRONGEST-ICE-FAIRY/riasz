@@ -1076,16 +1076,22 @@ require '../../utilities/database/database.php';
 				  method: 'POST',
 				  body: formData
 				})
-				.then(response => { if (response.ok) {  // Check if the response status is OK (200)
-					console.log('User created successfully!');
-					event.target.reset();
-					reloadUserTable();
-					updateDropdowns();
-					alert('User created successfully.');
-				  } else {
-					console.error('Error creating user:', response.statusText);
-					alert('Oops! Something went wrong.');
-				  }
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						console.error('Error creating user:', data.error);
+						alert('Oops! Something went wrong: ' + data.error);
+					} else {
+						console.log('User created successfully!');
+						event.target.reset();
+						reloadUserTable();
+						updateDropdowns();
+						alert('User created successfully.');
+					}
+				})
+				.catch(err => {
+					console.error('Network or parsing error:', err);
+					alert('Oops! Something went horribly wrong.');
 				});
 		    }
 				

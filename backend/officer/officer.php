@@ -582,6 +582,21 @@ s
 		.error-row {
 		  background-color: #fff0f0;
 		}
+		
+		th {
+			user-select: none;
+		}
+
+		.sort-indicator {
+			margin-left: 6px;
+			font-size: 12px;
+			color: #666;
+			visibility: hidden;
+		}
+
+		th.active .sort-indicator {
+			visibility: visible;
+		}
     </style>
 </head>
 <body>
@@ -690,6 +705,7 @@ s
         <section id="masterlist">
             <h1>Masterlist Section</h1>
 			
+            <h2>Add Interns</h2>
 			<form id="internForm" onsubmit="return submitInterns(event)">
 
 			  <div style="overflow-x:auto;">
@@ -1257,6 +1273,265 @@ s
 				}
 				</script>
 			</form>
+		
+            <h2>Interns List</h2>
+			<input
+			  type="text"
+			  id="searchInput"
+			  placeholder="Search interns..."
+			  style="margin-bottom: 10px; padding: 6px; width: 300px;"
+			>
+			<button id="refreshBtn">Refresh Table</button>
+			<div style="overflow-x:auto;">
+				<table border="1" id="internTable" border="1" cellpadding="4" cellspacing="0" style="min-width: 1400px;">
+					<thead>
+						<tr>
+							<th data-key="full_name">Intern Full Name <span class="sort-indicator"></span></th>
+							<th data-key="schooluser_id">School User ID <span class="sort-indicator"></span></th>
+							<th data-key="program_name">Program Name <span class="sort-indicator"></span></th>
+							<th data-key="school_name">School Name <span class="sort-indicator"></span></th>
+							<th data-key="email">Email <span class="sort-indicator"></span></th>
+							<th data-key="birthdate">Birthdate <span class="sort-indicator"></span></th>
+							<th data-key="gender">Gender <span class="sort-indicator"></span></th>
+							<th data-key="city">City <span class="sort-indicator"></span></th>
+							<th data-key="province_or_state">Province/State <span class="sort-indicator"></span></th>
+							<th data-key="postal_code">Postal Code <span class="sort-indicator"></span></th>
+							<th data-key="country">Country <span class="sort-indicator"></span></th>
+							<th data-key="account_status">Account Status <span class="sort-indicator"></span></th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Data will be inserted here -->
+					</tbody>
+				</table>
+				
+				<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+				background:rgba(0,0,0,0.5);">
+				  
+				  <div style="background:#fff; width:500px; margin:10% auto; padding:20px; border-radius:8px;">
+					
+					<h3>Edit Intern</h3>
+
+					<input type="hidden" id="edit_intern_id">
+
+					<input id="edit_first_name" placeholder="First Name"><br><br>
+					<input id="edit_last_name" placeholder="Last Name"><br><br>
+
+					<input id="edit_email" placeholder="Email"><br><br>
+
+					<input id="edit_birthdate" type="date"><br><br>
+
+					<input id="edit_gender" placeholder="Gender"><br><br>
+					<input id="edit_city" placeholder="City"><br><br>
+					<input id="edit_province" placeholder="Province/State"><br><br>
+					<input id="edit_postal" placeholder="Postal Code"><br><br>
+					<input id="edit_country" placeholder="Country"><br><br>
+
+					<input id="edit_program" placeholder="Program Name"><br><br>
+
+					<button id="cancelEdit">Cancel</button>
+					<button id="saveEdit">Save Changes</button>
+				  </div>
+				</div>
+				
+				<script>
+					async function loadInterns() {
+						try {
+							const response = await fetch('intern_handler.php');
+							const data = await response.json();
+							currentData = data;
+							renderTable(currentData);
+						} catch (err) {
+							console.error('Fetch error:', err);
+						}
+					}
+
+					// Initial load
+					loadInterns();
+
+					// Refresh button
+					document.getElementById('refreshBtn').addEventListener('click', loadInterns);
+					
+					const searchInput = document.getElementById('searchInput');
+
+					function filterTable() {
+						const query = searchInput.value.toLowerCase();
+						const rows = document.querySelectorAll('#internTable tbody tr');
+
+						rows.forEach(row => {
+							const text = row.textContent.toLowerCase();
+							row.style.display = text.includes(query) ? '' : 'none';
+						});
+					}
+
+					searchInput.addEventListener('input', filterTable);
+					
+					// filtering by columns 
+					if (true) {
+						let currentData = [];
+						let sortState = {};
+						let activeSortKey = null;
+
+						function updateSortIndicators() {
+							document.querySelectorAll('#internTable thead th').forEach(th => {
+								const key = th.dataset.key;
+								const indicator = th.querySelector('.sort-indicator');
+
+								th.classList.remove('active');
+
+								if (!key || key !== activeSortKey) {
+									if (indicator) indicator.textContent = '';
+									return;
+								}
+
+								th.classList.add('active');
+
+								if (indicator) {
+									indicator.textContent = sortState[key] === 'asc' ? '▲' : '▼';
+								}
+							});
+						}
+
+						function renderTable(data) {
+							const tbody = document.querySelector('#internTable tbody');
+							tbody.innerHTML = '';
+
+							data.forEach(intern => {
+								const tr = document.createElement('tr');
+								tr.innerHTML = `
+									<td>${intern.full_name || ''}</td>
+									<td>${intern.schooluser_id || ''}</td>
+									<td>${intern.program_name || ''}</td>
+									<td>${intern.school_name || ''}</td>
+									<td>${intern.email || ''}</td>
+									<td>${intern.birthdate || ''}</td>
+									<td>${intern.gender || ''}</td>
+									<td>${intern.city || ''}</td>
+									<td>${intern.province_or_state || ''}</td>
+									<td>${intern.postal_code || ''}</td>
+									<td>${intern.country || ''}</td>
+									<td>${intern.account_status || ''}</td>
+									<td>
+										<button class="editBtn" data-id="${intern.intern_id}">Edit</button>
+									</td>
+								`;
+								tbody.appendChild(tr);
+							});
+						}
+
+						function sortTable(key) {
+							const direction = sortState[key] === 'asc' ? 'desc' : 'asc';
+							sortState[key] = direction;
+							activeSortKey = key;
+
+							currentData.sort((a, b) => {
+								let valA = (a[key] || '').toString().toLowerCase();
+								let valB = (b[key] || '').toString().toLowerCase();
+
+								if (!isNaN(valA) && !isNaN(valB)) {
+									valA = Number(valA);
+									valB = Number(valB);
+								}
+
+								if (key === 'birthdate') {
+									valA = new Date(valA);
+									valB = new Date(valB);
+								}
+
+								if (valA < valB) return direction === 'asc' ? -1 : 1;
+								if (valA > valB) return direction === 'asc' ? 1 : -1;
+								return 0;
+							});
+
+							renderTable(currentData);
+							updateSortIndicators();
+						}
+
+						document.querySelectorAll('#internTable thead th').forEach(th => {
+							th.style.cursor = 'pointer';
+
+							th.addEventListener('click', () => {
+								const key = th.dataset.key;
+								if (!key) return;
+								sortTable(key);
+							});
+						});
+					}
+					
+					// edit intern functions
+					if (true) {
+						document.addEventListener('click', async (e) => {
+							if (e.target.classList.contains('editBtn')) {
+								const id = e.target.dataset.id;
+
+								const intern = currentData.find(i => i.intern_id == id);
+								if (!intern) return;
+
+								document.getElementById('edit_intern_id').value = intern.intern_id;
+
+								const [firstName = '', lastName = ''] = (intern.full_name || '').split(' ');
+
+								document.getElementById('edit_first_name').value = firstName;
+								document.getElementById('edit_last_name').value = lastName;
+
+								document.getElementById('edit_email').value = intern.email || '';
+								document.getElementById('edit_birthdate').value = intern.birthdate || '';
+								document.getElementById('edit_gender').value = intern.gender || '';
+								document.getElementById('edit_city').value = intern.city || '';
+								document.getElementById('edit_province').value = intern.province_or_state || '';
+								document.getElementById('edit_postal').value = intern.postal_code || '';
+								document.getElementById('edit_country').value = intern.country || '';
+								document.getElementById('edit_program').value = intern.program_name || '';
+
+								document.getElementById('editModal').style.display = 'block';
+							}
+						});
+						
+						document.getElementById('cancelEdit').addEventListener('click', () => {
+							document.getElementById('editModal').style.display = 'none';
+						});
+						
+						document.getElementById('saveEdit').addEventListener('click', async () => {
+							const payload = {
+								intern_id: document.getElementById('edit_intern_id').value,
+								first_name: document.getElementById('edit_first_name').value,
+								last_name: document.getElementById('edit_last_name').value,
+								email: document.getElementById('edit_email').value,
+								birthdate: document.getElementById('edit_birthdate').value,
+								gender: document.getElementById('edit_gender').value,
+								city: document.getElementById('edit_city').value,
+								province_or_state: document.getElementById('edit_province').value,
+								postal_code: document.getElementById('edit_postal').value,
+								country: document.getElementById('edit_country').value,
+								program_name: document.getElementById('edit_program').value
+							};
+
+							try {
+								const res = await fetch('update_intern.php', {
+									method: 'POST',
+									headers: {'Content-Type': 'application/json'},
+									body: JSON.stringify(payload)
+								});
+
+								const result = await res.json();
+
+								if (result.success) {
+									document.getElementById('editModal').style.display = 'none';
+									loadInterns(); // refresh table
+								} else {
+									alert(result.message || 'Update failed');
+								}
+							} catch (err) {
+								console.error(err);
+								alert('Server error');
+							}
+						});
+					}
+					
+				</script>
+			</div>
+			
 		</section>
 
         <!-- Rubrics Section (was Database) -->
