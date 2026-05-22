@@ -82,6 +82,7 @@ try {
 
 					su.schooluser_id,
 					su.schooluser_given_id,
+					su.profile_photo,	
 
 					i.intern_id,
 					i.intern_birthdate,
@@ -131,6 +132,140 @@ try {
 			break;
 		}
 		
+		
+		case 'update_profile': {
+			$user = getUserFromTab($conn, $tabId);
+
+			if (!$user) {
+				echo json_encode([
+					"status" => "error",
+					"message" => "Not logged in"
+				]);
+				exit;
+			}
+
+			$first_name = $_POST['first_name'] ?? '';
+			$last_name = $_POST['last_name'] ?? '';
+			$email = $_POST['email'] ?? '';
+
+			$birthdate = $_POST['birthdate'] ?? null;
+			$school_id = $_POST['school_id'] ?? '';
+
+			$gender = $_POST['gender'] ?? '';
+			$city = $_POST['city'] ?? '';
+			$province = $_POST['province'] ?? '';
+			$postal_code = $_POST['postal_code'] ?? '';
+			$country = $_POST['country'] ?? '';
+
+			$profile_photo_path = null;
+
+			/*
+				UPLOAD PROFILE PHOTO
+			*/
+			if (
+				isset($_FILES['profile_photo']) &&
+				$_FILES['profile_photo']['error'] === 0
+			) {
+
+				$uploadDir = "../../uploads/profilephotos/";
+
+				if (!is_dir($uploadDir)) {
+					mkdir($uploadDir, 0777, true);
+				}
+
+				$filename =
+					time() . "_" . basename($_FILES['profile_photo']['name']);
+
+				$targetFile = $uploadDir . $filename;
+
+				move_uploaded_file(
+					$_FILES['profile_photo']['tmp_name'],
+					$targetFile
+				);
+
+				$profile_photo_path =
+					"uploads/profilephotos/" . $filename;
+
+				$stmt = $conn->prepare("
+					UPDATE schoolusers
+					SET profile_photo = ?
+					WHERE user_id = ?
+				");
+
+				$stmt->execute([
+					$profile_photo_path,
+					$user['user_id']
+				]);
+			}
+
+			/*
+				UPDATE USERS TABLE
+			*/
+			$stmt = $conn->prepare("
+				UPDATE users
+				SET
+					user_first_name = ?,
+					user_last_name = ?,
+					user_email = ?
+				WHERE user_id = ?
+			");
+
+			$stmt->execute([
+				$first_name,
+				$last_name,
+				$email,
+				$user['user_id']
+			]);
+
+			/*
+				UPDATE SCHOOLUSERS TABLE
+			*/
+			$stmt = $conn->prepare("
+				UPDATE schoolusers
+				SET schooluser_given_id = ?
+				WHERE user_id = ?
+			");
+
+			$stmt->execute([
+				$school_id,
+				$user['user_id']
+			]);
+
+			/*
+				UPDATE INTERNS TABLE
+			*/
+			$stmt = $conn->prepare("
+				UPDATE interns i
+				INNER JOIN schoolusers su
+					ON su.schooluser_id = i.schooluser_id
+				SET
+					i.intern_birthdate = ?,
+					i.intern_gender = ?,
+					i.intern_city = ?,
+					i.intern_province_or_state = ?,
+					i.intern_postal_code = ?,
+					i.intern_country = ?
+				WHERE su.user_id = ?
+			");
+
+			$stmt->execute([
+				$birthdate,
+				$gender,
+				$city,
+				$province,
+				$postal_code,
+				$country,
+				$user['user_id']
+			]);
+
+			echo json_encode([
+				"status" => "success",
+				"message" => "Profile updated"
+			]);
+
+			break;
+		}
+
 		default:
 			echo json_encode(['error' => 'Invalid action']);
 			break;

@@ -17,7 +17,7 @@ $sql = "
 SELECT 
     i.intern_id,
     CONCAT(u.user_first_name, ' ', u.user_last_name) AS full_name,
-    su.schooluser_id,
+    su.schooluser_given_id,
     p.program_id,
     p.program_name,
     s.school_id,
@@ -46,7 +46,7 @@ while ($row = $stmt->fetch()) {
         $status = 'Pending';
     } elseif (
         empty($row['full_name']) ||
-        empty($row['schooluser_id']) ||
+        empty($row['schooluser_given_id']) ||
         empty($row['program_name']) ||
         empty($row['school_name']) ||
         empty($row['email']) ||
@@ -65,7 +65,7 @@ while ($row = $stmt->fetch()) {
     $interns[] = [
 		'intern_id' => $row['intern_id'],
         'full_name' => $row['full_name'],
-        'schooluser_id' => $row['schooluser_id'],
+        'schooluser_given_id' => $row['schooluser_given_id'],
         'program_name' => $row['program_name'],
         'school_name' => $row['school_name'],
         'email' => $row['email'],

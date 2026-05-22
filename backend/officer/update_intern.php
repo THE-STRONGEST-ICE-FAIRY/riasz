@@ -52,6 +52,18 @@ try {
         $data['email'],
         $user_id
     ]);
+	
+	// 3. Update schoolusers
+	$stmt = $conn->prepare("
+		UPDATE schoolusers
+		SET schooluser_given_id = ?
+		WHERE schooluser_id = ?
+	");
+
+	$stmt->execute([
+		$data['schooluser_given_id'],
+		$schooluser_id
+	]);
 
     // 3. Get program_id
     $stmt = $conn->prepare("SELECT program_id FROM programs WHERE program_id = ?");

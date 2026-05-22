@@ -685,9 +685,14 @@ require '../../utilities/database/database.php';
 			<h3>Profile</h3>
 
 			<div>
-				<div style="width:120px;height:120px;border:1px solid black;">
-					Image
-				</div>
+				<img 
+					id="profilePhoto"
+					src=""
+					alt="Profile Photo"
+					width="120"
+					height="120"
+					style="border:1px solid black;object-fit:cover;"
+				>
 
 				<p id="fullname">Loading...</p>
 				<p id="givenid"></p>
@@ -695,67 +700,325 @@ require '../../utilities/database/database.php';
 
 				<button onclick="editProfile()">Edit Profile</button>
 			</div>
+			
+			<div 
+				id="editProfileModal"
+				hidden
+				style="
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					background: rgba(0,0,0,0.5);
+					align-items: center;
+					justify-content: center;
+					z-index: 9999;
+				"
+			>
+			<div
+				style="
+					background: white;
+					padding: 20px;
+					width: 400px;
+					max-height: 90vh;
+					overflow-y: auto;
+				"
+			>
+
+				<h2>Edit Profile</h2>
+
+				<form id="editProfileForm" enctype="multipart/form-data">
+
+					<div>
+						<label>Profile Photo</label><br>
+						<input type="file" name="profile_photo" accept="image/*">
+					</div>
+
+					<br>
+
+					<div>
+						<label>First Name</label><br>
+						<input type="text" name="first_name" id="edit_first_name">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Last Name</label><br>
+						<input type="text" name="last_name" id="edit_last_name">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Email</label><br>
+						<input type="email" name="email" id="edit_email">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Birthdate</label><br>
+						<input type="date" name="birthdate" id="edit_birthdate">
+					</div>
+
+					<br>
+
+					<div>
+						<label>School ID</label><br>
+						<input type="text" name="school_id" id="edit_school_id">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Gender</label><br>
+						<select name="gender" id="edit_gender">
+							<option value="">Select Gender</option>
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+							<option value="Other">Other</option>
+						</select>
+					</div>
+
+					<br>
+
+					<div>
+						<label>City</label><br>
+						<input type="text" name="city" id="edit_city">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Province / State</label><br>
+						<input type="text" name="province" id="edit_province">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Postal Code</label><br>
+						<input type="text" name="postal_code" id="edit_postal_code">
+					</div>
+
+					<br>
+
+					<div>
+						<label>Country</label><br>
+						<input type="text" name="country" id="edit_country">
+					</div>
+
+					<br>
+
+					<button type="button" onclick="closeEditProfileModal()">
+						Cancel
+					</button>
+
+					<button type="submit">
+						Save Changes
+					</button>
+
+				</form>
+
+			</div>
+			</div>
 
 			<script>
-			function getTimeGreeting() {
-				const hour = new Date().getHours();
+				function getTimeGreeting() {
+					const hour = new Date().getHours();
 
-				if (hour < 12) return "Morning";
-				if (hour < 18) return "Afternoon";
-				return "Evening";
-			}
+					if (hour < 12) return "Morning";
+					if (hour < 18) return "Afternoon";
+					return "Evening";
+				}
 
-			function formatDate() {
-				const d = new Date();
-				return d.toLocaleDateString("en-US", {
-					weekday: "long",
-					month: "long",
-					day: "2-digit",
-					year: "numeric"
-				});
-			}
+				function formatDate() {
+					const d = new Date();
+					return d.toLocaleDateString("en-US", {
+						weekday: "long",
+						month: "long",
+						day: "2-digit",
+						year: "numeric"
+					});
+				}
 
-			document.getElementById("date").innerText = formatDate();
+				document.getElementById("date").innerText = formatDate();
 
-			function loadProfile() {
-				const tabId = sessionStorage.getItem("tabId");
+				function loadProfile() {
+					const tabId = sessionStorage.getItem("tabId");
 
-				fetch("getusertab.php", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/x-www-form-urlencoded"
-					},
-					body: new URLSearchParams({
-						action: "profile",
-						tabId: tabId
+					fetch("getusertab.php", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						body: new URLSearchParams({
+							action: "profile",
+							tabId: tabId
+						})
 					})
-				})
-				.then(res => res.json())
-				.then(data => {
-					if (data.status !== "success") {
-						document.getElementById("fullname").innerText = "Not logged in";
-						return;
+					.then(res => res.json())
+					.then(data => {
+						if (data.status !== "success") {
+							document.getElementById("fullname").innerText = "Not logged in";
+							return;
+						}
+
+						const user = data.user;
+
+						document.getElementById("greeting").innerText =
+							"Good " + getTimeGreeting() + ", " + user.user_first_name + "!";
+
+						document.getElementById("fullname").innerText =
+							user.user_first_name + " " + user.user_last_name;
+
+						document.getElementById("givenid").innerText =
+							user.schooluser_given_id;
+
+						document.getElementById("schoolprogram").innerText =
+							user.school_name + " - " + user.program_name;
+
+						/*
+							PROFILE PHOTO
+						*/
+						if (user.profile_photo && user.profile_photo.trim() !== "") {
+
+							document.getElementById("profilePhoto").src =
+								"../../" + user.profile_photo;
+						} else {
+
+							document.getElementById("profilePhoto").src =
+								"https://placehold.co/120x120?text=No+Image";
+						}
+					});
+				}
+
+				loadProfile();
+
+				function editProfile() {
+
+					const tabId = sessionStorage.getItem("tabId");
+
+					fetch("getusertab.php", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/x-www-form-urlencoded"
+						},
+						body: new URLSearchParams({
+							action: "profile",
+							tabId: tabId
+						})
+					})
+					.then(res => res.json())
+					.then(data => {
+
+						if (data.status !== "success") {
+							alert("Failed to load profile");
+							return;
+						}
+
+						const user = data.user;
+
+						document.getElementById("edit_first_name").value =
+							user.user_first_name || "";
+
+						document.getElementById("edit_last_name").value =
+							user.user_last_name || "";
+
+						document.getElementById("edit_email").value =
+							user.user_email || "";
+
+						document.getElementById("edit_birthdate").value =
+							user.intern_birthdate || "";
+
+						document.getElementById("edit_school_id").value =
+							user.schooluser_given_id || "";
+
+						document.getElementById("edit_gender").value =
+							user.intern_gender || "";
+
+						document.getElementById("edit_city").value =
+							user.intern_city || "";
+
+						document.getElementById("edit_province").value =
+							user.intern_province_or_state || "";
+
+						document.getElementById("edit_postal_code").value =
+							user.intern_postal_code || "";
+
+						document.getElementById("edit_country").value =
+							user.intern_country || "";
+
+						const modal = document.getElementById("editProfileModal");
+
+						modal.hidden = false;
+						modal.style.display = "flex";
+
+					});
+				}
+
+				function closeEditProfileModal() {
+
+					const modal = document.getElementById("editProfileModal");
+
+					modal.hidden = true;
+					modal.style.display = "none";
+				}
+				
+				document.getElementById("editProfileForm").addEventListener("submit", function(e) {
+
+					e.preventDefault();
+
+					const tabId = sessionStorage.getItem("tabId");
+
+					const formData = new FormData(this);
+
+					formData.append("action", "update_profile");
+					formData.append("tabId", tabId);
+
+					fetch("getusertab.php", {
+						method: "POST",
+						body: formData
+					})
+					.then(res => res.json())
+					.then(data => {
+
+						if (data.status === "success") {
+
+							alert("Profile updated successfully");
+
+							closeEditProfileModal();
+
+							loadProfile();
+
+						} else {
+
+							alert(data.message || "Failed to update profile");
+
+						}
+
+					})
+					.catch(err => {
+
+						console.error(err);
+
+						alert("Server error");
+
+					});
+
+				});
+
+				document.getElementById("editProfileModal")
+				.addEventListener("click", function(e) {
+
+					if (e.target === this) {
+						closeEditProfileModal();
 					}
 
-					document.getElementById("greeting").innerText =
-						"Good " + getTimeGreeting() + ", " + data.user.user_first_name + "!";
-
-					document.getElementById("fullname").innerText =
-						data.user.user_first_name + " " + data.user.user_last_name;
-
-					document.getElementById("givenid").innerText =
-						data.user.schooluser_given_id;
-
-					document.getElementById("schoolprogram").innerText =
-						data.user.school_name + " - " + data.user.program_name;
 				});
-			}
-
-			loadProfile();
-
-			function editProfile() {
-				alert("Edit profile clicked");
-			}
+				
 			</script>
 			
 		</section>

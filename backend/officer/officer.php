@@ -1339,6 +1339,9 @@ require '../../utilities/database/database.php';
 
 					<label>Email</label>
 					<input id="edit_email" placeholder="Email"><br><br>
+					
+					<label>School User ID</label>
+					<input type="text" id="edit_schooluser_given_id"><br><br>
 
 					<label>Birthdate</label>
 					<input id="edit_birthdate" type="date"><br><br>
@@ -1443,7 +1446,7 @@ require '../../utilities/database/database.php';
 								const tr = document.createElement('tr');
 								tr.innerHTML = `
 									<td>${intern.full_name || ''}</td>
-									<td>${intern.schooluser_id || ''}</td>
+									<td>${intern.schooluser_given_id || ''}</td>
 									<td>${intern.program_name || ''}</td>
 									<td>${intern.school_name || ''}</td>
 									<td>${intern.email || ''}</td>
@@ -1528,6 +1531,7 @@ require '../../utilities/database/database.php';
 
 								document.getElementById('edit_first_name').value = firstName;
 								document.getElementById('edit_last_name').value = lastName;
+								document.getElementById('edit_schooluser_given_id').value = intern.schooluser_given_id || '';
 
 								document.getElementById('edit_email').value = intern.email || '';
 								document.getElementById('edit_birthdate').value = intern.birthdate || '';
@@ -1570,6 +1574,7 @@ require '../../utilities/database/database.php';
 								first_name: document.getElementById('edit_first_name').value,
 								last_name: document.getElementById('edit_last_name').value,
 								email: document.getElementById('edit_email').value,
+								schooluser_given_id: document.getElementById('edit_schooluser_given_id').value,
 								birthdate: document.getElementById('edit_birthdate').value,
 								gender: document.getElementById('edit_gender').value,
 								city: document.getElementById('edit_city').value,
@@ -1719,6 +1724,1292 @@ require '../../utilities/database/database.php';
 				</script>
 			</div>
 			
+            <h2>Add Companies</h2>
+
+			<form id="companyForm" onsubmit="return submitCompanies(event)">
+
+			  <div style="overflow-x:auto;">
+				<table border="1" cellpadding="4" cellspacing="0" style="min-width: 1400px;">
+				  <thead>
+					<tr>
+					  <th>#</th>
+					  <th>Company Name *</th>
+					  <th>Email *</th>
+					  <th>Website</th>
+					  <th>Address</th>
+					  <th>Allowance</th>
+					  <th>Partnership Status</th>
+					  <th>Max Intern Slots</th>
+					  <th>Revenue Growth</th>
+					  <th>Profit Margins</th>
+					  <th>ROI</th>
+					  <th>ROA</th>
+					</tr>
+				  </thead>
+				  <tbody id="companyTableBody"></tbody>
+				</table>
+			  </div>
+
+			  <div id="companyFormErrors"></div>
+
+			  <button type="submit">Submit Companies</button>
+
+			  <button type="button" onclick="openCompanyCsvModal()">Edit CSV</button>
+
+			  <!-- CSV MODAL -->
+			  <div id="companyCsvModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+				background:rgba(0,0,0,0.5);">
+
+				<div style="background:#fff; width:600px; margin:10% auto; padding:20px;">
+
+				  <h3>Company CSV Editor</h3>
+
+				  <textarea id="companyCsvText" style="width:100%; height:300px;"></textarea>
+
+				  <br><br>
+
+				  <input type="file" id="companyCsvFile" accept=".csv,.xlsx,.xls" />
+
+				  <label>
+					<input type="checkbox" id="companyCsvHasHeaders">
+					File has headers
+				  </label>
+
+				  <br><br>
+
+				  <button type="button" onclick="importCompanyCsvFile()">Import File</button>
+
+				  <hr>
+
+				  <button type="button" onclick="closeCompanyCsvModal()">Cancel</button>
+				  <button type="button" onclick="applyCompanyCsvChanges()">Apply</button>
+
+				</div>
+			  </div>
+			</form>
+			
+			<script>
+
+			// ================= INIT =================
+			document.addEventListener("DOMContentLoaded", () => {
+			  const tbody = document.getElementById("companyTableBody");
+			  tbody.appendChild(createCompanyRow());
+			});
+
+			// ================= ROW CREATION =================
+			function createCompanyRow() {
+			  const tr = document.createElement("tr");
+
+			  tr.innerHTML = `
+				<td class="row-number"></td>
+
+				<td><input name="company_name" type="text"></td>
+				<td><input name="company_email" type="email"></td>
+				<td><input name="company_website" type="text"></td>
+				<td><input name="company_address" type="text"></td>
+
+				<td><input name="intern_allowance" type="number"></td>
+				<td><input name="partnership_status" type="text"></td>
+				<td><input name="max_internslots" type="number"></td>
+
+				<td><input name="revenue_growth" type="number"></td>
+				<td><input name="profit_margins" type="number"></td>
+				<td><input name="roi" type="number"></td>
+				<td><input name="roa" type="number"></td>
+
+				<td><button type="button" class="delete-row">Delete</button></td>
+			  `;
+
+			  attachCompanyListeners(tr);
+			  attachCompanyDelete(tr);
+
+			  return tr;
+			}
+
+			// ================= LISTENERS =================
+			function attachCompanyListeners(row) {
+			  row.querySelectorAll("input").forEach(input => {
+				input.addEventListener("input", handleCompanyExpansion);
+			  });
+			}
+
+			function attachCompanyDelete(row) {
+			  row.querySelector(".delete-row").addEventListener("click", () => {
+				const tbody = document.getElementById("companyTableBody");
+
+				row.remove();
+
+				if (tbody.querySelectorAll("tr").length === 0) {
+				  tbody.appendChild(createCompanyRow());
+				}
+
+				handleCompanyExpansion();
+			  });
+			}
+
+			// ================= EXPANSION =================
+			function isCompanyRowEmpty(row) {
+			  const inputs = row.querySelectorAll("input");
+			  for (let i of inputs) {
+				if (i.value.trim() !== "") return false;
+			  }
+			  return true;
+			}
+
+			function handleCompanyExpansion() {
+			  const tbody = document.getElementById("companyTableBody");
+			  const rows = tbody.querySelectorAll("tr");
+
+			  const lastRow = rows[rows.length - 1];
+
+			  if (lastRow && !isCompanyRowEmpty(lastRow)) {
+				tbody.appendChild(createCompanyRow());
+			  }
+
+			  cleanCompanyEmptyRows();
+			  updateCompanyNumbers();
+			}
+
+			function cleanCompanyEmptyRows() {
+			  const rows = Array.from(document.querySelectorAll("#companyTableBody tr"));
+
+			  let empty = rows.filter(isCompanyRowEmpty);
+
+			  empty.forEach((r, i) => {
+				if (i !== empty.length - 1) r.remove();
+			  });
+			}
+
+			function updateCompanyNumbers() {
+			  document.querySelectorAll("#companyTableBody tr").forEach((row, i) => {
+				row.querySelector(".row-number").textContent = i + 1;
+			  });
+			}
+
+			// ================= SUBMIT =================
+			async function submitCompanies(e) {
+			  e.preventDefault();
+
+			  const rows = document.querySelectorAll("#companyTableBody tr");
+			  const payload = [];
+			  const errors = [];
+
+			  const arr = Array.from(rows);
+			  const lastRow = arr[arr.length - 1];
+
+			  clearCompanyErrors();
+
+			  arr.forEach((row, i) => {
+
+				if (i === arr.length - 1 && isCompanyRowEmpty(row)) return;
+
+				const get = (n) => row.querySelector(`[name="${n}"]`)?.value?.trim();
+
+				const company_name = get("company_name");
+				const company_email = get("company_email");
+
+				let hasError = false;
+
+				if (!company_name) {
+				  markCompanyField(row, "company_name");
+				  hasError = true;
+				}
+
+				if (!company_email) {
+				  markCompanyField(row, "company_email");
+				  hasError = true;
+				}
+
+				if (hasError) {
+				  row.classList.add("error-row");
+				  errors.push(`Row ${i + 1}: Missing required fields`);
+				  return;
+				}
+
+				payload.push({
+				  company_name,
+				  company_email,
+				  company_website: get("company_website"),
+				  company_address: get("company_address"),
+				  intern_allowance: get("intern_allowance"),
+				  partnership_status: get("partnership_status"),
+				  max_internslots: get("max_internslots"),
+				  revenue_growth: get("revenue_growth"),
+				  profit_margins: get("profit_margins"),
+				  roi: get("roi"),
+				  roa: get("roa")
+				});
+
+			  });
+
+			  if (errors.length) {
+				document.getElementById("companyFormErrors").innerHTML =
+				  errors.map(e => `<p style="color:red;">${e}</p>`).join("");
+				return;
+			  }
+
+			  const res = await fetch("handler_companies.php", {
+				method: "POST",
+				headers: {"Content-Type":"application/json"},
+				body: JSON.stringify({ companies: payload })
+			  });
+
+			  const data = await res.json();
+
+			  if (!data.success) {
+				document.getElementById("companyFormErrors").innerHTML =
+				  `<p style="color:red;">Insert failed</p>`;
+				return;
+			  }
+
+			  if (data.inserted > 0) document.getElementById("companyFormErrors").innerHTML =
+				`<p style="color:green;">Inserted ${data.inserted} companies</p>`;
+
+				loadCompanies();
+			  document.getElementById("companyTableBody").innerHTML = "";
+			  document.getElementById("companyTableBody").appendChild(createCompanyRow());
+			}
+
+			// ================= ERRORS =================
+			function markCompanyField(row, name) {
+			  const el = row.querySelector(`[name="${name}"]`);
+			  if (el) el.classList.add("error-cell");
+			}
+
+			function clearCompanyErrors() {
+			  document.querySelectorAll("#companyTableBody .error-cell")
+				.forEach(e => e.classList.remove("error-cell"));
+			  document.querySelectorAll("#companyTableBody .error-row")
+				.forEach(e => e.classList.remove("error-row"));
+
+			  document.getElementById("companyFormErrors").innerHTML = "";
+			}
+
+			// ================= CSV =================
+			function openCompanyCsvModal() {
+			  const rows = document.querySelectorAll("#companyTableBody tr");
+			  let csv = [];
+
+			  rows.forEach(row => {
+				const get = n => row.querySelector(`[name="${n}"]`)?.value?.trim() || "";
+
+				csv.push([
+				  get("company_name"),
+				  get("company_email"),
+				  get("company_website"),
+				  get("company_address"),
+				  get("intern_allowance"),
+				  get("partnership_status"),
+				  get("max_internslots"),
+				  get("revenue_growth"),
+				  get("profit_margins"),
+				  get("roi"),
+				  get("roa")
+				].join(","));
+			  });
+
+			  document.getElementById("companyCsvText").value = csv.join("\n");
+			  document.getElementById("companyCsvModal").style.display = "block";
+			}
+
+			function closeCompanyCsvModal() {
+			  document.getElementById("companyCsvModal").style.display = "none";
+			}
+
+			function applyCompanyCsvChanges() {
+			  const text = document.getElementById("companyCsvText").value;
+			  const lines = text.trim().split("\n");
+
+			  const tbody = document.getElementById("companyTableBody");
+			  tbody.innerHTML = "";
+
+			  lines.forEach(line => {
+				const cols = line.split(",");
+
+				const tr = createCompanyRow();
+
+				const set = (n, v) => {
+				  const el = tr.querySelector(`[name="${n}"]`);
+				  if (el) el.value = v || "";
+				};
+
+				set("company_name", cols[0]);
+				set("company_email", cols[1]);
+				set("company_website", cols[2]);
+				set("company_address", cols[3]);
+				set("intern_allowance", cols[4]);
+				set("partnership_status", cols[5]);
+				set("max_internslots", cols[6]);
+				set("revenue_growth", cols[7]);
+				set("profit_margins", cols[8]);
+				set("roi", cols[9]);
+				set("roa", cols[10]);
+
+				tbody.appendChild(tr);
+			  });
+
+			  handleCompanyExpansion();
+			  closeCompanyCsvModal();
+			}
+
+			</script>
+
+			<h2>Companies List</h2>
+
+			<input
+			  type="text"
+			  id="searchInput2"
+			  placeholder="Search companies..."
+			>
+
+			<button id="columnFilterBtn2">Columns</button>
+			<button id="refreshBtn2">Refresh Table</button>
+
+			<div style="overflow-x:auto;">
+			  <table border="1" id="companyTable" cellpadding="4" cellspacing="0" style="min-width: 1400px;">
+				<thead>
+				  <tr>
+					<th data-key="company_name">Company Name <span class="sort-indicator"></span></th>
+					<th data-key="company_email">Email <span class="sort-indicator"></span></th>
+					<th data-key="company_website">Website <span class="sort-indicator"></span></th>
+					<th data-key="company_address">Address <span class="sort-indicator"></span></th>
+					<th data-key="intern_allowance">Allowance <span class="sort-indicator"></span></th>
+					<th data-key="partnership_status">Partnership Status <span class="sort-indicator"></span></th>
+					<th data-key="max_internslots">Max Intern Slots <span class="sort-indicator"></span></th>
+					<th data-key="revenue_growth">Revenue Growth <span class="sort-indicator"></span></th>
+					<th data-key="profit_margins">Profit Margins <span class="sort-indicator"></span></th>
+					<th data-key="roi">ROI <span class="sort-indicator"></span></th>
+					<th data-key="roa">ROA <span class="sort-indicator"></span></th>
+					<th data-key="departments">Departments <span class="sort-indicator"></span></th>
+					<th>Actions</th>
+				  </tr>
+				</thead>
+				<tbody></tbody>
+			  </table>
+			</div>
+
+			<div id="columnModal2" style=" display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+				<div style=" background:#fff; width:500px; max-width:90%; max-height:80vh; overflow-y:auto; padding:20px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.3); ">
+					<h3>Select Columns</h3>
+					<div id="columnCheckboxes2"></div>
+					<button id="closeColumnModal2">Close</button>
+				  </div>
+			</div>
+
+			<div id="editModal2" style="
+			  display:none;
+			  position:fixed;
+			  inset:0;
+			  background:rgba(0,0,0,0.5);
+			  z-index:9999;
+			  align-items:center;
+			  justify-content:center;
+			">
+			  <div style="
+				background:#fff;
+				width:500px;
+				max-width:90%;
+				max-height:80vh;
+				overflow-y:auto;
+				padding:20px;
+				border-radius:10px;
+				box-shadow:0 10px 30px rgba(0,0,0,0.3);
+			  ">
+				<h3>Edit Company</h3>
+
+				<input type="hidden" id="edit_company_id">
+
+				<label>Company Name *</label>
+				<input id="edit_company_name"><br><br>
+
+				<label>Email *</label>
+				<input id="edit_company_email"><br><br>
+
+				<label>Website</label>
+				<input id="edit_company_website"><br><br>
+
+				<label>Address</label>
+				<input id="edit_company_address"><br><br>
+
+				<label>Allowance</label>
+				<input id="edit_intern_allowance"><br><br>
+
+				<label>Partnership Status</label>
+				<input id="edit_partnership_status"><br><br>
+
+				<label>Max Intern Slots</label>
+				<input id="edit_max_internslots"><br><br>
+
+				<label>Revenue Growth</label>
+				<input id="edit_revenue_growth"><br><br>
+
+				<label>Profit Margins</label>
+				<input id="edit_profit_margins"><br><br>
+
+				<label>ROI</label>
+				<input id="edit_roi"><br><br>
+
+				<label>ROA</label>
+				<input id="edit_roa"><br><br>
+
+				<button id="cancelEdit2">Cancel</button>
+				<button id="saveEdit2">Save Changes</button>
+			  </div>
+			</div>
+			
+			<div id="deptModal2" style="
+			  display:none;
+			  position:fixed;
+			  inset:0;
+			  background:rgba(0,0,0,0.5);
+			  z-index:9999;
+			  align-items:center;
+			  justify-content:center;
+			">
+			  <div style="
+				background:#fff;
+				width:600px;
+				max-width:95%;
+				max-height:85vh;
+				overflow-y:auto;
+				padding:20px;
+				border-radius:10px;
+			  ">
+
+				<h3>Departments</h3>
+
+				<div id="deptList2"></div>
+
+				<hr>
+
+				<h4 id="deptFormTitle2">Add Department</h4>
+
+				<input type="hidden" id="dept_company_id">
+				<input type="hidden" id="dept_id">
+
+				<label>Department Name</label>
+				<input id="dept_name" placeholder="e.g. IT, HR">
+
+				<br><br>
+
+				<button id="deptCancel2">Cancel</button>
+				<button id="deptSubmit2">Submit</button>
+
+			  </div>
+			</div>
+			
+			<div id="supervisorModal2" style=" display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center; ">
+			  <div style="background:#fff; width:500px; padding:20px; border-radius:10px; ">
+				<h3>Add Supervisor</h3>
+
+				<input type="hidden" id="sup_department_id">
+				<input type="hidden" id="sup_user_id">
+
+				<label>First Name</label>
+				<input id="sup_first_name">
+
+				<label>Last Name</label>
+				<input id="sup_last_name">
+
+				<label>Email</label>
+				<input id="sup_email">
+
+				<label>Job Role</label>
+				<input id="sup_jobrole">
+				
+				<label>Contact Number</label>
+				<input id="sup_contact_no">
+
+				<br><br>
+
+				<button id="supCancel2">Cancel</button>
+				<button id="supSubmit2">Submit</button>
+
+			  </div>
+			</div>
+			
+			<script>
+			let currentData2 = [];
+			let sortState2 = {};
+			let activeSortKey2 = null;
+
+			let selectedColumns2 = [];
+
+			const searchInput2 = document.getElementById('searchInput2');
+
+			const columnMap2 = [
+			  { label: "Company Name", key: "company_name" },
+			  { label: "Email", key: "company_email" },
+			  { label: "Website", key: "company_website" },
+			  { label: "Address", key: "company_address" },
+			  { label: "Allowance", key: "intern_allowance" },
+			  { label: "Partnership Status", key: "partnership_status" },
+			  { label: "Max Intern Slots", key: "max_internslots" },
+			  { label: "Revenue Growth", key: "revenue_growth" },
+			  { label: "Profit Margins", key: "profit_margins" },
+			  { label: "ROI", key: "roi" },
+			  { label: "ROA", key: "roa" },
+			  { label: "Departments", key: "departments" }
+			];
+
+			async function loadCompanies() {
+			  const res = await fetch('get_companies.php');
+			  const data = await res.json();
+
+			  if (!data.success) {
+				console.error("API Error:", data.message);
+				currentData2 = [];
+				renderTable2([]);
+				return;
+			  }
+
+			  currentData2 = data.data; // 👈 IMPORTANT FIX
+			  renderTable2(currentData2);
+			}
+
+			loadCompanies();
+
+			document.getElementById('refreshBtn2').addEventListener('click', loadCompanies);
+
+			function renderTable2(data = []) {
+			  const tbody = document.querySelector('#companyTable tbody');
+			  if (!tbody) return;
+
+			  if (!Array.isArray(data)) {
+				console.error("renderTable2 expected array but got:", data);
+				return;
+			  }
+
+			  tbody.innerHTML = '';
+
+			  data.forEach(c => {
+				const tr = document.createElement('tr');
+
+				tr.innerHTML = `
+				  <td>${c.company_name ?? ''}</td>
+				  <td>${c.company_email ?? ''}</td>
+				  <td>${c.company_website ?? ''}</td>
+				  <td>${c.company_address ?? ''}</td>
+				  <td>${c.intern_allowance ?? ''}</td>
+				  <td>${c.partnership_status ?? ''}</td>
+				  <td>${c.max_internslots ?? ''}</td>
+				  <td>${c.revenue_growth ?? ''}</td>
+				  <td>${c.profit_margins ?? ''}</td>
+				  <td>${c.roi ?? ''}</td>
+				  <td>${c.roa ?? ''}</td>
+				  <td>${c.departments ?? 0}</td>
+				  <button class="viewDeptsBtn2" data-id="${c.company_id}">
+					View Depts
+				  </button>
+				  <button class="editBtn2" data-id="${c.company_id}">
+					Edit Company
+				  </button>
+				`;
+
+				tbody.appendChild(tr);
+			  });
+			}
+
+			function sortTable2(key) {
+			  const direction = sortState2[key] === 'asc' ? 'desc' : 'asc';
+			  sortState2[key] = direction;
+			  activeSortKey2 = key;
+
+			  currentData2.sort((a, b) => {
+				let valA = (a[key] ?? '').toString().toLowerCase();
+				let valB = (b[key] ?? '').toString().toLowerCase();
+
+				if (!isNaN(valA) && !isNaN(valB)) {
+				  valA = Number(valA);
+				  valB = Number(valB);
+				}
+
+				if (valA < valB) return direction === 'asc' ? -1 : 1;
+				if (valA > valB) return direction === 'asc' ? 1 : -1;
+				return 0;
+			  });
+
+			  renderTable2(currentData2);
+			  updateSortIndicators2();
+			  filterTable2();
+			}
+
+			function updateSortIndicators2() {
+			  document.querySelectorAll('#companyTable thead th').forEach(th => {
+				const key = th.dataset.key;
+				const indicator = th.querySelector('.sort-indicator');
+
+				th.classList.remove('active');
+
+				if (!key || key !== activeSortKey2) {
+				  if (indicator) indicator.textContent = '';
+				  return;
+				}
+
+				th.classList.add('active');
+				if (indicator) {
+				  indicator.textContent = sortState2[key] === 'asc' ? '▲' : '▼';
+				}
+			  });
+			}
+
+			function filterTable2() {
+			  const query = searchInput2.value.toLowerCase().trim();
+			  const rows = document.querySelectorAll('#companyTable tbody tr');
+
+			  rows.forEach(row => {
+				const cells = row.querySelectorAll('td');
+
+				// map column keys in order (same order as renderTable2)
+				const rowData = {
+				  company_name: cells[0]?.textContent ?? '',
+				  company_email: cells[1]?.textContent ?? '',
+				  company_website: cells[2]?.textContent ?? '',
+				  company_address: cells[3]?.textContent ?? '',
+				  intern_allowance: cells[4]?.textContent ?? '',
+				  partnership_status: cells[5]?.textContent ?? '',
+				  max_internslots: cells[6]?.textContent ?? '',
+				  revenue_growth: cells[7]?.textContent ?? '',
+				  profit_margins: cells[8]?.textContent ?? '',
+				  roi: cells[9]?.textContent ?? '',
+				  roa: cells[10]?.textContent ?? '',
+				  departments: cells[11]?.textContent ?? ''
+				};
+
+				const columnsToSearch =
+				  selectedColumns2.length > 0
+					? selectedColumns2
+					: Object.keys(rowData); // fallback: all columns
+
+				const match = columnsToSearch.some(key =>
+				  (rowData[key] ?? '').toLowerCase().includes(query)
+				);
+
+				row.style.display = match ? '' : 'none';
+			  });
+			}
+
+			searchInput2.addEventListener('input', filterTable2);
+
+			document.querySelectorAll('#companyTable thead th').forEach(th => {
+			  th.style.cursor = 'pointer';
+			  th.addEventListener('click', () => {
+				const key = th.dataset.key;
+				if (!key) return;
+				sortTable2(key);
+			  });
+			});
+
+			document.addEventListener('click', (e) => {
+			  if (e.target.classList.contains('editBtn2')) {
+				const id = e.target.dataset.id;
+				const c = currentData2.find(x => x.company_id == id);
+				if (!c) return;
+
+				document.getElementById('edit_company_id').value = c.company_id;
+				document.getElementById('edit_company_name').value = c.company_name || '';
+				document.getElementById('edit_company_email').value = c.company_email || '';
+				document.getElementById('edit_company_website').value = c.company_website || '';
+				document.getElementById('edit_company_address').value = c.company_address || '';
+				document.getElementById('edit_intern_allowance').value = c.intern_allowance || '';
+				document.getElementById('edit_partnership_status').value = c.partnership_status || '';
+				document.getElementById('edit_max_internslots').value = c.max_internslots || '';
+				document.getElementById('edit_revenue_growth').value = c.revenue_growth || '';
+				document.getElementById('edit_profit_margins').value = c.profit_margins || '';
+				document.getElementById('edit_roi').value = c.roi || '';
+				document.getElementById('edit_roa').value = c.roa || '';
+
+				document.getElementById('editModal2').style.display = 'flex';
+			  }
+			});
+
+			document.getElementById('cancelEdit2').addEventListener('click', () => {
+			  document.getElementById('editModal2').style.display = 'none';
+			});
+
+			document.getElementById('saveEdit2').addEventListener('click', async () => {
+
+			  const getVal = (id) => {
+				const v = document.getElementById(id).value;
+				return v === "" ? null : v;
+			  };
+
+			  const payload = {
+				company_id: getVal('edit_company_id'),
+
+				company_name: getVal('edit_company_name'),
+				company_email: getVal('edit_company_email'),
+				company_website: getVal('edit_company_website'),
+				company_address: getVal('edit_company_address'),
+
+				intern_allowance: getVal('edit_intern_allowance'),
+				partnership_status: getVal('edit_partnership_status'),
+				max_internslots: getVal('edit_max_internslots'),
+
+				revenue_growth: getVal('edit_revenue_growth'),
+				profit_margins: getVal('edit_profit_margins'),
+				roi: getVal('edit_roi'),
+				roa: getVal('edit_roa')
+			  };
+			  
+				if (!payload.company_name || !payload.company_email) {
+				  alert("Required fields cannot be empty");
+				  return;
+				}
+
+			  const res = await fetch('company_handler.php', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload)
+			  });
+
+			  const result = await res.json();
+
+			  if (result.success) {
+				document.getElementById('editModal2').style.display = 'none';
+				loadCompanies();
+			  } else {
+				alert(result.message || 'Update failed');
+			  }
+			});
+
+			/* COLUMN FILTER */
+			document.getElementById('columnFilterBtn2').addEventListener('click', () => {
+			  const container = document.getElementById('columnCheckboxes2');
+			  container.innerHTML = '';
+
+			  columnMap2.forEach(col => {
+				const checked = selectedColumns2.includes(col.key) ? 'checked' : '';
+
+				container.innerHTML += `
+				  <label>
+					<input type="checkbox" value="${col.key}" ${checked}>
+					${col.label}
+				  </label><br>
+				`;
+			  });
+
+			  document.getElementById('columnModal2').style.display = 'flex';
+			});
+
+			document.getElementById('closeColumnModal2').addEventListener('click', () => {
+			  const checkboxes = document.querySelectorAll('#columnCheckboxes2 input[type="checkbox"]');
+
+			  selectedColumns2 = [];
+			  checkboxes.forEach(cb => {
+				if (cb.checked) selectedColumns2.push(cb.value);
+			  });
+
+			  document.getElementById('columnModal2').style.display = 'none';
+			  filterTable2();
+			});
+			
+			let currentDeptCompanyId = null;
+			
+			document.addEventListener('click', async (e) => {
+			  if (e.target.classList.contains('viewDeptsBtn2')) {
+				const companyId = e.target.dataset.id;
+				currentDeptCompanyId = companyId;
+
+				document.getElementById('dept_company_id').value = companyId;
+				document.getElementById('dept_id').value = '';
+				document.getElementById('dept_name').value = '';
+
+				document.getElementById('deptFormTitle2').textContent = "Add Department";
+
+				await loadDepartments(companyId);
+
+				document.getElementById('deptModal2').style.display = 'flex';
+			  }
+			});
+			
+			async function loadDepartments(companyId) {
+			  const res = await fetch(`departments_get.php?company_id=${companyId}`);
+			  const data = await res.json();
+
+			  const container = document.getElementById('deptList2');
+			  container.innerHTML = '';
+
+			  data.data.forEach(d => {
+				const div = document.createElement('div');
+
+				div.style = "border:1px solid #ddd;padding:10px;margin-bottom:10px;";
+
+				div.innerHTML = `
+				  <div style="display:flex;justify-content:space-between;">
+					<strong>${d.department_name}</strong>
+
+					<button class="addSupervisorBtn2"
+					  data-deptid="${d.department_id}"
+					  data-deptname="${d.department_name}">
+					  + Add Supervisor
+					</button>
+					<button class="deptEditBtn2"
+					  data-id="${d.department_id}"
+					  data-name="${d.department_name}">
+					  Edit
+					</button>
+				  </div>
+
+				  <div id="supList-${d.department_id}" style="margin-top:8px;">
+					Loading supervisors...
+				  </div>
+				`;
+
+				container.appendChild(div);
+
+				loadSupervisors(d.department_id);
+			  });
+			}
+			
+			document.addEventListener('click', (e) => {
+			  if (e.target.classList.contains('deptEditBtn2')) {
+				document.getElementById('dept_id').value = e.target.dataset.id;
+				document.getElementById('dept_name').value = e.target.dataset.name;
+
+				document.getElementById('deptFormTitle2').textContent = "Edit Department";
+			  }
+			});
+			
+			document.getElementById('deptCancel2').addEventListener('click', () => {
+			  document.getElementById('dept_id').value = '';
+			  document.getElementById('dept_name').value = '';
+			  document.getElementById('deptModal2').style.display = 'none';
+			});
+			
+			document.getElementById('deptSubmit2').addEventListener('click', async () => {
+			  const payload = {
+				department_id: document.getElementById('dept_id').value || null,
+				company_id: document.getElementById('dept_company_id').value,
+				department_name: document.getElementById('dept_name').value
+			  };
+
+			  const res = await fetch('departments_save.php', {
+				method: 'POST',
+				headers: {'Content-Type':'application/json'},
+				body: JSON.stringify(payload)
+			  });
+
+			  const result = await res.json();
+
+			  if (result.success) {
+				document.getElementById('dept_id').value = '';
+				document.getElementById('dept_name').value = '';
+
+				document.getElementById('deptFormTitle2').textContent = "Add Department";
+
+				await loadDepartments(payload.company_id);
+				await loadCompanies(); // refresh count
+			  } else {
+				alert(result.message);
+			  }
+			});
+			
+			async function loadSupervisors(deptId) {
+			  const res = await fetch(`supervisors_get.php?department_id=${deptId}`);
+			  const data = await res.json();
+
+			  const container = document.getElementById(`supList-${deptId}`);
+			  container.innerHTML = '';
+
+			  if (!data.data.length) {
+				container.innerHTML = "<small>No supervisors</small>";
+				return;
+			  }
+
+			  data.data.forEach(s => {
+				const div = document.createElement('div');
+
+				div.innerHTML = `
+					<div style="font-size:13px;margin-left:10px;display:flex;justify-content:space-between;align-items:center;">
+					  <div>
+						👤 ${s.user_first_name} ${s.user_last_name} (${s.user_email})
+						<br>
+						<small>Role: ${s.supervisor_jobrole ?? ''}</small>
+					  </div>
+
+					  <button class="editSupervisorBtn2"
+						data-userid="${s.user_id}"
+						data-first="${s.user_first_name}"
+						data-last="${s.user_last_name}"
+						data-email="${s.user_email}"
+						data-job="${s.supervisor_jobrole}"
+						  data-contact="${s.contact_no ?? ''}">
+						Edit
+					  </button>
+					</div>
+				`;
+
+				container.appendChild(div);
+			  });
+			}
+			
+			document.addEventListener('click', (e) => {
+			  if (e.target.classList.contains('addSupervisorBtn2')) {
+				const deptId = e.target.dataset.deptid;
+
+				document.getElementById('sup_department_id').value = deptId;
+
+				document.getElementById('sup_first_name').value = '';
+				document.getElementById('sup_last_name').value = '';
+				document.getElementById('sup_email').value = '';
+				document.getElementById('sup_jobrole').value = '';
+				document.getElementById('sup_contact_no').value = '';
+
+				document.getElementById('supervisorModal2').style.display = 'flex';
+			  }
+			});
+			
+			document.getElementById('supCancel2').addEventListener('click', () => {
+			  document.getElementById('supervisorModal2').style.display = 'none';
+			});
+			
+			document.getElementById('supSubmit2').addEventListener('click', async () => {
+			  const payload = {
+				user_id: document.getElementById('sup_user_id').value || null,
+				department_id: document.getElementById('sup_department_id').value,
+				first_name: document.getElementById('sup_first_name').value,
+				last_name: document.getElementById('sup_last_name').value,
+				email: document.getElementById('sup_email').value,
+				jobrole: document.getElementById('sup_jobrole').value,
+				contact_no: document.getElementById('sup_contact_no').value
+			  };
+
+			  const res = await fetch('supervisors_save.php', {
+				method: 'POST',
+				headers: {'Content-Type':'application/json'},
+				body: JSON.stringify(payload)
+			  });
+
+			  const result = await res.json();
+
+			  if (result.success) {
+				document.getElementById('supervisorModal2').style.display = 'none';
+
+				// reset form
+				document.getElementById('sup_user_id').value = '';
+				document.getElementById('sup_first_name').value = '';
+				document.getElementById('sup_last_name').value = '';
+				document.getElementById('sup_email').value = '';
+				document.getElementById('sup_jobrole').value = '';
+				document.getElementById('sup_contact_no').value = '';
+
+				await loadDepartments(currentDeptCompanyId);
+			  } else {
+				alert(result.message);
+			  }
+			});
+			
+			document.addEventListener('click', (e) => {
+			  if (e.target.classList.contains('editSupervisorBtn2')) {
+				document.getElementById('sup_user_id').value = e.target.dataset.userid;
+
+				document.getElementById('sup_first_name').value = e.target.dataset.first;
+				document.getElementById('sup_last_name').value = e.target.dataset.last;
+				document.getElementById('sup_email').value = e.target.dataset.email;
+				document.getElementById('sup_jobrole').value = e.target.dataset.job;
+				document.getElementById('sup_contact_no').value = e.target.dataset.contact || '';
+
+				document.getElementById('supervisorModal2').style.display = 'flex';
+			  }
+			});
+			
+			</script>
+
+			<h2>Supervisors List</h2>
+
+			<input
+			  type="text"
+			  id="searchInput3"
+			  placeholder="Search supervisors..."
+			>
+
+			<button id="columnFilterBtn3">Columns</button>
+			<button id="refreshBtn3">Refresh Table</button>
+
+			<div style="overflow-x:auto;">
+			  <table border="1" id="supervisorTable" cellpadding="4" cellspacing="0" style="min-width: 1200px;">
+				<thead>
+				  <tr>
+					<th data-key="full_name">Name <span class="sort-indicator"></span></th>
+					<th data-key="user_email">Email <span class="sort-indicator"></span></th>
+					<th data-key="contact_no">Contact No <span class="sort-indicator"></span></th>
+					<th data-key="supervisor_jobrole">Job Role <span class="sort-indicator"></span></th>
+					<th data-key="department_name">Department <span class="sort-indicator"></span></th>
+					<th data-key="company_name">Company <span class="sort-indicator"></span></th>
+				  </tr>
+				</thead>
+				<tbody></tbody>
+			  </table>
+			</div>
+
+			<div id="columnModal3" style="
+			  display:none;
+			  position:fixed;
+			  inset:0;
+			  background:rgba(0,0,0,0.5);
+			  z-index:9999;
+			  align-items:center;
+			  justify-content:center;
+			">
+			  <div style="
+				background:#fff;
+				width:500px;
+				max-width:90%;
+				max-height:80vh;
+				overflow-y:auto;
+				padding:20px;
+				border-radius:10px;
+			  ">
+				<h3>Select Columns</h3>
+
+				<div id="columnCheckboxes3"></div>
+
+				<button id="closeColumnModal3">Close</button>
+			  </div>
+			</div>
+
+			<script>
+
+			let currentData3 = [];
+			let sortState3 = {};
+			let activeSortKey3 = null;
+
+			let selectedColumns3 = [];
+
+			const searchInput3 = document.getElementById('searchInput3');
+
+			const columnMap3 = [
+			  { label: "Name", key: "full_name" },
+			  { label: "Email", key: "user_email" },
+			  { label: "Contact No", key: "contact_no" },
+			  { label: "Job Role", key: "supervisor_jobrole" },
+			  { label: "Department", key: "department_name" },
+			  { label: "Company", key: "company_name" }
+			];
+
+			async function loadSupervisorsTable3() {
+
+			  const res = await fetch('supervisors_table_get.php');
+			  const data = await res.json();
+
+			  if (!data.success) {
+				console.error(data.message);
+				currentData3 = [];
+				renderTable3([]);
+				return;
+			  }
+
+			  currentData3 = data.data;
+			  renderTable3(currentData3);
+			}
+
+			loadSupervisorsTable3();
+
+			document.getElementById('refreshBtn3')
+			.addEventListener('click', loadSupervisorsTable3);
+
+			function renderTable3(data = []) {
+
+			  const tbody = document.querySelector('#supervisorTable tbody');
+
+			  if (!tbody) return;
+
+			  tbody.innerHTML = '';
+
+			  data.forEach(s => {
+
+				const tr = document.createElement('tr');
+
+				tr.innerHTML = `
+				  <td>${s.full_name ?? ''}</td>
+				  <td>${s.user_email ?? ''}</td>
+				  <td>${s.contact_no ?? ''}</td>
+				  <td>${s.supervisor_jobrole ?? ''}</td>
+				  <td>${s.department_name ?? ''}</td>
+				  <td>${s.company_name ?? ''}</td>
+				`;
+
+				tbody.appendChild(tr);
+
+			  });
+
+			}
+
+			function sortTable3(key) {
+
+			  const direction = sortState3[key] === 'asc'
+				? 'desc'
+				: 'asc';
+
+			  sortState3[key] = direction;
+			  activeSortKey3 = key;
+
+			  currentData3.sort((a, b) => {
+
+				let valA = (a[key] ?? '').toString().toLowerCase();
+				let valB = (b[key] ?? '').toString().toLowerCase();
+
+				if (valA < valB) return direction === 'asc' ? -1 : 1;
+				if (valA > valB) return direction === 'asc' ? 1 : -1;
+
+				return 0;
+			  });
+
+			  renderTable3(currentData3);
+
+			  updateSortIndicators3();
+
+			  filterTable3();
+			}
+
+			function updateSortIndicators3() {
+
+			  document.querySelectorAll('#supervisorTable thead th')
+			  .forEach(th => {
+
+				const key = th.dataset.key;
+				const indicator = th.querySelector('.sort-indicator');
+
+				th.classList.remove('active');
+
+				if (!key || key !== activeSortKey3) {
+
+				  if (indicator) {
+					indicator.textContent = '';
+				  }
+
+				  return;
+				}
+
+				th.classList.add('active');
+
+				if (indicator) {
+				  indicator.textContent =
+					sortState3[key] === 'asc'
+					  ? '▲'
+					  : '▼';
+				}
+
+			  });
+
+			}
+
+			function filterTable3() {
+
+			  const query = searchInput3.value
+				.toLowerCase()
+				.trim();
+
+			  const rows = document.querySelectorAll('#supervisorTable tbody tr');
+
+			  rows.forEach(row => {
+
+				const cells = row.querySelectorAll('td');
+
+				const rowData = {
+				  full_name: cells[0]?.textContent ?? '',
+				  user_email: cells[1]?.textContent ?? '',
+				  supervisor_jobrole: cells[2]?.textContent ?? '',
+				  contact_no: cells[3]?.textContent ?? '',
+				  department_name: cells[3]?.textContent ?? '',
+				  company_name: cells[4]?.textContent ?? ''
+				};
+
+				const columnsToSearch =
+				  selectedColumns3.length > 0
+					? selectedColumns3
+					: Object.keys(rowData);
+
+				const match = columnsToSearch.some(key =>
+				  (rowData[key] ?? '')
+				  .toLowerCase()
+				  .includes(query)
+				);
+
+				row.style.display = match ? '' : 'none';
+
+			  });
+
+			}
+
+			searchInput3.addEventListener('input', filterTable3);
+
+			document.querySelectorAll('#supervisorTable thead th')
+			.forEach(th => {
+
+			  th.style.cursor = 'pointer';
+
+			  th.addEventListener('click', () => {
+
+				const key = th.dataset.key;
+
+				if (!key) return;
+
+				sortTable3(key);
+
+			  });
+
+			});
+
+			document.getElementById('columnFilterBtn3')
+			.addEventListener('click', () => {
+
+			  const container =
+				document.getElementById('columnCheckboxes3');
+
+			  container.innerHTML = '';
+
+			  columnMap3.forEach(col => {
+
+				const checked =
+				  selectedColumns3.includes(col.key)
+					? 'checked'
+					: '';
+
+				container.innerHTML += `
+				  <label>
+					<input type="checkbox"
+					  value="${col.key}"
+					  ${checked}>
+					${col.label}
+				  </label>
+				  <br>
+				`;
+
+			  });
+
+			  document.getElementById('columnModal3')
+				.style.display = 'flex';
+
+			});
+
+			document.getElementById('closeColumnModal3')
+			.addEventListener('click', () => {
+
+			  const checkboxes =
+				document.querySelectorAll(
+				  '#columnCheckboxes3 input[type="checkbox"]'
+				);
+
+			  selectedColumns3 = [];
+
+			  checkboxes.forEach(cb => {
+
+				if (cb.checked) {
+				  selectedColumns3.push(cb.value);
+				}
+
+			  });
+
+			  document.getElementById('columnModal3')
+				.style.display = 'none';
+
+			  filterTable3();
+
+			});
+
+			</script>
 		</section>
 
         <!-- Rubrics Section (was Database) -->
