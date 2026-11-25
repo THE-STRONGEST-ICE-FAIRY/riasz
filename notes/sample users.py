@@ -1,6 +1,6 @@
 database users:
     addymin@apc.edu.ph
-    admin321
+    admin3211
     
     inteoffi@apc.edu.ph
     officer123
@@ -13,6 +13,9 @@ database users:
     
     eceprog@apc.edu.ph
     program123
+    
+    [password for all interns]
+    intern123
 
 force login:
     Email: 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 20, 2026 at 03:03 PM
+-- Generation Time: Nov 25, 2026 at 01:23 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -152,6 +152,15 @@ CREATE TABLE `companies` (
   `roa` decimal(15,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `companies`
+--
+
+INSERT INTO `companies` (`company_id`, `company_date_added`, `company_name`, `company_email`, `company_website`, `company_address`, `intern_allowance`, `partnership_status`, `max_internslots`, `revenue_growth`, `profit_margins`, `roi`, `roa`) VALUES
+(2, '2026-05-22 09:55:47', 'Company ZXC', 'zxc@company.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, '2026-05-22 10:14:56', 'ABC Management', 'abc@defg.com', NULL, NULL, NULL, 'a', NULL, NULL, NULL, NULL, NULL),
+(4, '2026-05-22 10:16:25', 'Corp Oration', 'test@gmaile.kom', '', '', NULL, '', NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -215,6 +224,15 @@ CREATE TABLE `departments` (
   `company_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `departments`
+--
+
+INSERT INTO `departments` (`department_id`, `department_name`, `company_id`) VALUES
+(1, 'HRA', 3),
+(3, 'IT', 3),
+(4, 'IT', 4);
+
 -- --------------------------------------------------------
 
 --
@@ -261,7 +279,11 @@ CREATE TABLE `executivedirectors` (
 --
 
 INSERT INTO `executivedirectors` (`exd_id`, `schooluser_id`, `school_id`) VALUES
-(8, 83, 3);
+(9, 109, 14),
+(11, 111, 15),
+(12, 113, 3),
+(13, 116, 13),
+(14, 120, 19);
 
 -- --------------------------------------------------------
 
@@ -356,9 +378,10 @@ CREATE TABLE `interns` (
 --
 
 INSERT INTO `interns` (`intern_id`, `schooluser_id`, `program_id`, `intern_birthdate`, `intern_gender`, `intern_city`, `intern_province_or_state`, `intern_postal_code`, `intern_country`) VALUES
-(3, 90, 6, '2004-05-12', 'Male', 'Vancouver', 'BC', 'V6B 1P1', 'Canada'),
-(4, 91, 8, '2003-11-20', 'Female', 'New York', 'NY', '10001', 'USA'),
-(5, 92, 7, '2005-02-28', 'Male', 'Toronto', 'ON', 'M5H 2N2', 'Canada');
+(11, 102, 6, '2004-05-12', '', 'Vancouver', 'BC', 'V6B 1P1', 'Canadac'),
+(12, 103, 8, '2003-11-20', 'Female', 'New York', 'NY', '10001', 'USA'),
+(13, 108, 6, '2026-11-11', 'Female', 'fdsa', 'fdsa', 'fdsa', 'fds'),
+(14, 122, 6, '2005-06-25', 'Male', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -499,9 +522,24 @@ CREATE TABLE `passwordresets` (
 --
 
 INSERT INTO `passwordresets` (`passreset_id`, `schooluser_id`, `passreset_token`, `passreset_date_created`, `passreset_date_expiry`, `passreset_is_used`) VALUES
-(23, 90, '51360664fdeb44fcf269663837d9a595b92956977032b3dd6d7f04e7106c5790', '2026-05-13 10:44:27', '2026-05-14 10:44:27', 1),
-(24, 91, '3d5fd1b285615ab4978be7b29beb0e973193667a5fff5f03f65e10b0a81d0536', '2026-05-13 10:44:27', '2026-05-14 10:44:27', 1),
-(25, 92, '8f1a73ee3e5304a2e310f7f2741b318f1fe0d03de7a8f66e98efbccce6501a4a', '2026-05-13 10:44:27', '2026-05-13 18:45:27', 0);
+(32, 102, '8ae58672cc56d9a2fbbe550b15df21a5a1defdb6870921bc2a2049feae47f93c', '2026-05-21 14:46:04', '2026-05-22 14:46:04', 1),
+(33, 103, '8b3e51b261cf5b59d72508d49e9fcc9d507466be7fc9804105853c6118ad6665', '2026-05-21 16:54:40', '2026-05-22 16:54:40', 1),
+(34, 104, '54b196e3b8144b89426fddc4f605076c4fc0dd879d5d3de6fcdc62ad3f089f27', '2026-06-20 02:17:04', '2026-06-21 02:17:04', 0),
+(35, 1, '8196f74789fec6b35e156765f41e289a994e2e0a5aec55ffb9d0dbb672ace863', '2026-11-12 06:27:51', '2026-11-12 14:42:51', 1),
+(39, 108, '1ea4fb4504c6173060549b281180be69a771dca3c0df17157016893a497762af', '2026-11-12 09:33:59', '2026-11-13 09:33:59', 1),
+(40, 109, 'd21597c323b819722abf5d46b2c7094df3a0b648fd0507be7c244f96755b1c0a', '2026-11-13 13:20:24', '2026-11-14 13:20:24', 0),
+(42, 111, '219d7633005ed27602dfd96526578721471ac640e14e0122d8b7c5c00f70cc00', '2026-11-14 09:21:21', '2026-11-15 09:21:21', 0),
+(43, 112, 'a8023200193a55f20bd11be0db5226089cae48b55405d3c7b7db5c3d536a4adb', '2026-11-14 09:32:50', '2026-11-15 09:32:50', 0),
+(44, 113, '6daaf62b7f820cf0af02f491c5b24ed1708c85ee7caada438a1a851279db7978', '2026-11-14 09:54:05', '2026-11-15 09:54:05', 0),
+(45, 114, '6ae5f56282c2c2b284ce1431a236a56ca6728ce191e03039a4aab3b56ccdb3f6', '2026-11-14 09:54:45', '2026-11-15 09:54:45', 0),
+(46, 115, '1733082e28235be74b7cb45d9cb48ef5c7f73fd922e1ab7b0b96fac81a954373', '2026-11-14 09:55:18', '2026-11-15 09:55:18', 0),
+(47, 116, '1ebb48067c80705762cc67f26d5135345dba2dbfdb23c512281a512d3346227f', '2026-11-14 10:08:42', '2026-11-15 10:08:42', 0),
+(48, 117, '0610da00c917a2c0c10dadb72ff8486afe8324233a53714215bd0e892d0b2eac', '2026-11-14 10:10:06', '2026-11-15 10:10:06', 0),
+(49, 118, '117cc3724e4ffc4fc8e56c4ea56bf4cd08395944c0a06a3f94950f4400e6313d', '2026-11-14 10:10:48', '2026-11-15 10:10:48', 0),
+(50, 119, 'a0f6882e80fe032038fe42f1d5d920d8dd5a94cb7b269a22010e7eb0469bcea4', '2026-11-14 10:11:23', '2026-11-15 10:11:23', 0),
+(51, 120, '2440df47f17efe9c3c22d584a22e6f9ca4516846330750de2b72807de0428380', '2026-11-14 10:13:14', '2026-11-15 10:13:14', 0),
+(52, 121, '1ab12f0a08ab828ac83a693e2c5dc93f967d341cb2636253394eca452f7a97b3', '2026-11-14 10:13:57', '2026-11-15 10:13:57', 0),
+(53, 122, 'cf1284bcced21db8cd873255d5c4d4f9e19e3daf70e0f0cee741c69b7765e5b7', '2026-11-14 10:35:19', '2026-11-15 10:35:19', 0);
 
 -- --------------------------------------------------------
 
@@ -520,8 +558,13 @@ CREATE TABLE `programdirectors` (
 --
 
 INSERT INTO `programdirectors` (`pd_id`, `schooluser_id`, `program_id`) VALUES
-(2, 84, 6),
-(3, 85, 7);
+(4, 112, 11),
+(5, 114, 8),
+(6, 115, 6),
+(7, 117, 13),
+(8, 118, 14),
+(9, 119, 15),
+(10, 121, 17);
 
 -- --------------------------------------------------------
 
@@ -542,7 +585,38 @@ CREATE TABLE `programs` (
 INSERT INTO `programs` (`program_id`, `program_name`, `school_id`) VALUES
 (6, 'Computer Engineering', 3),
 (7, 'Electrical Engineering', 3),
-(8, 'Civil Engineering', 3);
+(8, 'Civil Engineering', 3),
+(10, 'Architecture', 14),
+(11, 'Computer Science', 15),
+(12, 'Information Technology', 15),
+(13, 'Accountancy', 13),
+(14, 'Business Administration', 13),
+(15, 'Tourism Management', 13),
+(16, 'Multimedia Arts', 19),
+(17, 'Arts in Psychology', 19);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ratelimits`
+--
+
+CREATE TABLE `ratelimits` (
+  `rl_id` bigint UNSIGNED NOT NULL,
+  `rl_key` varchar(100) NOT NULL,
+  `rl_created` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `ratelimits`
+--
+
+INSERT INTO `ratelimits` (`rl_id`, `rl_key`, `rl_created`) VALUES
+(1, 'login:e:09010cdf37056ada55009164ccb93fed768bd316', '2026-11-17 17:41:09'),
+(2, 'login:i:363baea9cba210afac6d7a556fca596e30c46333', '2026-11-17 17:41:09'),
+(3, 'otp:send:09010cdf37056ada55009164ccb93fed768bd316', '2026-11-17 17:42:49'),
+(4, 'otp:sendh:09010cdf37056ada55009164ccb93fed768bd316', '2026-11-17 17:42:49'),
+(5, 'otp:sendi:363baea9cba210afac6d7a556fca596e30c46333', '2026-11-17 17:42:49');
 
 -- --------------------------------------------------------
 
@@ -608,8 +682,10 @@ CREATE TABLE `schools` (
 
 INSERT INTO `schools` (`school_id`, `school_name`) VALUES
 (14, 'Architecture'),
+(15, 'Computing and Information Technologies'),
 (3, 'Engineering'),
-(13, 'Management');
+(13, 'Management'),
+(19, 'Multimedia and Arts');
 
 -- --------------------------------------------------------
 
@@ -621,22 +697,34 @@ CREATE TABLE `schoolusers` (
   `schooluser_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `schooluser_given_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `schooluser_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+  `schooluser_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `profile_photo` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `schoolusers`
 --
 
-INSERT INTO `schoolusers` (`schooluser_id`, `user_id`, `schooluser_given_id`, `schooluser_password`) VALUES
-(1, 1, 'A001', '$2y$10$XLZN8DuRQkaQqjgAYILRneHPKxWVpGRhN4sCMVo4DoJsvcRQw2omG'),
-(82, 105, 'inteoffi1', '$2y$10$P9VVfi7ltIG78hlI0VhQBunnH3Cb8TGv/T9B3/eFZfXxiDqOfVnwu'),
-(83, 106, 'engiexe1', '$2y$10$VdROczK2HfdTIKjWcdEhC.oOnc7EflU2brOP/BmXSh11WMUW5Z70S'),
-(84, 107, 'cpeprog1', '$2y$10$z5j7Skvqf.A3VA79wPDlQenyH1javhq7oMGiWLbssadtLOAwcWnWq'),
-(85, 108, 'eceprog1', '$2y$10$gu8sasqfrgyiCwGeDm0cqegmb1j5brFTl5ttf7u0d92Ko00RdkTIe'),
-(90, 114, 'STU-9921', '$2y$10$eePwhaM4YLtNNTs2ySfj8.olqXfuTR8SvUjZus8UAI0btK2mSavBO'),
-(91, 115, '2023-8842', '$2y$10$qwfcvRCG6lyyGXBqkkUUte/q6zscna/Xwo7i/YijOWIec2.Q53Fym'),
-(92, 116, 'MT-00451', NULL);
+INSERT INTO `schoolusers` (`schooluser_id`, `user_id`, `schooluser_given_id`, `schooluser_password`, `profile_photo`) VALUES
+(1, 1, 'A001', '$2y$10$SQqXsjEAZKiv/qyGKjwuw.eoHkOVQm0ySDDmCnuCotgy7naNlt8kC', NULL),
+(82, 105, 'inteoffi1', '$2y$10$P9VVfi7ltIG78hlI0VhQBunnH3Cb8TGv/T9B3/eFZfXxiDqOfVnwu', NULL),
+(102, 135, 'STU-9921', '$2y$10$8cZXvz4YdBQYvtZ7sB1v/.9yaW4TPmKBKXBsaFYrUQt7tq2bZCm6a', 'uploads/profilephotos/1779432641_haruka - Copy.ico'),
+(103, 136, '2023-8842', '$2y$10$J6KmNK0itnDzhqtV9fwnjuCWKoS5LrISxMT7OlXS896CxD3bsUE7e', NULL),
+(104, 141, '213123', NULL, NULL),
+(108, 145, 'fd', '$2y$10$6arzdBOHneCxRn6eD1FAAuc4BcnAg/6jQok1h3XVfzuFQc4BgpW9u', NULL),
+(109, 146, '1', NULL, NULL),
+(111, 152, 'rhear@test.test', NULL, NULL),
+(112, 153, 'roselleg@apc.edu.ph', NULL, NULL),
+(113, 154, 'leonardojrs@test.test', NULL, NULL),
+(114, 155, 'ronaldog@test.test', NULL, NULL),
+(115, 156, 'sergiop@test.test', NULL, NULL),
+(116, 157, 'jedl@test.test', NULL, NULL),
+(117, 158, 'oslera@test.test', NULL, NULL),
+(118, 159, 'manuelm@test.test', NULL, NULL),
+(119, 160, 'rosemariea@test.test', NULL, NULL),
+(120, 161, 'robertb@test.test', NULL, NULL),
+(121, 162, 'lizam@test.test', NULL, NULL),
+(122, 163, 'jvaquino@student.apc.edu.ph', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -717,8 +805,18 @@ CREATE TABLE `supervisors` (
   `supervisor_id` int NOT NULL,
   `user_id` int DEFAULT NULL,
   `supervisor_jobrole` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `department_id` int DEFAULT NULL
+  `department_id` int DEFAULT NULL,
+  `contact_no` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `supervisors`
+--
+
+INSERT INTO `supervisors` (`supervisor_id`, `user_id`, `supervisor_jobrole`, `department_id`, `contact_no`) VALUES
+(2, 138, 'Supervising', 1, '321'),
+(3, 139, 'Supervising', 4, NULL),
+(4, 140, 'super', 1, '1234');
 
 -- --------------------------------------------------------
 
@@ -759,12 +857,26 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `user_first_name`, `user_last_name`, `user_email`, `user_date_created`, `user_date_updated`, `user_role`, `user_is_archived`) VALUES
 (1, 'Addy', 'Min', 'addymin@apc.edu.ph', '2026-04-12 11:09:09', '2026-04-12 11:11:14', 'admin', 0),
 (105, 'Inte', 'Offi', 'inteoffi@apc.edu.ph', '2026-05-06 03:45:53', '2026-05-06 03:45:53', 'officer', 0),
-(106, 'Engi', 'Exe', 'engiexe@apc.edu.ph', '2026-05-06 04:00:50', '2026-05-06 04:00:50', 'executive', 0),
-(107, 'Comp Engi', 'Prog', 'cpeprog@apc.edu.ph', '2026-05-06 04:14:44', '2026-05-06 04:14:44', 'program', 0),
-(108, 'Elec Engi', 'Prog', 'eceprog@apc.edu.ph', '2026-05-06 04:18:02', '2026-05-06 04:18:02', 'program', 0),
-(114, 'Liam', 'Chen', 'l.chen@edu.com', '2026-05-13 10:44:27', '2026-05-13 10:44:27', 'intern', 0),
-(115, 'Sophia', 'Rodriguez', 'sophia.r@webmail.org', '2026-05-13 10:44:27', '2026-05-13 10:44:27', 'intern', 0),
-(116, 'Marcus', 'Thorne', 'mthorne@campus.edu', '2026-05-13 10:44:27', '2026-05-13 10:44:27', 'intern', 0);
+(135, 'Liam', 'Chen', 'l.chen@edu.com', '2026-05-21 14:46:04', '2026-05-22 06:30:56', 'intern', 0),
+(136, 'Sophia', 'Rodriguez', 'sophia.r@webmail.org', '2026-05-21 16:54:40', '2026-05-21 16:54:40', 'intern', 0),
+(138, 'Supera', 'Visor', 'supervisor@gmail.com', '2026-05-22 11:27:17', '2026-05-22 15:38:23', 'supervisor', 0),
+(139, 'Supers', 'Visor', 'supervisor2@gmail.com', '2026-05-22 14:30:04', '2026-05-22 14:30:04', 'supervisor', 0),
+(140, 'Supero3', 'Man', 'superoman@gmail.com', '2026-05-22 15:15:31', '2026-05-22 15:30:46', 'supervisor', 0),
+(141, 'asdf', 'fdsa', 'fdsafadsf@asdf.jh', '2026-06-20 02:17:04', '2026-06-20 02:17:04', 'officer', 0),
+(145, 'fdsa', 'fdsaewe', 'fds@fd.fd', '2026-11-12 09:33:59', '2026-11-12 09:33:59', 'intern', 0),
+(146, 'Harry Joseph', 'Serrano', 'harryjosephs@test.test', '2026-11-13 13:20:23', '2026-11-13 13:20:23', 'executive', 0),
+(152, 'Rhea-Luz', 'Valbuena', 'rhear@test.test', '2026-11-14 09:21:21', '2026-11-14 09:21:21', 'executive', 0),
+(153, 'Roselle Wednesday', 'Gardon', 'roselleg@test.test', '2026-11-14 09:32:50', '2026-11-14 09:33:09', 'program', 0),
+(154, 'Leonardo Jr.', 'Samaniego', 'leonardojrs@test.test', '2026-11-14 09:54:05', '2026-11-14 09:54:05', 'executive', 0),
+(155, 'Ronaldo', 'Gallardo', 'ronaldog@test.test', '2026-11-14 09:54:45', '2026-11-14 09:54:45', 'program', 0),
+(156, 'Sergio Jr.', 'Peruda', 'sergiop@test.test', '2026-11-14 09:55:18', '2026-11-14 09:55:18', 'program', 0),
+(157, 'Edwin', 'Loma', 'jedl@test.test', '2026-11-14 10:08:42', '2026-11-14 10:08:42', 'executive', 0),
+(158, 'Osler', 'Aquino', 'oslera@test.test', '2026-11-14 10:10:06', '2026-11-14 10:10:06', 'program', 0),
+(159, 'Manuel', 'Magbuhat', 'manuelm@test.test', '2026-11-14 10:10:48', '2026-11-14 10:10:48', 'program', 0),
+(160, 'Rosemarie Arhlene', 'Ampil', 'rosemariea@test.test', '2026-11-14 10:11:23', '2026-11-14 10:11:23', 'program', 0),
+(161, 'Robert Nelson', 'Besana', 'robertb@test.test', '2026-11-14 10:13:14', '2026-11-14 10:13:14', 'executive', 0),
+(162, 'Liza', 'Mapagu', 'lizam@test.test', '2026-11-14 10:13:57', '2026-11-14 10:13:57', 'program', 0),
+(163, 'Julius Anton', 'Aquino', 'jvaquino@student.apc.edu.ph', '2026-11-14 10:35:19', '2026-11-14 10:35:19', 'intern', 0);
 
 --
 -- Indexes for dumped tables
@@ -1020,6 +1132,13 @@ ALTER TABLE `programs`
   ADD KEY `school_id` (`school_id`);
 
 --
+-- Indexes for table `ratelimits`
+--
+ALTER TABLE `ratelimits`
+  ADD PRIMARY KEY (`rl_id`),
+  ADD KEY `idx_rl_key_created` (`rl_key`,`rl_created`);
+
+--
 -- Indexes for table `reportformats`
 --
 ALTER TABLE `reportformats`
@@ -1168,7 +1287,7 @@ ALTER TABLE `attendancereports`
 -- AUTO_INCREMENT for table `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `company_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `company_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `courseoutcomes`
@@ -1198,7 +1317,7 @@ ALTER TABLE `courseoutcomesstudentoutcomes`
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
-  MODIFY `department_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `department_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `eventrecipients`
@@ -1216,7 +1335,7 @@ ALTER TABLE `events`
 -- AUTO_INCREMENT for table `executivedirectors`
 --
 ALTER TABLE `executivedirectors`
-  MODIFY `exd_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `exd_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -1252,7 +1371,7 @@ ALTER TABLE `finalreports`
 -- AUTO_INCREMENT for table `interns`
 --
 ALTER TABLE `interns`
-  MODIFY `intern_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `intern_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `internshipgrades`
@@ -1300,25 +1419,31 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `onetimepasswords`
 --
 ALTER TABLE `onetimepasswords`
-  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `otp_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `passwordresets`
 --
 ALTER TABLE `passwordresets`
-  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `passreset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `programdirectors`
 --
 ALTER TABLE `programdirectors`
-  MODIFY `pd_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `pd_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `programs`
 --
 ALTER TABLE `programs`
-  MODIFY `program_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `program_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `ratelimits`
+--
+ALTER TABLE `ratelimits`
+  MODIFY `rl_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `reportformats`
@@ -1342,13 +1467,13 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `school_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `school_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `schoolusers`
 --
 ALTER TABLE `schoolusers`
-  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `schooluser_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
 
 --
 -- AUTO_INCREMENT for table `sendassessments`
@@ -1384,7 +1509,7 @@ ALTER TABLE `studentoutcomescontents`
 -- AUTO_INCREMENT for table `supervisors`
 --
 ALTER TABLE `supervisors`
-  MODIFY `supervisor_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `supervisor_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `userlogs`
@@ -1396,7 +1521,7 @@ ALTER TABLE `userlogs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 
 --
 -- Constraints for dumped tables
@@ -1655,7 +1780,7 @@ ALTER TABLE `studentoutcomescontents`
 -- Constraints for table `supervisors`
 --
 ALTER TABLE `supervisors`
-  ADD CONSTRAINT `supervisors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `supervisors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   ADD CONSTRAINT `supervisors_ibfk_2` FOREIGN KEY (`department_id`) REFERENCES `departments` (`department_id`);
 
 --

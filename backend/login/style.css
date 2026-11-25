@@ -1,0 +1,639 @@
+/* ==========================================================================
+   RIAS - landing + sign-in styles
+   1 Tokens & base   2 Header   3 Nav   4 Hero   5 Content   6 Footer
+   7 Modals          8 Forms    9 Notices   10 Auth page (reset.php)   11 Responsive
+   ========================================================================== */
+
+/* 1. Tokens & base ------------------------------------------------------- */
+:root {
+  --blue: #213B9A;
+  --blue-dark: #1a2f7a;
+  --orange: #FBAF41;
+  --text: #222;
+  --border: #ddd;
+  --danger: #c62828;
+  --ok: #1b7a3a;
+  --header-h: 80px;
+  --hero-overlay: rgba(0, 0, 0, 0.7);   /* darkness over the hero photo */
+  --font-body: 'Lora', serif;
+  --font-display: 'Inria Serif', serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { min-height: 100%; }
+
+body {
+  min-height: 100%;
+  font-family: var(--font-body);
+  color: var(--text);
+  padding-top: var(--header-h);
+}
+
+body.modal-open { overflow: hidden; }
+
+.no-select { user-select: none; }
+
+[hidden] { display: none !important; }
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+#click-blocker {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  cursor: wait;
+}
+
+/* 2. Header -------------------------------------------------------------- */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--header-h);
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 2px solid var(--border);
+  z-index: 1000;
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 50px;
+}
+
+.rias-logo { max-height: 60px; width: auto; }
+.header-logo { max-height: 120px; width: auto; }
+
+/* 3. Navigation ---------------------------------------------------------- */
+.nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--orange);
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav.fixed {
+  position: fixed;
+  top: 0;
+  height: var(--header-h);
+}
+
+.nav .container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 50px;
+}
+
+.nav-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-left: auto;
+  list-style: none;
+}
+
+.nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 7px 15px;
+  transition: color 0.3s ease-in-out;
+}
+
+.nav a:hover { color: #000; }
+
+.nav-divider {
+  width: 2px;
+  height: 30px;
+  margin: 0 15px;
+  background: #fff;
+}
+
+.sign-in-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sign-in-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.sign-in-btn:hover { text-decoration: underline; }
+
+.signin-arrow { width: 20px; height: 20px; }
+
+/* 4. Hero ---------------------------------------------------------------- */
+.hero {
+  position: relative;
+  isolation: isolate;                      /* keeps the dark overlay above the photo, below the text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  width: 100%;
+  margin-bottom: 60px;
+  color: #fff;
+  text-align: center;
+  background: url(../../assets/bg_login.png) no-repeat center center / cover fixed;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay);
+  z-index: -1;
+}
+
+.hero .hero-content {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.hero-content.float-in {
+  animation: floatInHero 1.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.hero h1 {
+  font-size: clamp(96px, 18vw, 250px);
+  font-weight: 600;
+  color: #fff;
+  transition: 0.5s;
+}
+
+.hero .hero-content:hover h1 {
+  color: transparent;
+  -webkit-text-stroke: 2px #fff;
+}
+
+.hero .subtitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 40px;
+  text-align: left;
+  letter-spacing: 10px;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 10;
+}
+
+.scroll-indicator.visible { opacity: 1; }
+
+.scroll-arrow {
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+  border-left: 2px solid #000;
+  border-bottom: 2px solid #000;
+  transform: rotate(-45deg);
+  animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(-45deg); }
+  40% { transform: translateY(10px) rotate(-45deg); }
+  60% { transform: translateY(5px) rotate(-45deg); }
+}
+
+@keyframes floatInHero {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.98); }
+  60%  { opacity: 1; transform: translateY(-10px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 5. Collapsible content ------------------------------------------------- */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.content {
+  max-height: 50px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  transition: max-height 0.3s ease;
+}
+
+.content.active { max-height: 3000px; }
+
+.content h1 {
+  padding: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #fff;
+  background: var(--blue);
+  cursor: pointer;
+}
+
+.content p,
+.content ul {
+  font-family: var(--font-sans);
+  line-height: 24px;
+}
+
+.content p { padding: 15px 15px 0; }
+.content ul { padding: 10px 15px 0 40px; }
+.content > :last-child { padding-bottom: 15px; }
+
+/* 6. Footer -------------------------------------------------------------- */
+.footer-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px 40px;
+  color: #fff;
+  background: var(--blue);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footer-left,
+.footer-right { flex: 1; }
+
+.footer-divider {
+  align-self: center;
+  width: 2px;
+  height: 80%;
+  margin: 0 20px;
+  background: #fff;
+}
+
+.footer-container a { color: #fff; text-decoration: none; }
+.footer-container a:hover { text-decoration: underline; }
+
+.footer-left ul,
+.footer-right .contact-links {
+  list-style: none;
+  margin: 10px 0;
+}
+
+.footer-left li { display: inline; margin-right: 15px; }
+.contact-links li { margin-bottom: 5px; }
+
+.footer-right .copyright {
+  position: absolute;
+  right: 40px;
+  bottom: 10px;
+  margin: 0;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* 7. Modals -------------------------------------------------------------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s;
+}
+
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 700px;
+  height: 80%;
+  margin: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 50%);
+}
+
+/* Legal modal */
+.modal-header { text-align: center; }
+.modal-header h1 { margin-bottom: 10px; font-size: 24px; }
+.modal-header h2 { font-size: 16px; color: #555; }
+
+.scrollable-box {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 20px;
+  padding: 0 15px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+.scrollable-box h3 { margin: 15px 0 8px; }
+.scrollable-box p { margin-bottom: 10px; }
+.scrollable-box ul { margin: 0 0 10px 20px; }
+
+.modal-footer { display: flex; flex-direction: column; gap: 10px; }
+.modal-footer label { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+
+.modal-footer button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background: var(--blue);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-footer button:disabled { background: #ccc; cursor: not-allowed; }
+
+.close-btn,
+.sign-in-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  line-height: 1;
+  color: #000;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Sign-in modal: floats on the left, hero text shifts right */
+#sign-in-modal .modal-content {
+  position: fixed;
+  top: 60%;
+  left: 20px;
+  transform: translateY(-50%);
+  width: 400px;
+  max-width: 90%;
+  height: auto;
+  min-height: 400px;
+  max-height: 90vh;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#sign-in-modal .modal-title { margin-bottom: 20px; font-size: 28px; }
+
+body.auth-open .hero-content {
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+}
+
+body.auth-open .hero h1 { margin-bottom: -95px; }
+body.auth-open .hero .subtitle { padding-top: 160px; }
+
+/* 8. Forms --------------------------------------------------------------- */
+.input-group {
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-left: 20px;
+  font-size: 14px;
+  color: #000;
+}
+
+.input-wrapper { position: relative; }
+
+.input-wrapper input {
+  width: 100%;
+  padding: 10px 45px 10px 15px;
+  font-family: var(--font-sans);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+}
+
+.input-wrapper input:disabled { background: #f0f0f0; cursor: not-allowed; }
+.input-wrapper input.invalid { border-color: var(--danger); outline: none; }
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  width: 20px;
+  height: 20px;
+  transform: translateY(-50%);
+}
+
+.input-icon.email-icon { cursor: pointer; }
+
+button.input-icon {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button.input-icon img { display: block; width: 100%; height: 100%; }
+
+.email-tooltip {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  padding: 6px 12px;
+  font-size: 13px;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--blue);
+  border-radius: 6px;
+  z-index: 10;
+}
+
+.email-icon:hover + .email-tooltip,
+.email-icon:focus + .email-tooltip { display: block; }
+
+.btn-primary {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 14px;
+  color: #fff;
+  background: var(--blue);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-primary:disabled { background: gray; cursor: not-allowed; }
+.btn-link { display: block; text-align: center; text-decoration: none; }
+
+.subtitle {
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.links a,
+.subtitle a,
+.back-link { color: var(--blue); text-decoration: underline; }
+
+.links a:hover,
+.subtitle a:hover,
+.back-link:hover { text-decoration: none; }
+
+.back-link { display: block; margin-top: 4px; }
+
+.link-btn {
+  display: block;
+  margin: 12px auto 0;
+  font: inherit;
+  font-size: 14px;
+  color: var(--blue);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-btn:disabled { color: gray; text-decoration: none; cursor: not-allowed; }
+
+/* 9. Messages ------------------------------------------------------------ */
+.error {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.error:empty { display: none; }
+
+.hint { display: block; margin-top: 5px; font-size: 12px; color: #666; }
+
+.notice {
+  margin: 14px 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: left;
+  color: #1a2f7a;
+  background: #eef2ff;
+  border-radius: 8px;
+}
+
+.notice:empty { display: none; }
+.notice-ok { color: var(--ok); background: #e9f7ee; }
+.notice-error { color: var(--danger); background: #fdecea; }
+.notice p + p { margin-top: 6px; }
+.noscript { margin: 20px; text-align: center; }
+
+/* 10. Standalone auth page (reset.php) ----------------------------------- */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - var(--header-h));
+  padding: 40px 20px;
+  background: #f4f4f4;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 30px;
+  font-family: var(--font-sans);
+  text-align: center;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.auth-card .modal-title { margin-bottom: 10px; font-size: 26px; }
+.auth-card form { margin-top: 20px; }
+
+/* 11. Responsive --------------------------------------------------------- */
+@media (max-width: 768px) {
+  .header .container,
+  .nav .container { padding: 0 16px; }
+
+  .nav-list { gap: 4px; flex-wrap: wrap; font-size: 13px; }
+  .nav a { padding: 7px 8px; }
+  .nav-divider { margin: 0 4px; }
+
+  .hero .hero-content { flex-direction: column; gap: 10px; }
+  .hero .subtitle { font-size: 20px; letter-spacing: 6px; text-align: center; }
+
+  #sign-in-modal .modal-content {
+    left: 50%;
+    width: 90%;
+    max-height: 80vh;
+    transform: translate(-50%, -50%);
+  }
+
+  body.auth-open .hero h1 { margin-bottom: 0; }
+  body.auth-open .hero .subtitle { padding-top: 0; }
+
+  .footer-container { flex-direction: column; padding-bottom: 50px; }
+  .footer-divider { display: none; }
+}
+
+@media (min-width: 769px) {
+  body.auth-open .hero-content { transform: translateX(200px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

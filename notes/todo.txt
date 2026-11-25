@@ -1,0 +1,45 @@
+IN admin masterlist add user popup window
+EDIT window close
+it exits on mouse released outside the window (e.g. mouse press inside window then release outside)
+it should only exit the window when the cancel (if there is a cancel button) or x button is pressed
+ALSO do the same for all other popup windows everywhere else that grays out the background
+for example IN login page sign in window AND priv policy window
+
+IN admin masterlist user details view window
+REMOVE showing the user id
+BECAUSE its only needed for the database
+
+IN user edit info
+ADD edit text field for given id
+
+IN officer supervisor masterlist table
+EDIT company filter dropdown
+make it typable
+ALSO do the same with the departments filter dropdown
+ALSO do the same with partnership statuses IN companies and departments table
+
+IN student page
+ADD redirect to create password page IF user logins and no password yet
+ADD change password button somewhere in edit profile
+EDIT home page ui
+BECAUSE its ass
+
+IN admin page and student page
+clicking the logo at the topleft in the header redirects the page to the login page for a split second and then goes back to their designated homepages
+this doesn't happen IN the officer page
+ADD it to the officer page
+
+Hard tasks:
+
+IN admin AND officer
+EDIT the ui arrangement in masterlist pages
+BECAUSE it looks ass
+
+IN user roles
+ADD allow user to have multiple roles only for (admin, officer, programdir, exedir)
+probably needs to do something with the database not only in the files
+
+WHEN switching roles (e.g. program director becomes officer, or vice versa)
+ADD make sure the database id connections still works after
+for example id referencing, interns may be connected to an officer... uhhh i cant word this properly yet
+probably needs to do something with the database not only in the files

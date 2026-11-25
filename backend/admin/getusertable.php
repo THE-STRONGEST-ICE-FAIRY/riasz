@@ -2,93 +2,51 @@
 
 require '../../utilities/database/database.php';
 
-$users = [];
+header('Content-Type: application/json; charset=utf-8');
+
+// Returns every user as JSON. Searching, filtering, sorting and paging
+// happen in the browser (see datatable.js).
 try {
-    $stmt = $conn->query("SELECT user_id, user_first_name, user_last_name, user_email, user_role, user_is_archived, user_date_created FROM users");
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (Exception $e) {
-    $db_error = "Could not fetch users: " . $e->getMessage();
-}
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Fetch Schools and Programs for the new visualization
-$schoolsData = [];
-try {
-    // Fetch all schools
-    $schoolStmt = $conn->query("SELECT * FROM schools ORDER BY school_name ASC");
-    $tempSchools = $schoolStmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conn->query("
+        SELECT u.user_id, u.user_first_name, u.user_last_name, u.user_email, u.user_role,
+               u.user_is_archived, u.user_date_created,
+               su.schooluser_given_id,
+               COALESCE(s1.school_name, s2.school_name) AS school_name,
+               p.program_name
+        FROM users u
+        LEFT JOIN schoolusers su ON su.user_id = u.user_id
+        LEFT JOIN executivedirectors ed ON ed.schooluser_id = su.schooluser_id
+        LEFT JOIN schools s1 ON s1.school_id = ed.school_id
+        LEFT JOIN programdirectors pd ON pd.schooluser_id = su.schooluser_id
+        LEFT JOIN programs p ON p.program_id = pd.program_id
+        LEFT JOIN schools s2 ON s2.school_id = p.school_id
+        ORDER BY u.user_id DESC
+    ");
 
-    // Fetch all programs
-    $programStmt = $conn->query("SELECT * FROM programs ORDER BY program_name ASC");
-    $tempPrograms = $programStmt->fetchAll(PDO::FETCH_ASSOC);
+    $users = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $id = $row['user_id'];
+        if (isset($users[$id])) continue; // joins can repeat a user; keep the first row
 
-    // Organize programs under schools
-    foreach ($tempSchools as $school) {
-        $schoolId = $school['school_id'];
-        $school['programs'] = array_filter($tempPrograms, function($p) use ($schoolId) {
-            return $p['school_id'] == $schoolId;
-        });
-        $schoolsData[] = $school;
+        $users[$id] = [
+            'id'         => (int)$id,
+            'first_name' => (string)$row['user_first_name'],
+            'last_name'  => (string)$row['user_last_name'],
+            'email'      => (string)$row['user_email'],
+            'role'       => (string)($row['user_role'] ?? ''),
+            'archived'   => !empty($row['user_is_archived']),
+            'created'    => $row['user_date_created'],
+            'given_id'   => $row['schooluser_given_id'],
+            'school'     => $row['school_name'],
+            'program'    => $row['program_name'],
+        ];
     }
-} catch (Exception $e) {
-    $db_error = "Could not fetch schools/programs: " . $e->getMessage();
+
+    echo json_encode(['users' => array_values($users)]);
+} catch (Throwable $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => 'Could not fetch users.']);
 }
-
-// Output the table content
-echo "<thead>
-    <tr>
-        <th>User ID</th>
-        <th>Full Name</th>
-        <th>Email Address</th>
-        <th>Role</th>
-        <th>Status</th>
-        <th>Date Created</th>
-    </tr>
-</thead>
-<tbody>";
-
-// If there are no users
-if (empty($users)) {
-    echo "<tr>
-            <td colspan='6' style='text-align: center; padding: 48px; color: var(--text-muted);'>
-                No user records found in the database.
-            </td>
-        </tr>";
-} else {
-    // Loop through each user and generate a table row
-    foreach ($users as $user) {
-        // Replacing shorthand null coalescing and ternary with more explicit conditional logic
-        if (isset($user['user_is_archived'])) {
-            $isArchived = (bool)$user['user_is_archived'];
-        } else {
-            $isArchived = false;
-        }
-
-        if ($isArchived) {
-            $statusText = 'Archived';
-            $statusClass = 'badge-archived';
-        } else {
-            $statusText = 'Active';
-            $statusClass = 'badge-active';
-        }
-
-        if (isset($user['user_role']) && $user['user_role']) {
-            $userRole = $user['user_role'];
-        } else {
-            $userRole = 'User';
-        }
-
-        echo "<tr>
-                <td style='font-family: monospace; font-weight: 600; color: var(--primary);'>#{$user['user_id']}</td>
-                <td>
-                    <div style='font-weight: 600;'>{$user['user_first_name']} {$user['user_last_name']}</div>
-                </td>
-                <td style='color: var(--text-muted);'>{$user['user_email']}</td>
-                <td><span style='font-weight: 500;'>{$userRole}</span></td>
-                <td><span class='badge {$statusClass}'>{$statusText}</span></td>
-                <td style='font-size: 13px; color: var(--text-muted);'>" . date('M d, Y', strtotime($user['user_date_created'])) . "</td>
-            </tr>";
-    }
-}
-
-echo "</tbody>";
-?>
