@@ -601,3 +601,55 @@ button {
 .notify-btn:active {
     transform: scale(0.95);
 }
+
+.initial-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 20px 0;
+}
+
+.initial-action-card {
+    background-color: #e6e6e6;
+    color: #222;
+    min-width: 260px;
+    min-height: 135px;
+    padding: 24px 28px;
+    border-radius: 14px;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: left;
+    text-decoration: none;
+}
+
+.initial-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.initial-action-card--primary {
+    background-color: #f1b347;
+    color: #111;
+}
+
+.initial-card-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.initial-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}

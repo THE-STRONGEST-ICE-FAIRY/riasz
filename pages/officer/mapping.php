@@ -75,250 +75,451 @@
                 </div>
             </div>
 
-            <div class="header-actions">
-                <button id="newMappingBtn" class="add-btn-box" onclick="alert('Open New Mapping Modal')">
-                    + NEW FILE
-                </button>
+            <!-- STAGE 1: Shown first on load -->
+            <div id="stageOneView" class="mapping-stage">
+                <div class="initial-card-grid">
+                    <button type="button" id="btnMappingEntry" class="initial-action-card initial-action-card--primary" onclick="openStageTwo()">
+                        <svg class="initial-card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="5" cy="12" r="2.5"></circle>
+                            <path d="M7.5 12h3l3-5h4"></path>
+                            <circle cx="19" cy="7" r="2.5"></circle>
+                            <path d="M10.5 12l3 5h4"></path>
+                            <circle cx="19" cy="17" r="2.5"></circle>
+                            <path d="M14 12h3"></path>
+                            <circle cx="19" cy="12" r="2.5"></circle>
+                            <path d="M16 6l1.5 1-1.5 1"></path>
+                            <path d="M16 11l1.5 1-1.5 1"></path>
+                            <path d="M16 16l1.5 1-1.5 1"></path>
+                        </svg>
+                        <span class="initial-card-title">MAPPING</span>
+                    </button>
+
+                    <!-- Inside #stageOneView (.initial-card-grid) -->
+                    <button type="button" class="initial-action-card" onclick="openViewEdit('Ongoing')">
+                        <svg class="initial-card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span class="initial-card-title">VIEW AND EDIT (Ongoing)</span>
+                    </button>
+
+                    <button type="button" class="initial-action-card" onclick="openViewEdit('Previous Years')">
+                        <svg class="initial-card-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span class="initial-card-title">VIEW PREVIOUS YEARS</span>
+                    </button>
+                </div>
             </div>
 
-            <div id="selectionGrid" class="card-grid">
-                    <div class="landing-box" text-align: center;>
+            <!-- STAGE 2: Shown after clicking MAPPING -->
+            <div id="stageTwoView" class="mapping-stage" style="display: none;">
+                <div class="header-actions">
+                    <button type="button" class="back-btn-box" onclick="backToStageOne()">&larr; BACK</button>
+                    <button type="button" id="newMappingBtn" class="add-btn-box" onclick="alert('Open New Mapping Modal')">
+                        + NEW FILE
+                    </button>
+                </div>
+
+                <div id="selectionGrid" class="card-grid">
+                    <div class="landing-box">
                         <h2>School Of Engineering</h2>
-                        <button class="view-btn"  onclick="showMapping('SOE')">VIEW OUTCOMES</button>
+                        <button type="button" class="view-btn" onclick="showMapping('SOE')">VIEW OUTCOMES</button>
                     </div>
 
                     <div class="landing-box" onclick="showMapping('SOMA')">
                         <h2>School Of Multimedia And Arts</h2>
-                        <button class="view-btn">VIEW OUTCOMES</button>
+                        <button type="button" class="view-btn">VIEW OUTCOMES</button>
                     </div>
 
                     <div class="landing-box" onclick="showMapping('EvalForm')">
                         <h2>2025 Evaluation Form</h2>
-                        <button class="view-btn">VIEW FORM</button>
+                        <button type="button" class="view-btn">VIEW FORM</button>
                     </div>
                 </div>
+            </div>
 
-              <div id="SOEContent" class="mapping-view" style="display: none;">
-                    <div class="panel"> 
-                        <div class="panel-header">
-                            <div class="panel-title">SOE Mapping</div>
-                        </div>
-                        
-                        <div class="view-header-actions" style="padding: 0 20px;">
-                            <button onclick="showGrid()" class="back-btn-box">← BACK TO MENU</button>
-                            <button class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openOutcomeModal()">
-                                + ADD COURSE OUTCOME
-                            </button>
-                        </div>
+            <!-- VIEW & EDIT STAGE (Hardcoded Read-Only) -->
+<div id="viewEditStage" class="mapping-stage" style="display: none;">
+    <div class="header-actions">
+        <button type="button" id="viewEditTopBackBtn" class="back-btn-box" onclick="backToStageOne()">&larr; BACK</button>
+        <span id="viewEditContextLabel" class="view-only-badge">VIEW ONLY — ONGOING</span>
+    </div>
 
-                        <div class="evaluation-container">
-                            <div class="table-responsive">
-                                <table class="excel-mapping-table">
-                                    <thead>
-                                        <tr>
-                                            <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
-                                            <th colspan="8" class="so-header">Student Outcomes (SO)</th>
-                                        </tr>
-                                        <tr>
-                                            <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
-                                            <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="criteria-text">
-                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                                    <span class="criteria-text-content">Accomplishment of tasks/projects assigned by their respective internship companies. </span>
-                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
-                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
-                                                    </div>
+    <!-- School Selector Cards -->
+    <div id="viewEditSchoolGrid" class="card-grid">
+        <div class="landing-box landing-box--readonly">
+            <h2>School Of Engineering</h2>
+            <button type="button" class="view-btn" onclick="showReadOnlySchool('SOE')">VIEW OUTCOMES</button>
+        </div>
+
+        <div class="landing-box landing-box--readonly">
+            <h2>School Of Multimedia And Arts</h2>
+            <button type="button" class="view-btn" onclick="showReadOnlySchool('SOMA')">VIEW OUTCOMES</button>
+        </div>
+    </div>
+
+    <!-- Read-Only SOE Outcomes -->
+    <div id="readOnlySOE" class="readonly-school-view" style="display: none;">
+        <div class="panel view-only-panel">
+            <div class="panel-header">
+                <div class="panel-title">School Of Engineering — Outcomes (View Only)</div>
+                <span class="view-only-badge">READ ONLY</span>
+            </div>
+
+            <div class="view-header-actions" style="padding: 0 20px;">
+                <button type="button" onclick="backToViewEditSchools()" class="back-btn-box">&larr; BACK TO SCHOOLS</button>
+            </div>
+
+            <div class="evaluation-container">
+                <div class="table-responsive">
+                    <table class="excel-mapping-table view-only-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
+                                <th colspan="8" class="so-header">Student Outcomes (SO)</th>
+                            </tr>
+                            <tr>
+                                <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
+                                <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="criteria-text">
+                                    <span class="criteria-text-content">Accomplishment of tasks/projects assigned by their respective internship companies.</span>
+                                </td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                            </tr>
+                            <tr>
+                                <td class="criteria-text">
+                                    <span class="criteria-text-content">Development of acceptable workplace behavior.</span>
+                                </td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                            </tr>
+                            <tr>
+                                <td class="criteria-text">
+                                    <span class="criteria-text-content">Absorption and Employment.</span>
+                                </td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Read-Only SOMA Outcomes -->
+    <div id="readOnlySOMA" class="readonly-school-view" style="display: none;">
+        <div class="panel view-only-panel">
+            <div class="panel-header">
+                <div class="panel-title">School Of Multimedia And Arts — Outcomes (View Only)</div>
+                <span class="view-only-badge">READ ONLY</span>
+            </div>
+
+            <div class="view-header-actions" style="padding: 0 20px;">
+                <button type="button" onclick="backToViewEditSchools()" class="back-btn-box">&larr; BACK TO SCHOOLS</button>
+            </div>
+
+            <div class="evaluation-container">
+                <div class="table-responsive">
+                    <table class="excel-mapping-table view-only-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
+                                <th colspan="8" class="so-header">Student Outcomes (SO)</th>
+                            </tr>
+                            <tr>
+                                <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
+                                <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="criteria-text">
+                                    <span class="criteria-text-content">Apply knowledge of mathematics and science to solve engineering problems.</span>
+                                </td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                                <td class="cell-center"><input type="checkbox" disabled tabindex="-1"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- STAGE 3: Detail Views (SOE, SOMA, EvalForm) -->
+            <div id="SOEContent" class="mapping-view" style="display: none;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">SOE Mapping</div>
+                    </div>
+
+                    <div class="view-header-actions" style="padding: 0 20px;">
+                        <button type="button" onclick="showGrid()" class="back-btn-box">&larr; BACK TO MENU</button>
+                        <button type="button" class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openOutcomeModal()">
+                            + ADD COURSE OUTCOME
+                        </button>
+                    </div>
+
+                    <div class="evaluation-container">
+                        <div class="table-responsive">
+                            <table class="excel-mapping-table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
+                                        <th colspan="8" class="so-header">Student Outcomes (SO)</th>
+                                    </tr>
+                                    <tr>
+                                        <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
+                                        <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="criteria-text">
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                <span class="criteria-text-content">Accomplishment of tasks/projects assigned by their respective internship companies.</span>
+                                                <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                    <button type="button" onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold;">EDIT</button>
+                                                    <button type="button" onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold;">DEL</button>
                                                 </div>
-                                            </td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="criteria-text">
-                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                                    <span class="criteria-text-content">Development of acceptable workplace behavior. </span>
-                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
-                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
-                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="criteria-text">
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                <span class="criteria-text-content">Development of acceptable workplace behavior.</span>
+                                                <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                    <button type="button" onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold;">EDIT</button>
+                                                    <button type="button" onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold;">DEL</button>
                                                 </div>
-                                            </td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="criteria-text">
-                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                                    <span class="criteria-text-content">Absorption and Employment. </span>
-                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
-                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
-                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="criteria-text">
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                <span class="criteria-text-content">Absorption and Employment.</span>
+                                                <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                    <button type="button" onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold;">EDIT</button>
+                                                    <button type="button" onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold;">DEL</button>
                                                 </div>
-                                            </td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="panel-footer-actions">
-                            <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
-                            <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
-                            <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                                            </div>
+                                        </td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+
+                    <div class="panel-footer-actions">
+                        <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
+                        <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
+                        <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                    </div>
                 </div>
+            </div>
 
-                <div id="SOMAContent" class="mapping-view" style="display: none;">
-                    <div class="panel"> 
-                        <div class="panel-header">
-                            <div class="panel-title">SOMA Mapping</div>
-                        </div>
-                        
-                        <div class="view-header-actions" style="padding: 0 20px;">
-                            <button onclick="showGrid()" class="back-btn-box">← BACK TO MENU</button>
-                            <button class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openOutcomeModal()">
-                                + ADD COURSE OUTCOME
-                            </button>
-                        </div>
+            <div id="SOMAContent" class="mapping-view" style="display: none;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">SOMA Mapping</div>
+                    </div>
 
-                        <div class="evaluation-container">
-                            <div class="table-responsive">
-                                <table class="excel-mapping-table">
-                                    <thead>
-                                        <tr>
-                                            <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
-                                            <th colspan="8" class="so-header">Student Outcomes (SO)</th>
-                                        </tr>
-                                        <tr>
-                                            <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
-                                            <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="criteria-text">
-                                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                                    <span class="criteria-text-content">Apply knowledge of mathematics and science to solve engineering problems.</span>
-                                                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                                                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
-                                                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
-                                                    </div>
+                    <div class="view-header-actions" style="padding: 0 20px;">
+                        <button type="button" onclick="showGrid()" class="back-btn-box">&larr; BACK TO MENU</button>
+                        <button type="button" class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openOutcomeModal()">
+                            + ADD COURSE OUTCOME
+                        </button>
+                    </div>
+
+                    <div class="evaluation-container">
+                        <div class="table-responsive">
+                            <table class="excel-mapping-table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="criteria-col">Course Learning Outcomes</th>
+                                        <th colspan="8" class="so-header">Student Outcomes (SO)</th>
+                                    </tr>
+                                    <tr>
+                                        <th>SO1</th><th>SO2</th><th>SO3</th><th>SO4</th>
+                                        <th>SO5</th><th>SO6</th><th>SO7</th><th>SO8</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="criteria-text">
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                                <span class="criteria-text-content">Apply knowledge of mathematics and science to solve engineering problems.</span>
+                                                <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                    <button type="button" onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold;">EDIT</button>
+                                                    <button type="button" onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold;">DEL</button>
                                                 </div>
-                                            </td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                            <td class="cell-center"><input type="checkbox"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="panel-footer-actions">
-                            <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
-                            <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
-                            <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                                            </div>
+                                        </td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                        <td class="cell-center"><input type="checkbox"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
 
-                <div id="EvalFormContent" class="mapping-view" style="display: none;">
-                    <div class="panel"> 
-                        <div class="panel-header">
-                            <div class="panel-title">Industry Partner Evaluation Form Builder</div>
-                        </div>
-                        
-                        <div class="view-header-actions" style="padding: 0 20px;">
-                            <button onclick="showGrid()" class="back-btn-box">← BACK TO MENU</button>
-                            <button class="add-btn-box" onclick="openOutcomeModal()">+ ADD COURSE OUTCOME</button>
-                            <button class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openEvalModal()">+ ADD EVALUATION CRITERIA</button>
-                        </div>
-
-                        <div class="evaluation-container">
-                            <div class="table-responsive">
-                                <table class="excel-mapping-table" id="evalTable">
-                                    <thead>
-                                        <tr>
-                                            <tr>
-                                                <td class="criteria-text">
-                                                    <strong>Overall Performance Improvement</strong><br>
-                                                    <small>Since previous evaluation, did the Intern’s over-all performance improve?</small>
-                                                </td>
-                                                <td class="cell-center">
-                                                    <label><input type="radio" name="improve" value="yes"> YES</label>
-                                                    <label style="margin-left:10px;"><input type="radio" name="improve" value="no"> NO</label>
-                                                </td>
-                                                <td>
-                                                    <textarea class="input-box" rows="2" placeholder="Provide justification & indicate strong/weak points"></textarea>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="criteria-text">
-                                                    <strong>Continued Employment/Internship</strong><br>
-                                                    <small>Would you be willing to let the Intern continue or absorb them as an employee?</small>
-                                                </td>
-                                                <td class="cell-center">
-                                                    <label><input type="radio" name="continue" value="yes"> YES</label>
-                                                    <label style="margin-left:10px;"><input type="radio" name="continue" value="no"> NO</label>
-                                                </td>
-                                                <td>
-                                                    <textarea class="input-box" rows="2" placeholder="Provide justification"></textarea>
-                                                </td>
-                                            </tr>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="panel-footer-actions">
-                            <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL</button>
-                            <button type="button" class="btn-save" onclick="saveFormToDB()">SAVE FORM STRUCTURE</button>
-                            <button type="button" class="btn-save" 
-                                    style="background-color: #29429c; color: white; margin-right: 10px;" 
-                                    onclick="openPreview()">
-                                PREVIEW FINAL LOOK
-                            </button>
-                        </div>
+                    <div class="panel-footer-actions">
+                        <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
+                        <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
+                        <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
                     </div>
                 </div>
+            </div>
+
+            <div id="EvalFormContent" class="mapping-view" style="display: none;">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Industry Partner Evaluation Form Builder</div>
+                    </div>
+
+                    <div class="view-header-actions" style="padding: 0 20px;">
+                        <button type="button" onclick="showGrid()" class="back-btn-box">&larr; BACK TO MENU</button>
+                        <button type="button" class="add-btn-box" onclick="openOutcomeModal()">+ ADD COURSE OUTCOME</button>
+                        <button type="button" class="add-btn-box" style="background-color: #28a745; margin-left: 10px;" onclick="openEvalModal()">+ ADD EVALUATION CRITERIA</button>
+                    </div>
+
+                    <div class="evaluation-container">
+                        <div class="table-responsive">
+                            <table class="excel-mapping-table" id="evalTable">
+                                <thead>
+                                    <tr>
+                                        <th>Evaluation Item / Criteria</th>
+                                        <th>Response / Weight</th>
+                                        <th>Notes / Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="criteria-text">
+                                            <strong>Overall Performance Improvement</strong><br>
+                                            <small>Since previous evaluation, did the Intern’s over-all performance improve?</small>
+                                        </td>
+                                        <td class="cell-center">
+                                            <label><input type="radio" name="improve" value="yes"> YES</label>
+                                            <label style="margin-left:10px;"><input type="radio" name="improve" value="no"> NO</label>
+                                        </td>
+                                        <td>
+                                            <textarea class="input-box" rows="2" placeholder="Provide justification & indicate strong/weak points"></textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="criteria-text">
+                                            <strong>Continued Employment/Internship</strong><br>
+                                            <small>Would you be willing to let the Intern continue or absorb them as an employee?</small>
+                                        </td>
+                                        <td class="cell-center">
+                                            <label><input type="radio" name="continue" value="yes"> YES</label>
+                                            <label style="margin-left:10px;"><input type="radio" name="continue" value="no"> NO</label>
+                                        </td>
+                                        <td>
+                                            <textarea class="input-box" rows="2" placeholder="Provide justification"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer-actions">
+                        <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL</button>
+                        <button type="button" class="btn-save" onclick="saveFormToDB()">SAVE FORM STRUCTURE</button>
+                        <button type="button" class="btn-save"
+                                style="background-color: #29429c; color: white; margin-right: 10px;"
+                                onclick="openPreview()">
+                            PREVIEW FINAL LOOK
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="outcomeModal" class="modal-overlay">
+                <div class="task-modal">
+                    <span class="modal-close" onclick="closeOutcomeModal()">&times;</span>
+                    <h2 id="modalTitle">Add Course Outcome</h2>
+                    <input type="hidden" id="editRowIndex">
+
+                    <div class="form-row">
+                        <label>Outcome Description:</label>
+                        <textarea id="outcomeDesc" class="input-box" rows="4" placeholder="Enter course learning outcome..."></textarea>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn-cancel" onclick="closeOutcomeModal()">Cancel</button>
+                        <button type="button" class="btn-submit" id="saveOutcomeBtn" onclick="saveOutcome()">Save Outcome</button>
+                    </div>
+                </div>
+            </div>
+        </main>
 
     <div id="outcomeModal" class="modal-overlay">
             <div class="task-modal">
@@ -429,160 +630,62 @@ function deleteRow(btn) {
 }
 
 // 4. View Switching Logic
-function showMapping(type) {
-    document.getElementById('selectionGrid').style.display = 'none';
-    document.getElementById('newMappingBtn').style.display = 'none';
-    
+function hideAllStages() {
+    document.getElementById('stageOneView').style.display = 'none';
+    document.getElementById('stageTwoView').style.display = 'none';
     document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
-    
+}
+
+function backToStageOne() {
+    hideAllStages();
+    document.getElementById('stageOneView').style.display = 'block';
+}
+
+function openStageTwo() {
+    hideAllStages();
+    document.getElementById('stageTwoView').style.display = 'block';
+}
+
+function showMapping(type) {
+    hideAllStages();
     const target = document.getElementById(type + 'Content');
-    if(target) target.style.display = 'block';
+    if (target) target.style.display = 'block';
 }
 
 function showGrid() {
-    document.getElementById('selectionGrid').style.display = 'flex';
-    document.getElementById('newMappingBtn').style.display = 'block';
+    openStageTwo();
+}
+
+function hideAllStages() {
+    document.getElementById('stageOneView').style.display = 'none';
+    document.getElementById('stageTwoView').style.display = 'none';
+    document.getElementById('viewEditStage').style.display = 'none';
     document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
 }
 
-let editingEvalRow = null;
-
-function openEvalModal(isEdit = false, btn = null) {
-    const modal = document.getElementById('outcomeModal');
-    const title = document.getElementById('modalTitle');
-    const descInput = document.getElementById('outcomeDesc');
-    
-    // Ensure the Weight field exists
-    if (!document.getElementById('weightRow')) {
-        const weightHTML = `
-            <div class="form-row" id="weightRow" style="margin-top:15px;">
-                <label>Weight (%):</label>
-                <input type="number" id="criteriaWeight" class="input-box" style="width: 80px;" min="1" max="100">
-            </div>`;
-        document.querySelector('.task-modal .form-row').insertAdjacentHTML('afterend', weightHTML);
-    }
-    const weightInput = document.getElementById('criteriaWeight');
-
-    if (isEdit) {
-        editingEvalRow = btn.closest('tr');
-        title.innerText = "Edit Evaluation Criteria";
-        descInput.value = editingEvalRow.cells[0].innerText;
-        weightInput.value = parseInt(editingEvalRow.cells[1].innerText);
-    } else {
-        editingEvalRow = null;
-        title.innerText = "Add Evaluation Criteria";
-        descInput.value = "";
-        weightInput.value = "";
-    }
-
-    document.getElementById('saveOutcomeBtn').onclick = saveEvalCriteria;
-    modal.classList.add('active');
+function openViewEdit(periodLabel) {
+    hideAllStages();
+    document.getElementById('viewEditContextLabel').innerText = 'VIEW ONLY — ' + periodLabel.toUpperCase();
+    document.getElementById('viewEditStage').style.display = 'block';
+    backToViewEditSchools();
 }
 
-function saveEvalCriteria() {
-    const desc = document.getElementById('outcomeDesc').value.trim();
-    const weight = document.getElementById('criteriaWeight').value.trim();
-    
-    if (!desc || !weight) return alert("Please fill in both fields.");
-
-    if (editingEvalRow) {
-        // UPDATE
-        editingEvalRow.cells[0].innerText = desc;
-        editingEvalRow.cells[1].innerText = weight + "%";
-    } else {
-        // CREATE
-        const tbody = document.querySelector('#EvalFormContent #evalTable tbody');
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-            <td class="criteria-text">${desc}</td>
-            <td class="cell-center">${weight}%</td>
-            <td class="cell-center">
-                <button onclick="openEvalModal(true, this)" style="color: #29429c; font-weight: bold; margin-right: 10px;">EDIT</button>
-                <button onclick="deleteRow(this)" style="color: #e74c3c; font-weight: bold;">DEL</button>
-            </td>
-        `;
-        tbody.appendChild(newRow);
-    }
-    closeOutcomeModal();
+function backToViewEditSchools() {
+    document.querySelectorAll('.readonly-school-view').forEach(el => el.style.display = 'none');
+    document.getElementById('viewEditSchoolGrid').style.display = 'flex';
+    const topBack = document.getElementById('viewEditTopBackBtn');
+    if (topBack) topBack.style.display = 'inline-flex';
 }
 
-// Ensure the "Save Form Structure" links to your PHP backend
-function saveFormToDB() {
-    // In your real app, loop through table rows and send via AJAX to a PHP saving script
-    alert('Saving evaluation structure to database...');
+function showReadOnlySchool(schoolCode) {
+    document.getElementById('viewEditSchoolGrid').style.display = 'none';
+    document.querySelectorAll('.readonly-school-view').forEach(el => el.style.display = 'none');
+    const topBack = document.getElementById('viewEditTopBackBtn');
+    if (topBack) topBack.style.display = 'none';
+    const target = document.getElementById('readOnly' + schoolCode);
+    if (target) target.style.display = 'block';
 }
 
-function openPreview() {
-    const previewContent = document.getElementById('previewContent');
-    // Select the rows from your existing mapping table (evalTable)
-    const mappedRows = document.querySelectorAll('#evalTable tbody tr');
-    
-    previewContent.innerHTML = ''; // Clear previous preview
-
-    if (mappedRows.length === 0) {
-        previewContent.innerHTML = '<tr><td colspan="6" style="padding: 20px; text-align: center; color: #999;">No criteria mapped yet. Add items to see the preview.</td></tr>';
-    } else {
-        mappedRows.forEach(row => {
-            const criteriaDesc = row.cells[0].innerText;
-            const weight = row.cells[1].innerText;
-            
-            const tr = document.createElement('tr');
-            tr.style.borderBottom = "1px solid #eee";
-            tr.innerHTML = `
-                <td style="padding: 15px; text-align: left;">
-                    <div style="font-weight: 500;">${criteriaDesc}</div>
-                    <div style="font-size: 11px; color: #29429c;">Weight: ${weight}</div>
-                </td>
-                <td style="text-align: center;"><input type="radio" disabled></td>
-                <td style="text-align: center;"><input type="radio" disabled></td>
-                <td style="text-align: center;"><input type="radio" disabled></td>
-                <td style="text-align: center;"><input type="radio" disabled></td>
-                <td style="text-align: center;"><input type="radio" disabled></td>
-            `;
-            previewContent.appendChild(tr);
-        });
-    }
-
-    document.getElementById('previewModal').classList.add('active');
-}
-
-function closePreview() {
-    document.getElementById('previewModal').classList.remove('active');
-}
-</script>
-    <div class="modal-overlay" id="previewModal">
-        <div class="task-modal" style="max-width: 900px; width: 95%; padding: 0; overflow: hidden;">
-            <div class="modal-header" style="padding: 20px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; display: flex; justify-content: space-between; align-items: center;">
-                <h2 style="color: #29429c; margin: 0;">Industry Professor View Preview</h2>
-                <button class="close-btn" onclick="closePreview()" style="font-size: 24px; background: none; border: none; cursor: pointer;">&times;</button>
-            </div>
-            
-            <div class="modal-body" style="padding: 30px; max-height: 70vh; overflow-y: auto;">
-                <div style="margin-bottom: 20px; border-left: 4px solid #f1b347; padding-left: 15px;">
-                    <h3 style="margin: 0;">Student Internship Performance Evaluation</h3>
-                    <p style="color: #666; font-size: 13px;">Rating Scale: 5 (Excellent) to 1 (Poor)</p>
-                </div>
-
-                <table class="preview-eval-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                    <thead>
-                        <tr style="background-color: #29429c; color: white;">
-                            <th style="padding: 12px; text-align: left; width: 60%;">Performance Criteria</th>
-                            <th style="padding: 12px; text-align: center;">1</th>
-                            <th style="padding: 12px; text-align: center;">2</th>
-                            <th style="padding: 12px; text-align: center;">3</th>
-                            <th style="padding: 12px; text-align: center;">4</th>
-                            <th style="padding: 12px; text-align: center;">5</th>
-                        </tr>
-                    </thead>
-                    <tbody id="previewContent">
-                        </tbody>
-                </table>
-            </div>
-
-            <div class="modal-footer" style="padding: 15px 25px; background: #f8f9fa; border-top: 1px solid #dee2e6; text-align: right;">
-                <button class="btn-cancel" onclick="closePreview()" style="padding: 10px 20px; background: #6c757d; color: white; border-radius: 4px; border: none;">CLOSE PREVIEW</button>
-            </div>
-        </div>
-    </div>
+ </script>
 </body>
 </html>
