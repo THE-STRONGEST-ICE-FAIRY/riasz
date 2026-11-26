@@ -273,19 +273,19 @@ document.addEventListener('DOMContentLoaded', () => {
 		let redirectPath;
 		switch (password) {
 			case 'admin':
-				redirectPath = '../admin/admin.php';
+				redirectPath = '../admin/_index.php';
 				break;
 			case 'executive':
-				redirectPath = '../executive/executive.php';
+				redirectPath = '../executive/_index.php';
 				break;
 			case 'program':
-				redirectPath = '../program/program.php';
+				redirectPath = '../Programdi/_index.php';
 				break;
 			case 'officer':
-				redirectPath = '../officer/officer.php';
+				redirectPath = '../officer/_index.php';
 				break;
 			case 'intern':
-				redirectPath = '../intern/intern.php';
+				redirectPath = '../student/student.php';
 				break;
 			default:
 				console.error('Unknown role:', userRole);
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
           let redirectPath;
           switch (userRole) {
             case 'admin':
-              redirectPath = '../admin/admin.php';
+              redirectPath = '../admin/_index.php';
               break;
             case 'executive director':
             case 'executive':
