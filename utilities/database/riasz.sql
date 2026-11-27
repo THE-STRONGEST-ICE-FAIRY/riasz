@@ -58,7 +58,11 @@ CREATE TABLE `accomplishmentreports` (
 CREATE TABLE `assessmentcontents` (
   `assessment_content_id` int NOT NULL,
   `assessment_id` int DEFAULT NULL,
-  `ass_content_question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci
+  `ass_content_question` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `ass_content_help_text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `ass_content_response_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'yes_no',
+  `ass_content_weight` decimal(5,2) DEFAULT NULL,
+  `ass_content_order` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -170,6 +174,7 @@ INSERT INTO `companies` (`company_id`, `company_date_added`, `company_name`, `co
 CREATE TABLE `courseoutcomes` (
   `co_id` int NOT NULL,
   `io_id` int DEFAULT NULL,
+  `program_id` int DEFAULT NULL,
   `co_version_number` int DEFAULT NULL,
   `co_version_comments` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `co_date_created` datetime DEFAULT NULL,
@@ -984,7 +989,8 @@ ALTER TABLE `companies`
 --
 ALTER TABLE `courseoutcomes`
   ADD PRIMARY KEY (`co_id`),
-  ADD KEY `io_id` (`io_id`);
+  ADD KEY `io_id` (`io_id`),
+  ADD KEY `idx_courseoutcomes_program_id` (`program_id`);
 
 --
 -- Indexes for table `courseoutcomesassessments`

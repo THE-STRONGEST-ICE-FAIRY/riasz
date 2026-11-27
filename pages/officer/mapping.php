@@ -1,3 +1,11 @@
+<?php
+session_start();
+$sessionRole = strtolower(trim((string)($_SESSION['user_role'] ?? '')));
+if (!in_array($sessionRole, ['officer', 'internship officer'], true)) {
+    header('Location: ../login/login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +81,7 @@
             </div>
         </aside>
 
-        <main class="main-content">
+        <main class="main-content mapping-page">
             <div class="page-header">
                 <div class="date-container">
                     <div class="huge-date">Evaluation Forms and Outcomes Mapping</div>
@@ -122,7 +130,7 @@
             <div id="stageTwoView" class="mapping-stage" style="display: none;">
                 <div class="header-actions">
                     <button type="button" class="back-btn-box" onclick="backToStageOne()">&larr; BACK</button>
-                    <button type="button" id="newMappingBtn" class="add-btn-box" onclick="alert('Open New Mapping Modal')">
+                    <button type="button" id="newMappingBtn" class="add-btn-box" onclick="openNewFileModal()">
                         + NEW FILE
                     </button>
                 </div>
@@ -376,8 +384,8 @@
 
                     <div class="panel-footer-actions">
                         <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
-                        <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
-                        <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                        <button type="button" class="btn-save" onclick="saveMapping()">SAVE CHANGES</button>
+                        <button type="button" class="btn-submit" onclick="submitMapping()">SUBMIT</button>
                     </div>
                 </div>
             </div>
@@ -435,8 +443,8 @@
 
                     <div class="panel-footer-actions">
                         <button type="button" class="btn-cancel" onclick="showGrid()">CANCEL CHANGES</button>
-                        <button type="button" class="btn-save" onclick="alert('Progress Saved')">SAVE CHANGES</button>
-                        <button type="button" class="btn-submit" onclick="alert('Mapping Submitted')">SUBMIT</button>
+                        <button type="button" class="btn-save" onclick="saveMapping()">SAVE CHANGES</button>
+                        <button type="button" class="btn-submit" onclick="submitMapping()">SUBMIT</button>
                     </div>
                 </div>
             </div>
@@ -525,26 +533,7 @@
                 </div>
             </div>
         </main>
-
-    <div id="outcomeModal" class="modal-overlay">
-            <div class="task-modal">
-                <span class="modal-close" onclick="closeOutcomeModal()">&times;</span>
-                <h2 id="modalTitle">Add Course Outcome</h2>
-                <input type="hidden" id="editRowIndex">
-                
-                <div class="form-row">
-                    <label>Outcome Description:</label>
-                    <textarea id="outcomeDesc" class="input-box" rows="4" placeholder="Enter course learning outcome..."></textarea>
-                </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button class="btn-cancel" onclick="closeOutcomeModal()">Cancel</button>
-                    <button class="btn-submit" id="saveOutcomeBtn" onclick="saveOutcome()">Save Outcome</button>
-                </div>
-            </div>
-        </div>
-                </div>
-            </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-links">
@@ -557,140 +546,6 @@
         </div>
     </footer>
     <script src="adminscript.js"></script>
-    <script>
-let editingRow = null;
-
-// 1. Modal Logic
-function openOutcomeModal(isEdit = false, btn = null) {
-    const modal = document.getElementById('outcomeModal');
-    
-    // CLEANUP: Remove the weight field if it was added by the Eval Modal
-    const weightRow = document.getElementById('weightRow');
-    if (weightRow) weightRow.remove();
-    
-    // RESET: Ensure the button points back to the standard saveOutcome
-    document.getElementById('saveOutcomeBtn').onclick = saveOutcome;
-
-    const title = document.getElementById('modalTitle');
-    const descInput = document.getElementById('outcomeDesc');
-    
-    if (isEdit) {
-        editingRow = btn.closest('tr');
-        const currentText = editingRow.querySelector('.criteria-text-content').innerText;
-        title.innerText = "Edit Course Outcome";
-        descInput.value = currentText;
-    } else {
-        editingRow = null;
-        title.innerText = "Add Course Outcome";
-        descInput.value = "";
-    }
-    modal.classList.add('active');
-}
-
-function closeOutcomeModal() {
-    document.getElementById('outcomeModal').classList.remove('active');
-}
-
-// 2. Save Logic (Create & Update)
-function saveOutcome() {
-    const desc = document.getElementById('outcomeDesc').value.trim();
-    if (!desc) return alert("Please enter a description.");
-
-    if (editingRow) {
-        editingRow.querySelector('.criteria-text-content').innerText = desc;
-    } else {
-        // FIX: Find which view is currently visible
-        const activeView = document.querySelector('.mapping-view[style*="display: block"]');
-        const tbody = activeView.querySelector('.excel-mapping-table tbody');
-        
-        const newRow = document.createElement('tr');
-        
-        let checkboxes = '';
-        for(let i=1; i<=8; i++) {
-            checkboxes += `<td class="cell-center"><input type="checkbox"></td>`;
-        }
-
-        newRow.innerHTML = `
-            <td class="criteria-text">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <span class="criteria-text-content">${desc}</span>
-                    <div class="row-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                        <button onclick="openOutcomeModal(true, this)" style="color: #29429c; font-size: 10px; font-weight: bold; cursor: pointer;">EDIT</button>
-                        <button onclick="deleteRow(this)" style="color: #e74c3c; font-size: 10px; font-weight: bold; cursor: pointer;">DEL</button>
-                    </div>
-                </div>
-            </td>
-            ${checkboxes}
-        `;
-        tbody.appendChild(newRow);
-    }
-    closeOutcomeModal();
-}
-
-// 3. Delete Logic
-function deleteRow(btn) {
-    if (confirm("Are you sure you want to delete this outcome?")) {
-        btn.closest('tr').remove();
-    }
-}
-
-// 4. View Switching Logic
-function hideAllStages() {
-    document.getElementById('stageOneView').style.display = 'none';
-    document.getElementById('stageTwoView').style.display = 'none';
-    document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
-}
-
-function backToStageOne() {
-    hideAllStages();
-    document.getElementById('stageOneView').style.display = 'block';
-}
-
-function openStageTwo() {
-    hideAllStages();
-    document.getElementById('stageTwoView').style.display = 'block';
-}
-
-function showMapping(type) {
-    hideAllStages();
-    const target = document.getElementById(type + 'Content');
-    if (target) target.style.display = 'block';
-}
-
-function showGrid() {
-    openStageTwo();
-}
-
-function hideAllStages() {
-    document.getElementById('stageOneView').style.display = 'none';
-    document.getElementById('stageTwoView').style.display = 'none';
-    document.getElementById('viewEditStage').style.display = 'none';
-    document.querySelectorAll('.mapping-view').forEach(view => view.style.display = 'none');
-}
-
-function openViewEdit(periodLabel) {
-    hideAllStages();
-    document.getElementById('viewEditContextLabel').innerText = 'VIEW ONLY — ' + periodLabel.toUpperCase();
-    document.getElementById('viewEditStage').style.display = 'block';
-    backToViewEditSchools();
-}
-
-function backToViewEditSchools() {
-    document.querySelectorAll('.readonly-school-view').forEach(el => el.style.display = 'none');
-    document.getElementById('viewEditSchoolGrid').style.display = 'flex';
-    const topBack = document.getElementById('viewEditTopBackBtn');
-    if (topBack) topBack.style.display = 'inline-flex';
-}
-
-function showReadOnlySchool(schoolCode) {
-    document.getElementById('viewEditSchoolGrid').style.display = 'none';
-    document.querySelectorAll('.readonly-school-view').forEach(el => el.style.display = 'none');
-    const topBack = document.getElementById('viewEditTopBackBtn');
-    if (topBack) topBack.style.display = 'none';
-    const target = document.getElementById('readOnly' + schoolCode);
-    if (target) target.style.display = 'block';
-}
-
- </script>
+    <script src="mapping.js"></script>
 </body>
 </html>
