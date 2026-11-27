@@ -25,6 +25,7 @@ try {
             u.user_id,
             u.user_email,
             u.user_role,
+            su.schooluser_id,
             su.schooluser_password
         FROM users u
         JOIN schoolusers su ON u.user_id = su.user_id
@@ -77,7 +78,7 @@ try {
             LIMIT 1
         ");
 
-        $otpStmt->execute([$user['user_id']]);
+        $otpStmt->execute([$user['schooluser_id']]);
         $otpRow = $otpStmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$otpRow) {

@@ -16,7 +16,8 @@ try {
     $stmt = $conn->prepare("
         SELECT o.*
         FROM onetimepasswords o
-        JOIN users u ON u.user_id = o.schooluser_id
+        JOIN schoolusers s ON s.schooluser_id = o.schooluser_id
+        JOIN users u ON u.user_id = s.user_id
         WHERE u.user_email = ?
         ORDER BY o.otp_date_created DESC
         LIMIT 1

@@ -689,36 +689,36 @@ document.addEventListener('DOMContentLoaded', () => {
               method: 'POST',
               body: new URLSearchParams({ otp: code, email: email })
             })
-            .then(r => r.text()).then(result => {
-              console.log('Login response:', result);
-              result = JSON.parse(result);
-              console.log('Login response:', result.status);
+            .then(r => r.json()).then(result => {
               if (result.status === 'success') {
                 const userRole = result.role.toLowerCase().trim();
-                console.log('User role:', userRole);
-      
                 let redirectPath;
                 switch (userRole) {
                   case 'admin':
-                    redirectPath = '../admin/admin.php';
+                    redirectPath = '../admin/_index.php';
                     break;
                   case 'executive director':
-                    redirectPath = '../faculty/faculty.php';
+                  case 'executive':
+                    redirectPath = '../executive/_index.php';
                     break;
                   case 'program director':
-                    redirectPath = '../faculty/faculty.php';
+                  case 'program':
+                    redirectPath = '../Programdi/_index.php';
                     break;
                   case 'internship officer':
-                    redirectPath = '../faculty/faculty.php';
+                  case 'officer':
+                    redirectPath = '../officer/_index.php';
                     break;
                   case 'student intern':
+                  case 'intern':
                     redirectPath = '../student/student.php';
                     break;
                   default:
                     console.error('Unknown role:', userRole);
-                    document.querySelector('.email-error').textContent = 'Invalid user role. Please contact support.';
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalButtonText;
+                    unblockClicks();
+                    verifyBtn.style.pointerEvents = 'auto';
+                    verifyBtn.style.backgroundColor = '#213B9A';
+                    errorMsg.textContent = 'Invalid user role. Please contact support.';
                     return;
                 }
                 sessionStorage.removeItem('resendOtp');
@@ -726,9 +726,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.removeItem('otpCooldownEnd');
                 sessionStorage.removeItem('lastOtpEmail');
       
-                console.log('Redirecting to:', redirectPath);
                 window.location.replace(redirectPath);
+              } else {
+                unblockClicks();
+                verifyBtn.style.pointerEvents = 'auto';
+                verifyBtn.style.backgroundColor = '#213B9A';
+                errorMsg.textContent = result.message || 'Unable to complete sign-in.';
               }
+            }).catch(error => {
+              console.error('OTP sign-in error:', error);
+              unblockClicks();
+              verifyBtn.style.pointerEvents = 'auto';
+              verifyBtn.style.backgroundColor = '#213B9A';
+              errorMsg.textContent = 'Unable to complete sign-in. Please try again.';
             });
           } else {
             unblockClicks();
