@@ -265,6 +265,41 @@ CREATE TABLE `events` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `io_dashboard_settings`
+--
+
+CREATE TABLE `io_dashboard_settings` (
+  `user_id` int NOT NULL,
+  `academic_year_start` date NOT NULL,
+  `academic_year_end` date NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `io_dashboard_event_details`
+--
+
+CREATE TABLE `io_dashboard_event_details` (
+  `event_id` int NOT NULL,
+  `owner_user_id` int NOT NULL,
+  `event_type` varchar(20) NOT NULL DEFAULT 'event',
+  `start_time` time DEFAULT NULL,
+  `end_time` time DEFAULT NULL,
+  `target_role` varchar(50) DEFAULT NULL,
+  `target_school_id` int DEFAULT NULL,
+  `target_program_id` int DEFAULT NULL,
+  `notify_all` tinyint(1) NOT NULL DEFAULT '0',
+  `notification_method` varchar(20) NOT NULL DEFAULT 'system',
+  PRIMARY KEY (`event_id`),
+  KEY `idx_dashboard_event_owner` (`owner_user_id`,`event_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `executivedirectors`
 --
 
@@ -1788,6 +1823,22 @@ ALTER TABLE `supervisors`
 --
 ALTER TABLE `userlogs`
   ADD CONSTRAINT `userlogs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+CREATE TABLE IF NOT EXISTS `io_user_details` (
+  `user_id` int NOT NULL,
+  `role_detail` varchar(255) DEFAULT NULL,
+  `company_name` varchar(255) DEFAULT NULL,
+  `school_name` varchar(255) DEFAULT NULL,
+  `directory_status` varchar(50) DEFAULT NULL,
+  `company_status` varchar(50) DEFAULT NULL,
+  `business_address` text,
+  `business_hours` varchar(255) DEFAULT NULL,
+  `logo_path` varchar(255) DEFAULT NULL,
+  `io_id` int DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `io_user_details_ibfk_1`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -19,6 +19,7 @@ try {
         JOIN schoolusers s ON s.schooluser_id = o.schooluser_id
         JOIN users u ON u.user_id = s.user_id
         WHERE u.user_email = ?
+          AND COALESCE(u.user_is_archived, 0) = 0
         ORDER BY o.otp_date_created DESC
         LIMIT 1
     ");

@@ -31,7 +31,12 @@
                 <h4 style="margin-bottom: 15px; color: #1e3b99; font-size: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Notification Details</h4>
                 <div id="detailBody" style="font-size: 13px; color: #555; line-height: 1.6;"></div>
             </div>
-            <div class="profile-circle"></div>
+            <details class="profile-menu">
+                <summary class="profile-circle" aria-label="Account options"></summary>
+                <div class="profile-panel">
+                    <a class="logout-menu-item" href="../login/logout.php">Log out</a>
+                </div>
+            </details>
         </div>
     </header>
 

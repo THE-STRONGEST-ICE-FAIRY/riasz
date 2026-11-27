@@ -1,3 +1,11 @@
+<?php
+session_start();
+$sessionRole = strtolower(trim((string)($_SESSION['user_role'] ?? '')));
+if (!in_array($sessionRole, ['officer', 'internship officer'], true)) {
+    header('Location: ../login/login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +43,12 @@
                 <h4 style="margin-bottom: 15px; color: #1e3b99; font-size: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Notification Details</h4>
                 <div id="detailBody" style="font-size: 13px; color: #555; line-height: 1.6;"></div>
             </div>
-            <div class="profile-circle"></div>
+            <details class="profile-menu">
+                <summary class="profile-circle" aria-label="Account options"></summary>
+                <div class="profile-panel">
+                    <a class="logout-menu-item" href="../login/logout.php">Log out</a>
+                </div>
+            </details>
         </div>
     </header>
 
@@ -78,23 +91,23 @@
                     <div class="live-time" id="real-time-clock"></div>
                 </div>
                 <div class="header-links">
-                    <span>You previously logged in on <span id="login-date">Saturday, March 09, 2025</span> ⟲</span>
+                    <span>You previously logged in on <span id="login-date">Loading...</span> ⟲</span>
                     <a href="#" id="last-visited-link" style="display: none;">Go to your last visited page: Master List ↩</a>
                 </div>
             </div>
 
             <div class="stats-row">
-                <div class="stat-card"><span class="stat-label">Total Users</span><span class="stat-value">214</span></div>
-                <div class="stat-card"><span class="stat-label">Student Intern</span><span class="stat-value">130</span></div>
-                <div class="stat-card"><span class="stat-label">Internship Officer</span><span class="stat-value">1</span></div>
-                <div class="stat-card"><span class="stat-label">Program Director</span><span class="stat-value">36</span></div>
-                <div class="stat-card"><span class="stat-label">Executive Director</span><span class="stat-value">5</span></div>
-                <div class="stat-card"><span class="stat-label">Industry Partner</span><span class="stat-value">42</span></div>
+                <div class="stat-card"><span class="stat-label">Total Users</span><span class="stat-value" id="statTotalUsers">0</span></div>
+                <div class="stat-card"><span class="stat-label">Student Intern</span><span class="stat-value" id="statStudentInterns">0</span></div>
+                <div class="stat-card"><span class="stat-label">Internship Officer</span><span class="stat-value" id="statInternshipOfficers">0</span></div>
+                <div class="stat-card"><span class="stat-label">Program Director</span><span class="stat-value" id="statProgramDirectors">0</span></div>
+                <div class="stat-card"><span class="stat-label">Executive Director</span><span class="stat-value" id="statExecutiveDirectors">0</span></div>
+                <div class="stat-card"><span class="stat-label">Industry Partner</span><span class="stat-value" id="statIndustryPartners">0</span></div>
             </div>
 
             <div class="panel" style="overflow: visible;">
                 <div class="panel-header">
-                    <div class="panel-title">Internship Calendar Events for the Academic Year <b id="display-acad-year">2024-2025</b></div>
+                    <div class="panel-title">Internship Calendar Events for the Academic Year <b id="display-acad-year">All Academic Years</b></div>
                     <svg style="width: 20px; height: 20px; stroke: #1e3b99; fill: none; stroke-width: 2;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 </div>
                 <table class="calendar-table">
@@ -128,23 +141,23 @@
 
             <div class="bottom-grid">
                 <div class="panel" style="padding: 20px;">
-                    <div style="color: #1e3b99; font-weight: bold; margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">INTERN1 <span style="font-size: 10px; color: #999;">December - March 2025</span></div>
+                    <div style="color: #1e3b99; font-weight: bold; margin-bottom: 15px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">Intern Status <span style="font-size: 10px; color: #999;">All records</span></div>
                     <div style="display: flex; justify-content: space-between; text-align: center;">
-                        <div><div style="font-size: 10px;"><span style="color: #27bda1;">●</span> Deployed</div><div style="font-size: 24px; color: #27bda1; font-weight: bold;">10</div></div>
-                        <div><div style="font-size: 10px;"><span style="color: #2e96ff;">●</span> Waiting</div><div style="font-size: 24px; color: #2e96ff; font-weight: bold;">13</div></div>
-                        <div><div style="font-size: 10px;"><span style="color: #ff8a8a;">●</span> Undeployed</div><div style="font-size: 24px; color: #ff8a8a; font-weight: bold;">3</div></div>
-                        <div><div style="font-size: 10px;"><span style="color: #999;">●</span> Unlisted</div><div style="font-size: 24px; color: #999; font-weight: bold;">31</div></div>
+                        <div><div style="font-size: 10px;"><span style="color: #27bda1;">●</span> Deployed</div><div id="statusDeployed" style="font-size: 24px; color: #27bda1; font-weight: bold;">0</div></div>
+                        <div><div style="font-size: 10px;"><span style="color: #2e96ff;">●</span> Waiting</div><div id="statusWaiting" style="font-size: 24px; color: #2e96ff; font-weight: bold;">0</div></div>
+                        <div><div style="font-size: 10px;"><span style="color: #ff8a8a;">●</span> Undeployed</div><div id="statusUndeployed" style="font-size: 24px; color: #ff8a8a; font-weight: bold;">0</div></div>
+                        <div><div style="font-size: 10px;"><span style="color: #999;">●</span> Unlisted</div><div id="statusUnlisted" style="font-size: 24px; color: #999; font-weight: bold;">0</div></div>
                     </div>
                 </div>
                 <div class="panel" style="padding: 20px;">
                     <div style="color: #1e3b99; font-weight: bold; margin-bottom: 10px;">Progress</div>
                     <div style="font-size: 11px; color: #666; margin-bottom: 5px;">Evaluation Forms (Industry Partner)</div>
                     <div style="background: #fdf5d3; padding: 10px; border-radius: 6px; display: flex; justify-content: space-around; text-align: center; margin-bottom: 10px;">
-                        <div><div style="font-size: 10px; color: #2e7d32;">Total Submitted</div><div style="font-weight: bold;">40</div></div>
-                        <div><div style="font-size: 10px; color: #c62828;">Not yet</div><div style="font-weight: bold; color: #c62828;">90</div></div>
+                        <div><div style="font-size: 10px; color: #2e7d32;">Total Submitted</div><div id="evaluationSubmitted" style="font-weight: bold;">0</div></div>
+                        <div><div style="font-size: 10px; color: #c62828;">Not yet</div><div id="evaluationPending" style="font-weight: bold; color: #c62828;">0</div></div>
                     </div>
                     <button id="openDetailedReportBtn" style="width: 100%; background: #e3f2fd; border: 1px solid #bbdefb; padding: 8px; border-radius: 4px; color: #1e88e5; margin-bottom: 10px; cursor: pointer; font-weight: 500;">Detailed Report</button>
-                    <button style="width: 100%; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 8px; border-radius: 4px; color: #2e7d32; cursor: pointer; font-weight: 500;">Notify Remaining</button>
+                    <button id="notifyRemainingBtn" style="width: 100%; background: #e8f5e9; border: 1px solid #c8e6c9; padding: 8px; border-radius: 4px; color: #2e7d32; cursor: pointer; font-weight: 500;">Notify Remaining</button>
                 </div>
                 <div class="panel" style="padding: 20px; display: flex; flex-direction: column;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -174,8 +187,8 @@
             </div>
 
             <div class="tabs-row">
-                <button class="tab-btn inactive"><svg style="width: 16px; height: 16px; stroke: currentColor; fill: none;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> EVENT</button>
-                <button class="tab-btn active"><svg style="width: 16px; height: 16px; stroke: currentColor; fill: none;" viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 21v-4"/><path d="M12 3a5 5 0 0 0-5 5c0 2 1.5 3.5 2 5.5v1.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.5c.5-2 2-3.5 2-5.5a5 5 0 0 0-5-5z"/></svg> TASK</button>
+                <button class="tab-btn inactive" data-event-type="event"><svg style="width: 16px; height: 16px; stroke: currentColor; fill: none;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> EVENT</button>
+                <button class="tab-btn active" data-event-type="task"><svg style="width: 16px; height: 16px; stroke: currentColor; fill: none;" viewBox="0 0 24 24"><path d="M9 21h6"/><path d="M12 21v-4"/><path d="M12 3a5 5 0 0 0-5 5c0 2 1.5 3.5 2 5.5v1.5a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.5c.5-2 2-3.5 2-5.5a5 5 0 0 0-5-5z"/></svg> TASK</button>
             </div>
 
             <select class="select-box" style="width: 100%; margin-top: 5px;">
@@ -197,18 +210,13 @@
                 <svg class="form-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 <select class="select-box" id="taskRole" style="flex: 1;">
                     <option value="">Select Role</option>
-                    <option>Industry Partner</option>
-                    <option>Student Intern</option>
-                    <option>Executive Director</option>
-                    <option>Program Director</option>
+                    <option value="supervisor">Industry Partner</option>
+                    <option value="intern">Student Intern</option>
+                    <option value="executive">Executive Director</option>
+                    <option value="program">Program Director</option>
                 </select>
                 <select class="select-box" id="taskSchool" style="flex: 1;">
-                    <option value="">Select School</option>
-                    <option value="SoA">School of Architecture</option>
-                    <option value="SoMA">School of Multimedia and Arts</option>
-                    <option value="SoE">School of Engineering</option>
-                    <option value="SoCIT">School of Computing and Information Technologies</option>
-                    <option value="SoM">School Of Management</option>
+                    <option value="">All Schools</option>
                 </select>
                 <span>-</span>
                 <select class="select-box" id="taskProgram" style="flex: 1;">
@@ -222,7 +230,7 @@
             </div>
 
             <div class="form-row" style="margin-left: 25px;">
-                <select class="select-box" style="flex: 1;"><option>Email</option><option>System</option></select>
+                <select class="select-box" id="notificationChannel" style="flex: 1;"><option value="system">System notification</option></select>
                 <select class="select-box" style="flex: 2;"><option>Wednesday, March 21</option></select>
                 <span style="color: #999; cursor: pointer;">&times;</span>
             </div>
@@ -231,7 +239,7 @@
 
             <div class="form-row">
                 <svg class="form-icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-                <input type="text" class="input-box" placeholder="Additional details..." style="border: none; border-bottom: 1px solid #ccc; border-radius: 0;">
+                <input type="text" class="input-box" id="taskDescription" placeholder="Additional details..." style="border: none; border-bottom: 1px solid #ccc; border-radius: 0;">
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px;">
@@ -260,7 +268,7 @@
                             <th>STATUS</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="evaluationReportBody">
                         <tr>
                             <td style="position: relative;">
                                 <span class="supervisor-name" style="color: #1e3b99; cursor: pointer; text-decoration: underline;">Mark Johnson</span>
@@ -389,5 +397,6 @@
             }, { capture: true });
         });
     </script>
+<script src="../login/login-date.js"></script>
 </body>
 </html>

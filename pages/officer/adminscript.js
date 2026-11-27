@@ -23,14 +23,6 @@ function updateTime() {
     if (document.getElementById('current-year'))
         document.getElementById('current-year').innerText = now.getFullYear();
 
-    // Mock Login Date logic (Setting it to a few days ago for realism)
-    const login = new Date(now);
-    login.setDate(login.getDate() - 3);
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-    if (document.getElementById('login-date'))
-        document.getElementById('login-date').innerText = `${days[login.getDay()]}, ${months[login.getMonth()]} ${String(login.getDate()).padStart(2,'0')}, ${login.getFullYear()}`;
 }
 
 // Initialize clock immediately, then update every second
@@ -49,15 +41,193 @@ const noNotifMsg = document.getElementById('noNotifMsg');
 const notifDetailPanel = document.getElementById('notifDetailPanel');
 const detailBody = document.getElementById('detailBody');
 let unreadCount = 0;
+let dashboardNotifications = [];
+document.getElementById('evaluationReportBody')?.replaceChildren();
 
-bellIcon.addEventListener('click', (e) => {
+function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = String(value);
+}
+
+function renderCalendarEvents(events) {
+    const tbody = document.getElementById('calendar-events-tbody');
+    if (!tbody) return;
+    tbody.replaceChildren();
+
+    if (events.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 2;
+        cell.textContent = 'No calendar events for this academic year.';
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        return;
+    }
+
+    events.forEach(event => {
+        const row = document.createElement('tr');
+        const dateCell = document.createElement('td');
+        const titleCell = document.createElement('td');
+        const eventDate = new Date(`${event.date}T00:00:00`);
+        dateCell.textContent = Number.isNaN(eventDate.getTime())
+            ? event.date
+            : eventDate.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+        const time = [event.start_time, event.end_time].filter(Boolean).join(' - ');
+        titleCell.textContent = `${event.title}${time ? ` (${time})` : ''}`;
+        row.append(dateCell, titleCell);
+        tbody.appendChild(row);
+    });
+}
+
+function renderEvaluationReport(rows) {
+    const tbody = document.getElementById('evaluationReportBody');
+    if (!tbody) return;
+    tbody.replaceChildren();
+
+    if (rows.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 4;
+        cell.textContent = 'No active internships are assigned to industry partners.';
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        return;
+    }
+
+    rows.forEach(report => {
+        const row = document.createElement('tr');
+        [report.name, report.company_name, report.email, report.status].forEach(value => {
+            const cell = document.createElement('td');
+            cell.textContent = value || '';
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+}
+
+function renderNotifications(items, unread) {
+    dashboardNotifications = items;
+    unreadCount = unread;
+    notifDropdown.querySelectorAll('.notif-item').forEach(item => item.remove());
+    noNotifMsg.style.display = items.length ? 'none' : 'block';
+
+    items.forEach(item => {
+        const notification = document.createElement('div');
+        notification.className = 'notif-item';
+        notification.textContent = item.message;
+        notification.addEventListener('click', () => {
+            detailBody.replaceChildren();
+            const type = document.createElement('strong');
+            type.textContent = item.type || 'Notification';
+            const message = document.createElement('div');
+            message.textContent = item.message;
+            const created = document.createElement('div');
+            created.textContent = item.created_at;
+            detailBody.append(type, message, created);
+            notifDetailPanel.style.display = 'block';
+        });
+        notifDropdown.insertBefore(notification, noNotifMsg);
+    });
+
+    if (unreadCount > 0) {
+        notifBadge.textContent = unreadCount;
+        notifBadge.style.display = 'block';
+    } else {
+        notifBadge.style.display = 'none';
+    }
+}
+
+function populateRecipientFilters(schools, programs) {
+    const roleSelect = document.getElementById('taskRole');
+    const schoolSelect = document.getElementById('taskSchool');
+    const programSelect = document.getElementById('taskProgram');
+    if (!roleSelect || !schoolSelect || !programSelect) return;
+
+    schoolSelect.replaceChildren(new Option('All Schools', ''));
+    schools.forEach(school => schoolSelect.add(new Option(school.name, school.id)));
+
+    const updatePrograms = () => {
+        const role = roleSelect.value;
+        const canFilterSchool = role !== 'supervisor';
+        const canFilterProgram = role !== 'supervisor' && role !== 'executive';
+        schoolSelect.disabled = !canFilterSchool;
+        programSelect.disabled = !canFilterProgram;
+        if (!canFilterSchool) schoolSelect.value = '';
+        if (!canFilterProgram) programSelect.value = '';
+
+        const selectedSchool = schoolSelect.value;
+        const filteredPrograms = selectedSchool
+            ? programs.filter(program => String(program.school_id) === selectedSchool)
+            : programs;
+        programSelect.replaceChildren(new Option('All Programs', ''));
+        filteredPrograms.forEach(program => programSelect.add(new Option(program.name, program.id)));
+    };
+
+    roleSelect.onchange = updatePrograms;
+    schoolSelect.onchange = updatePrograms;
+    updatePrograms();
+}
+
+async function loadDashboard() {
+    const response = await fetch('manage_notifications.php?action=dashboard', { cache: 'no-store' });
+    const result = await response.json();
+    if (!response.ok || result.status !== 'success') {
+        throw new Error(result.message || 'Could not load dashboard data.');
+    }
+
+    const data = result.data;
+    const counts = data.role_counts;
+    setText('statTotalUsers', counts.total_users);
+    setText('statStudentInterns', counts.student_interns);
+    setText('statInternshipOfficers', counts.internship_officers);
+    setText('statProgramDirectors', counts.program_directors);
+    setText('statExecutiveDirectors', counts.executive_directors);
+    setText('statIndustryPartners', counts.industry_partners);
+    setText('statusDeployed', data.status_counts.deployed);
+    setText('statusWaiting', data.status_counts.waiting);
+    setText('statusUndeployed', data.status_counts.undeployed);
+    setText('statusUnlisted', data.status_counts.unlisted);
+    setText('evaluationSubmitted', data.evaluation_progress.submitted);
+    setText('evaluationPending', data.evaluation_progress.pending);
+    setText('display-acad-year', data.academic_year.label);
+
+    const academicStart = document.getElementById('acadStartDate');
+    const academicEnd = document.getElementById('acadEndDate');
+    if (academicStart && data.academic_year.start) academicStart.value = data.academic_year.start;
+    if (academicEnd && data.academic_year.end) academicEnd.value = data.academic_year.end;
+
+    renderCalendarEvents(data.events);
+    renderEvaluationReport(data.evaluation_report);
+    renderNotifications(data.notifications, data.unread_count);
+    populateRecipientFilters(data.schools, data.programs);
+}
+
+loadDashboard().catch(error => {
+    console.error('Could not load dashboard data:', error);
+    alert(error.message);
+});
+
+bellIcon.addEventListener('click', async (e) => {
     e.stopPropagation();
     notifDropdown.classList.toggle('active');
     
     if (notifDropdown.classList.contains('active')) {
-        if (notifBadge) {
-            notifBadge.style.display = 'none';
-            unreadCount = 0;
+        if (unreadCount > 0) {
+            const formData = new FormData();
+            formData.append('action', 'mark_read');
+            try {
+                const response = await fetch('manage_notifications.php', { method: 'POST', body: formData });
+                const result = await response.json();
+                if (!response.ok || result.status !== 'success') {
+                    throw new Error(result.message || 'Could not mark notifications as read.');
+                }
+                unreadCount = 0;
+                dashboardNotifications.forEach(item => { item.is_read = 1; });
+                notifBadge.style.display = 'none';
+            } catch (error) {
+                console.error('Could not mark notifications as read:', error);
+                alert(error.message);
+            }
         }
     } else {
         if (notifDetailPanel) notifDetailPanel.style.display = 'none';
@@ -95,20 +265,30 @@ if (yearDropdown) {
 }
 
 if (applyAcadYearBtn) {
-    applyAcadYearBtn.addEventListener('click', () => {
-        if (acadStartDate.value && acadEndDate.value) {
-            const startYear = new Date(acadStartDate.value).getFullYear();
-            const endYear = new Date(acadEndDate.value).getFullYear();
-            
-            displayAcadYear.innerText = `${startYear}-${endYear}`;
-            
-            // Add a brief flash effect to show it updated
-            displayAcadYear.style.color = '#f1b347';
-            setTimeout(() => displayAcadYear.style.color = '#333', 500);
-            
+    applyAcadYearBtn.addEventListener('click', async () => {
+        if (!acadStartDate.value || !acadEndDate.value || acadStartDate.value > acadEndDate.value) {
+            alert('Choose a valid start and end date for the academic year.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('action', 'save_academic_year');
+        formData.append('start_date', acadStartDate.value);
+        formData.append('end_date', acadEndDate.value);
+        applyAcadYearBtn.disabled = true;
+        try {
+            const response = await fetch('manage_notifications.php', { method: 'POST', body: formData });
+            const result = await response.json();
+            if (!response.ok || result.status !== 'success') {
+                throw new Error(result.message || 'Could not save the academic year.');
+            }
+            await loadDashboard();
             yearDropdown.classList.remove('active');
-        } else {
-            alert('Please select both a start date and an end date.');
+        } catch (error) {
+            console.error('Could not save academic year:', error);
+            alert(error.message);
+        } finally {
+            applyAcadYearBtn.disabled = false;
         }
     });
 }
@@ -146,128 +326,62 @@ if (modalOverlay) {
     });
 }
 
-// Save Button Action - Creates Notification
+// Save the calendar item and optional system notifications.
 if (saveTaskBtn) {
     saveTaskBtn.addEventListener('click', async () => {
         const titleInput = document.getElementById('taskTitle');
         const dateInput = document.getElementById('taskDate');
         const startTimeInput = document.getElementById('taskStartTime');
-
-        // Show error message if required inputs are missing
         if (!titleInput.value.trim() || !dateInput.value || !startTimeInput.value) {
-            alert("Error: Please fill in the required inputs (Title, Date, Start Time) before saving.");
+            alert('Please fill in the title, date, and start time before saving.');
             return;
         }
 
-        const title = document.getElementById('taskTitle').value;
-        const date = document.getElementById('taskDate').value;
-        const startTime = document.getElementById('taskStartTime').value;
-        const endTime = document.getElementById('taskEndTime').value;
+        const targetRole = document.getElementById('taskRole').value;
+        const notifyAll = document.getElementById('notifyAll').checked;
+        if (notifyAll && !targetRole) {
+            alert('Select a recipient role before choosing Notify All.');
+            return;
+        }
 
-        // Prepare data to send
         const formData = new FormData();
-        formData.append('title', title);
-        formData.append('date', date);
-        formData.append('start_time', startTime);
-        formData.append('end_time', endTime);
-        formData.append('action', 'create_notification');
+        formData.append('action', 'create_event');
+        formData.append('title', titleInput.value.trim());
+        formData.append('date', dateInput.value);
+        formData.append('start_time', startTimeInput.value);
+        formData.append('end_time', document.getElementById('taskEndTime').value);
+        formData.append('description', document.getElementById('taskDescription').value.trim());
+        formData.append('event_type', document.querySelector('.tab-btn.active')?.dataset.eventType || 'task');
+        formData.append('target_role', targetRole);
+        formData.append('target_school_id', document.getElementById('taskSchool').value);
+        formData.append('target_program_id', document.getElementById('taskProgram').value);
+        formData.append('notify_all', notifyAll ? '1' : '0');
+        formData.append('notification_method', document.getElementById('notificationChannel').value);
 
-        // Change button text to show loading state
-        const originalText = saveTaskBtn.innerText;
-        saveTaskBtn.innerText = 'Saving...';
+        const originalText = saveTaskBtn.textContent;
+        saveTaskBtn.textContent = 'Saving...';
         saveTaskBtn.disabled = true;
 
         try {
-            const response = await fetch('manage_notifications.php', {
-                method: 'POST',
-                body: formData
-            });
+            const response = await fetch('manage_notifications.php', { method: 'POST', body: formData });
             const result = await response.json();
-
-            if (result.status === 'success') {
-                // Add notification to the dropdown dynamically
-                const notifHeader = notifDropdown.querySelector('.notif-header');
-                
-                if (noNotifMsg) noNotifMsg.style.display = 'none';
-                
-                unreadCount++;
-                if (notifBadge) {
-                    notifBadge.innerText = unreadCount;
-                    notifBadge.style.display = 'block';
-                }
-                
-                const newNotif = document.createElement('div');
-                newNotif.className = 'notif-item';
-                newNotif.innerHTML = `<strong>Task Added:</strong> ${result.data.title}`;
-                
-                newNotif.addEventListener('click', () => {
-                    if (newNotif.classList.contains('active-notif')) {
-                        notifDetailPanel.style.display = 'none';
-                        newNotif.style.background = '';
-                        newNotif.classList.remove('active-notif');
-                    } else {
-                        detailBody.innerHTML = `
-                            <div style="margin-bottom: 8px;"><strong>Title:</strong> ${result.data.title}</div>
-                            <div style="margin-bottom: 8px;"><strong>Date:</strong> ${result.data.date}</div>
-                            <div style="margin-bottom: 8px;"><strong>Time:</strong> ${result.data.start_time} - ${result.data.end_time}</div>
-                        `;
-                        notifDetailPanel.style.display = 'block';
-                        
-                        notifDropdown.querySelectorAll('.notif-item').forEach(item => {
-                            item.style.background = '';
-                            item.classList.remove('active-notif');
-                        });
-                        newNotif.style.background = '#f0f4ff';
-                        newNotif.classList.add('active-notif');
-                    }
-                });
-                
-                notifHeader.insertAdjacentElement('afterend', newNotif); // Insert right below header
-                
-                modalOverlay.classList.remove('active');
-
-                // Update the calendar events table
-                const calTbody = document.getElementById('calendar-events-tbody');
-                if (calTbody && date && title) {
-                    // Clear out any preset/dummy data if it still exists in the browser cache
-                    if (calTbody.innerHTML.includes('INTERN2 End')) {
-                        calTbody.innerHTML = '';
-                    }
-
-                    // Format the date to "Month Day" (e.g. "September 1")
-                    const [year, month, day] = date.split('-');
-                    const dateObj = new Date(year, month - 1, day);
-                    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                    const dateText = `${months[dateObj.getMonth()]} ${dateObj.getDate()}`;
-                    
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `<td>${dateText}</td><td>${title}</td>`;
-                    
-                    // Insert at the top of the table body
-                    calTbody.insertBefore(newRow, calTbody.firstChild);
-                }
-                
-                // Clear modal inputs
-                document.querySelectorAll('.task-modal .input-box').forEach(input => {
-                    input.value = '';
-                });
-                document.querySelectorAll('.task-modal .select-box').forEach(select => {
-                    select.selectedIndex = 0;
-                });
-                if (document.getElementById('taskProgram')) {
-                    document.getElementById('taskProgram').innerHTML = '<option value="">All Programs</option>';
-                }
-                // Reset date picker back to today's date
-                const today = new Date();
-                document.getElementById('taskDate').value = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-            } else {
-                alert('Failed to save task: ' + result.message);
+            if (!response.ok || result.status !== 'success') {
+                throw new Error(result.message || 'Could not save the calendar item.');
             }
+
+            modalOverlay.classList.remove('active');
+            document.querySelectorAll('.task-modal .input-box').forEach(input => { input.value = ''; });
+            document.querySelectorAll('.task-modal .select-box').forEach(select => { select.selectedIndex = 0; });
+            document.getElementById('notifyAll').checked = false;
+            const today = new Date();
+            dateInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            await loadDashboard();
+            alert(result.message);
         } catch (error) {
-            console.error('Error:', error);
-            alert('A connection error occurred.');
+            console.error('Could not save calendar item:', error);
+            alert(error.message);
         } finally {
-            saveTaskBtn.innerText = originalText;
+            saveTaskBtn.textContent = originalText;
             saveTaskBtn.disabled = false;
         }
     });
@@ -284,6 +398,28 @@ tabBtns.forEach(btn => {
         // You can add logic here to show/hide fields depending on tab
     });
 });
+
+const notifyRemainingBtn = document.getElementById('notifyRemainingBtn');
+if (notifyRemainingBtn) {
+    notifyRemainingBtn.addEventListener('click', async () => {
+        const formData = new FormData();
+        formData.append('action', 'notify_pending');
+        notifyRemainingBtn.disabled = true;
+        try {
+            const response = await fetch('manage_notifications.php', { method: 'POST', body: formData });
+            const result = await response.json();
+            if (!response.ok || result.status !== 'success') {
+                throw new Error(result.message || 'Could not send evaluation reminders.');
+            }
+            alert(result.message);
+        } catch (error) {
+            console.error('Could not send evaluation reminders:', error);
+            alert(error.message);
+        } finally {
+            notifyRemainingBtn.disabled = false;
+        }
+    });
+}
 
 // 7. Simple Calendar View
 function renderCalendar() {

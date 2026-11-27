@@ -65,7 +65,7 @@
                     <div class="huge-date">Activity Logs</div>
                 </div>
                 <div class="header-links">
-                    <span>You previously logged in on <span id="login-date"></span> ⟲</span>
+                    <span>You previously logged in on <span id="login-date">Loading...</span> ⟲</span>
                     <a href="#" id="last-visited-link" style="display: none;">Go to your last visited page: ↩</a>
                 </div>
             </div>
@@ -553,5 +553,6 @@
             });
         }
     </script>
+<script src="../login/login-date.js"></script>
 </body>
 </html>

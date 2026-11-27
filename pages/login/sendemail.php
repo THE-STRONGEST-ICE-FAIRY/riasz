@@ -33,6 +33,7 @@ try {
 		FROM users u
 		JOIN schoolusers s ON s.user_id = u.user_id
 		WHERE u.user_email = ?
+		  AND COALESCE(u.user_is_archived, 0) = 0
 	");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -49,7 +49,7 @@
                     <h1 class="huge-date">Master List</h1>
                 </div>  
                 <div class="header-links">
-                    <span>Logged in on: <span id="login-date">Saturday, March 09, 2025</span></span>
+                    <span>Logged in on: <span id="login-date">Loading...</span></span>
                 </div>
             </div>
 
@@ -158,5 +158,6 @@
                 });
     </script>
 
+<script src="../login/login-date.js"></script>
 </body>
 </html>

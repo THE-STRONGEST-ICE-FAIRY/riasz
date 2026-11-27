@@ -71,7 +71,7 @@
                 </div>
                 <div class="header-links" style="display: flex; align-items: center; gap: 20px;">
                     <div>
-                        <span>You previously logged in on <span id="login-date">Saturday, March 09, 2025</span> ⟲</span>
+                        <span>You previously logged in on <span id="login-date">Loading...</span> ⟲</span>
                         <a href="#" id="last-visited-link" style="display: block; margin-top: 3px;">Go to your last visited page: Master List ↩</a>
                     </div>
                     
@@ -314,5 +314,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="adminscript.js"></script>
+<script src="../login/login-date.js"></script>
 </body>
 </html>

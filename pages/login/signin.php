@@ -1,7 +1,33 @@
 <?php
+session_start();
 header("Content-Type: application/json");
 
 require '../../utilities/database/database.php';
+
+function recordSuccessfulLogin(PDO $conn, $userId)
+{
+    $previousLogin = $conn->prepare("
+        SELECT userlog_timestamp
+        FROM userlogs
+        WHERE user_id = ? AND userlog_type = 'login'
+        ORDER BY userlog_timestamp DESC, userlog_id DESC
+        LIMIT 1
+    ");
+    $previousLogin->execute([$userId]);
+    $previousLoginAt = $previousLogin->fetchColumn();
+
+    $recordLogin = $conn->prepare("
+        INSERT INTO userlogs (user_id, userlog_type, userlog_ip_address, userlog_device_info)
+        VALUES (?, 'login', ?, ?)
+    ");
+    $recordLogin->execute([
+        $userId,
+        $_SERVER['REMOTE_ADDR'] ?? null,
+        $_SERVER['HTTP_USER_AGENT'] ?? null,
+    ]);
+
+    $_SESSION['previous_login_at'] = $previousLoginAt ?: '';
+}
 
 try {
 
@@ -30,6 +56,7 @@ try {
         FROM users u
         JOIN schoolusers su ON u.user_id = su.user_id
         WHERE u.user_email = ?
+          AND COALESCE(u.user_is_archived, 0) = 0
         LIMIT 1
     ");
 
@@ -49,13 +76,18 @@ try {
     // =========================================================
     if ($password !== null) {
 
-        if (!password_verify($password, $user['schooluser_password'])) {
+        if (!is_string($user['schooluser_password']) || $user['schooluser_password'] === '' || !password_verify($password, $user['schooluser_password'])) {
             echo json_encode([
                 "status" => "error",
                 "message" => "Invalid password"
             ]);
             exit;
         }
+
+        session_regenerate_id(true);
+        recordSuccessfulLogin($conn, (int)$user['user_id']);
+        $_SESSION['user_id'] = (int)$user['user_id'];
+        $_SESSION['user_role'] = strtolower(trim((string)$user['user_role']));
 
         echo json_encode([
             "status" => "success",
@@ -133,6 +165,11 @@ try {
             WHERE otp_id = ?
         ");
         $delete->execute([$otpRow['otp_id']]);
+
+        session_regenerate_id(true);
+        recordSuccessfulLogin($conn, (int)$user['user_id']);
+        $_SESSION['user_id'] = (int)$user['user_id'];
+        $_SESSION['user_role'] = strtolower(trim((string)$user['user_role']));
 
         echo json_encode([
             "status" => "success",

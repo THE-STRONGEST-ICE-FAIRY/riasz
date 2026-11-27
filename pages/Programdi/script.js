@@ -23,14 +23,6 @@ function updateTime() {
     if (document.getElementById('current-year'))
         document.getElementById('current-year').innerText = now.getFullYear();
 
-    // Mock Login Date logic (Setting it to a few days ago for realism)
-    const login = new Date(now);
-    login.setDate(login.getDate() - 3);
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-    if (document.getElementById('login-date'))
-        document.getElementById('login-date').innerText = `${days[login.getDay()]}, ${months[login.getMonth()]} ${String(login.getDate()).padStart(2,'0')}, ${login.getFullYear()}`;
 }
 
 // Initialize clock immediately, then update every second

@@ -70,7 +70,7 @@
                     <div class="live-time" id="real-time-clock"></div>
                 </div>
                 <div class="header-links">
-                    <span>You previously logged in on <span id="login-date">Saturday, March 09, 2025</span> ⟲</span>
+                    <span>You previously logged in on <span id="login-date">Loading...</span> ⟲</span>
                     <a href="#" id="last-visited-link" style="display: none;">Go to your last visited page: Master List ↩</a>
                 </div>
             </div>
@@ -290,5 +290,6 @@
             }, { capture: true });
         });
     </script>
+<script src="../login/login-date.js"></script>
 </body>
 </html>

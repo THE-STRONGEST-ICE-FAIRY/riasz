@@ -1,3 +1,11 @@
+<?php
+session_start();
+$sessionRole = strtolower(trim((string)($_SESSION['user_role'] ?? '')));
+if (!in_array($sessionRole, ['officer', 'internship officer'], true)) {
+    header('Location: ../login/login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +39,12 @@
                 <h4 style="margin-bottom: 15px; color: #1e3b99; font-size: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Notification Details</h4>
                 <div id="detailBody" style="font-size: 13px; color: #555; line-height: 1.6;"></div>
             </div>
-            <div class="profile-circle"></div>
+            <details class="profile-menu">
+                <summary class="profile-circle" aria-label="Account options"></summary>
+                <div class="profile-panel">
+                    <a class="logout-menu-item" href="../login/logout.php">Log out</a>
+                </div>
+            </details>
         </div>
     </header>
 
@@ -73,7 +86,7 @@
                     <div class="huge-date">Master List</div>
                 </div>
                 <div class="header-links">
-                    <span>You previously logged in on <span id="login-date"></span> ⟲</span>
+                    <span>You previously logged in on <span id="login-date">Loading...</span> ⟲</span>
                     <a href="#" id="last-visited-link" style="display: none;">Go to your last visited page: ↩</a>
                 </div>
             </div>
@@ -115,34 +128,7 @@
                 <div id="tab-student" class="tab-content active table-responsive">
                     <table class="master-table">
                         <thead><tr><th>NAME</th><th>COMPANY</th><th>DEPARTMENT</th><th>EMAIL</th><th>STATUS</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>John Doe</td><td>TechCorp</td><td>BSIT</td><td>john.doe@student.apc.edu.ph</td>
-                                <td><span style="color:#27bda1; font-weight:bold;">Active</span></td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td><td>Innovate Inc</td><td>BSCS</td><td>jane.s@student.apc.edu.ph</td>
-                                <td><span style="color:#2e96ff; font-weight:bold;">Waiting</span></td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
 
@@ -150,36 +136,7 @@
                 <div id="tab-industry" class="tab-content table-responsive">
                     <table class="master-table">
                         <thead><tr><th>NAME</th><th>COMPANY</th><th>DEPARTMENT</th><th>EMAIL</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody>
-                            <tr class="partner-row" style="cursor: pointer;" title="Click to view details">
-                                <td>Mark Johnson</td><td>Creative Studio</td><td>Design</td><td>mark.j@creativestudio.com</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="partner-details" style="display: none;">
-                                <td colspan="5" style="background-color: #f9fafc; padding: 20px; border-bottom: 2px solid #eaeaea;">
-                                    <div style="display: flex; gap: 25px; align-items: flex-start;">
-                                        <div style="width: 80px; height: 80px; background: #fff; border: 1px dashed #ccc; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 10px; color: #999; font-weight: bold;">LOGO</div>
-                                        <div style="flex: 1; line-height: 1.6; font-size: 13px; color: #555;">
-                                            <h3 style="margin-bottom: 8px; color: #1e3b99; font-size: 16px;">Creative Studio</h3>
-                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                                <div><b>Company Address:</b> 123 Innovation Drive, Tech City</div>
-                                                <div><b>Company Email:</b> contact@creativestudio.com</div>
-                                                <div><b>Business Hours:</b> Mon-Fri, 9:00 AM - 6:00 PM</div>
-                                                <div><b>Status:</b> <span class="partner-status-text"><span style="color: #27bda1; font-weight: bold;">Active Partner</span></span></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
 
@@ -187,20 +144,7 @@
                 <div id="tab-exec" class="tab-content table-responsive">
                     <table class="master-table">
                         <thead><tr><th>NAME</th><th>SCHOOL</th><th>PROGRAM</th><th>EMAIL</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>Dr. Alan Turing</td><td>SoCIT</td><td>Computer Science</td><td>alant@apc.edu.ph</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
 
@@ -208,20 +152,7 @@
                 <div id="tab-prog" class="tab-content table-responsive">
                     <table class="master-table">
                         <thead><tr><th>NAME</th><th>SCHOOL</th><th>PROGRAM</th><th>EMAIL</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>Grace Hopper</td><td>SoCIT</td><td>Information Technology</td><td>graceh@apc.edu.ph</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
 
@@ -229,32 +160,7 @@
                 <div id="tab-officer" class="tab-content table-responsive">
                     <table class="master-table">
                         <thead><tr><th>NAME</th><th>NO OF INTERNS</th><th>EMAIL</th><th style="width: 40px;"></th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>Ada Lovelace</td><td>130</td><td>adal@apc.edu.ph</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Richard Stallman</td><td>84</td><td>richards@apc.edu.ph</td>
-                                <td>
-                                    <div class="row-meatball">
-                                        <button class="meatball-btn">⋮</button>
-                                        <div class="meatball-drop">
-                                            <button class="edit-btn">Edit</button>
-                                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
 
@@ -435,9 +341,148 @@
             const industryExtraFields = document.getElementById('industryExtraFields');
             const statusWrapper = document.getElementById('statusWrapper');
             const newUserStatus = document.getElementById('newUserStatus');
+            const userDirectory = new Map();
+
+            function appendCell(row, value) {
+                const cell = document.createElement('td');
+                cell.textContent = value || '';
+                row.appendChild(cell);
+                return cell;
+            }
+
+            function appendActions(row) {
+                const cell = document.createElement('td');
+                cell.innerHTML = '<div class="row-meatball"><button class="meatball-btn">⋮</button><div class="meatball-drop"><button class="edit-btn">Edit</button><button class="remove-btn" style="color: #e74c3c;">Remove</button></div></div>';
+                row.appendChild(cell);
+            }
+
+            function appendStatus(row, value) {
+                const cell = document.createElement('td');
+                const status = document.createElement('span');
+                status.textContent = value || '—';
+                status.style.fontWeight = 'bold';
+                if (value === 'Active') status.style.color = '#27bda1';
+                else if (value === 'Waiting' || value === 'New Partner') status.style.color = '#2e96ff';
+                else if (value === 'Undeployed' || value === 'Inactive Partner') status.style.color = '#ff8a8a';
+                else status.style.color = '#777';
+                cell.appendChild(status);
+                row.appendChild(cell);
+            }
+
+            function renderPartnerDetails(user, row) {
+                const detailsRow = document.createElement('tr');
+                detailsRow.className = 'partner-details';
+                detailsRow.style.display = 'none';
+                const cell = document.createElement('td');
+                cell.colSpan = 5;
+                cell.style.cssText = 'background-color:#f9fafc;padding:20px;border-bottom:2px solid #eaeaea;';
+
+                const content = document.createElement('div');
+                content.style.cssText = 'display:flex;gap:25px;align-items:flex-start;';
+                const logoBox = document.createElement('div');
+                logoBox.style.cssText = 'width:80px;height:80px;background:#fff;border:1px dashed #ccc;border-radius:8px;display:flex;justify-content:center;align-items:center;font-size:10px;color:#999;font-weight:bold;overflow:hidden;';
+                if (user.logo_path) {
+                    const image = document.createElement('img');
+                    image.src = '../../' + user.logo_path;
+                    image.alt = 'Company logo';
+                    image.style.cssText = 'max-width:100%;max-height:100%;';
+                    logoBox.appendChild(image);
+                } else {
+                    logoBox.textContent = 'LOGO';
+                }
+
+                const details = document.createElement('div');
+                details.style.cssText = 'flex:1;line-height:1.6;font-size:13px;color:#555;';
+                const heading = document.createElement('h3');
+                heading.textContent = user.company_name || 'Company Name';
+                heading.style.cssText = 'margin-bottom:8px;color:#1e3b99;font-size:16px;';
+                const grid = document.createElement('div');
+                grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px;';
+                [
+                    ['Company Address:', user.business_address],
+                    ['Company Email:', user.email],
+                    ['Business Hours:', user.business_hours],
+                    ['Status:', user.company_status]
+                ].forEach(([label, value]) => {
+                    const item = document.createElement('div');
+                    const strong = document.createElement('b');
+                    strong.textContent = label + ' ';
+                    item.append(strong, document.createTextNode(value || '—'));
+                    grid.appendChild(item);
+                });
+                details.append(heading, grid);
+                content.append(logoBox, details);
+                cell.appendChild(content);
+                detailsRow.appendChild(cell);
+                row.parentElement.appendChild(detailsRow);
+            }
+
+            function renderUser(user) {
+                const tbody = document.querySelector(`#tab-${user.role_key} tbody`);
+                if (!tbody) return;
+
+                userDirectory.set(user.id, user);
+                const row = document.createElement('tr');
+                row.dataset.userId = user.id;
+                row.dataset.roleKey = user.role_key;
+
+                appendCell(row, user.name);
+                if (user.role_key === 'student') {
+                    appendCell(row, user.company_name);
+                    appendCell(row, user.role_detail);
+                    appendCell(row, user.email);
+                    appendStatus(row, user.status);
+                } else if (user.role_key === 'industry') {
+                    row.className = 'partner-row';
+                    row.style.cursor = 'pointer';
+                    row.title = 'Click to view details';
+                    appendCell(row, user.company_name);
+                    appendCell(row, user.role_detail);
+                    appendCell(row, user.email);
+                } else if (user.role_key === 'exec' || user.role_key === 'prog') {
+                    appendCell(row, user.school_name);
+                    appendCell(row, user.role_detail);
+                    appendCell(row, user.email);
+                } else {
+                    appendCell(row, user.intern_count || user.role_detail || '0');
+                    appendCell(row, user.email);
+                }
+                appendActions(row);
+                tbody.appendChild(row);
+
+                if (user.role_key === 'industry') {
+                    renderPartnerDetails(user, row);
+                }
+            }
+
+            async function loadUsers() {
+                const response = await fetch('manage_users.php?action=list');
+                if (response.status === 403) {
+                    window.location.replace('../login/login.php');
+                    return;
+                }
+                const result = await response.json();
+                if (!response.ok || !Array.isArray(result.users)) {
+                    throw new Error(result.error || 'Could not load users.');
+                }
+
+                userDirectory.clear();
+                document.querySelectorAll('.tab-content .master-table tbody').forEach(tbody => {
+                    tbody.replaceChildren();
+                });
+                result.users.forEach(renderUser);
+                filterActiveTable();
+                setupExpandableRows();
+            }
+
+            loadUsers().catch(error => {
+                console.error('Could not load IO user directory:', error);
+                alert(error.message);
+            });
             
             addUserBtn.addEventListener('click', () => {
                 editingRow = null;
+                roleSelect.disabled = false;
                 document.querySelector('.task-modal h2').innerText = "Add New User";
                 document.getElementById('saveNewUserBtn').innerText = "Add User";
                 document.querySelectorAll('.task-modal .input-box').forEach(input => {
@@ -448,7 +493,11 @@
                 addUserModal.classList.add('active');
             });
             
-            closeAddUserModal.addEventListener('click', () => addUserModal.classList.remove('active'));
+            closeAddUserModal.addEventListener('click', () => {
+                addUserModal.classList.remove('active');
+                editingRow = null;
+                roleSelect.disabled = false;
+            });
             
             // Dynamically change labels depending on selected Role
             roleSelect.addEventListener('change', (e) => {
@@ -484,114 +533,62 @@
                 }
             });
             
-            // Insert data into active table
+            // Save user records to the database.
             saveNewUserBtn.addEventListener('click', async () => {
                 const role = roleSelect.value;
-                const name = document.getElementById('newUserName').value;
-                const email = document.getElementById('newUserEmail').value;
-                const compSchool = document.getElementById('newUserCompSchool').value;
-                const deptProg = document.getElementById('newUserDeptProg').value;
-                const status = document.getElementById('newUserStatus').value;
-                const partnerAddress = document.getElementById('newPartnerAddress').value || 'Not specified';
-                const partnerHours = document.getElementById('newPartnerHours').value || '9:00 AM - 6:00 PM';
+                const formData = new FormData();
+                formData.append('action', editingRow ? 'update' : 'create');
+                formData.append('role', role);
+                formData.append('name', document.getElementById('newUserName').value.trim());
+                formData.append('email', document.getElementById('newUserEmail').value.trim());
+                formData.append('company_name', role === 'industry' || role === 'student'
+                    ? document.getElementById('newUserCompSchool').value.trim()
+                    : '');
+                formData.append('school_name', role === 'exec' || role === 'prog'
+                    ? document.getElementById('newUserCompSchool').value.trim()
+                    : '');
+                formData.append('role_detail', document.getElementById('newUserDeptProg').value.trim());
+                formData.append('status', newUserStatus.value);
+                formData.append('business_address', document.getElementById('newPartnerAddress').value.trim());
+                formData.append('business_hours', document.getElementById('newPartnerHours').value.trim());
+                if (editingRow) formData.append('user_id', editingRow.dataset.userId);
+
                 const logoInput = document.getElementById('newPartnerLogoFile');
-                let partnerLogoHTML = 'LOGO';
-
-                let statusHTML = '';
-                if (role === 'student') {
-                    if (status === 'Active') statusHTML = '<span style="color:#27bda1; font-weight:bold;">Active</span>';
-                    else if (status === 'Waiting') statusHTML = '<span style="color:#2e96ff; font-weight:bold;">Waiting</span>';
-                    else statusHTML = '<span style="color:#ff8a8a; font-weight:bold;">Undeployed</span>';
-                } else if (role === 'industry') {
-                    if (status === 'Active Partner') statusHTML = '<span style="color:#27bda1; font-weight:bold;">Active Partner</span>';
-                    else if (status === 'Inactive Partner') statusHTML = '<span style="color:#ff8a8a; font-weight:bold;">Inactive Partner</span>';
-                    else statusHTML = '<span style="color:#f1b347; font-weight:bold;">New Partner</span>';
+                if (logoInput.files && logoInput.files[0]) {
+                    formData.append('logo', logoInput.files[0]);
                 }
 
-                // Read the uploaded image from the device
-                if (logoInput && logoInput.files && logoInput.files[0]) {
-                    const file = logoInput.files[0];
-                    const base64Url = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = e => resolve(e.target.result);
-                        reader.readAsDataURL(file);
+                const originalButtonText = saveNewUserBtn.textContent;
+                saveNewUserBtn.disabled = true;
+                saveNewUserBtn.textContent = 'Saving...';
+                try {
+                    const response = await fetch('manage_users.php', {
+                        method: 'POST',
+                        body: formData
                     });
-                    partnerLogoHTML = `<img src="${base64Url}" style="max-width: 100%; max-height: 100%;" alt="Logo">`;
-                }
-
-                if(!name || !email) { alert("Name and Email are required!"); return; }
-
-                if (editingRow) {
-                    if (editingRow.classList.contains('partner-row')) {
-                        const next = editingRow.nextElementSibling;
-                        if (next && next.classList.contains('partner-details')) next.remove();
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.error || 'Could not save this user.');
                     }
-                    editingRow.remove();
+
+                    await loadUsers();
                     editingRow = null;
+                    addUserModal.classList.remove('active');
+                    roleSelect.disabled = false;
+                    document.getElementById('newUserName').value = '';
+                    document.getElementById('newUserEmail').value = '';
+                    document.getElementById('newUserCompSchool').value = '';
+                    document.getElementById('newUserDeptProg').value = '';
+                    document.getElementById('newPartnerAddress').value = '';
+                    document.getElementById('newPartnerHours').value = '';
+                    logoInput.value = '';
+                    alert(result.message);
+                } catch (error) {
+                    alert(error.message);
+                } finally {
+                    saveNewUserBtn.disabled = false;
+                    saveNewUserBtn.textContent = originalButtonText;
                 }
-
-                const meatballHTML = `
-                    <div class="row-meatball">
-                        <button class="meatball-btn">⋮</button>
-                        <div class="meatball-drop">
-                            <button class="edit-btn">Edit</button>
-                            <button class="remove-btn" style="color: #e74c3c;">Remove</button>
-                        </div>
-                    </div>`;
-
-                const targetTbody = document.querySelector(`#tab-${role} tbody`);
-                if(targetTbody) {
-                    const tr = document.createElement('tr');
-                    if(role === 'officer') {
-                        tr.innerHTML = `<td>${name}</td><td>${deptProg || '0'}</td><td>${email}</td><td>${meatballHTML}</td>`;
-                        targetTbody.appendChild(tr);
-                    } else if (role === 'industry') {
-                        tr.className = 'partner-row';
-                        tr.style.cursor = 'pointer';
-                        tr.innerHTML = `<td>${name}</td><td>${compSchool || '-'}</td><td>${deptProg || '-'}</td><td>${email}</td><td>${meatballHTML}</td>`;
-                        targetTbody.appendChild(tr);
-                        
-                        const detailsTr = document.createElement('tr');
-                        detailsTr.className = 'partner-details';
-                        detailsTr.style.display = 'none';
-
-                        detailsTr.innerHTML = `
-                            <td colspan="5" style="background-color: #f9fafc; padding: 20px; border-bottom: 2px solid #eaeaea;">
-                                <div style="display: flex; gap: 25px; align-items: flex-start;">
-                                    <div style="width: 80px; height: 80px; background: #fff; border: 1px dashed #ccc; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 10px; color: #999; font-weight: bold; overflow: hidden;">${partnerLogoHTML}</div>
-                                    <div style="flex: 1; line-height: 1.6; font-size: 13px; color: #555;">
-                                        <h3 style="margin-bottom: 8px; color: #1e3b99; font-size: 16px;">${compSchool || 'Company Name'}</h3>
-                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                            <div><b>Company Address:</b> ${partnerAddress}</div>
-                                            <div><b>Company Email:</b> ${email}</div>
-                                            <div><b>Business Hours:</b> ${partnerHours}</div>
-                                            <div><b>Status:</b> <span class="partner-status-text">${statusHTML}</span></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>`;
-                        targetTbody.appendChild(detailsTr);
-                        setupExpandableRows(); // Reattach listener
-                    } else if (role === 'student') {
-                        tr.innerHTML = `<td>${name}</td><td>${compSchool || '-'}</td><td>${deptProg || '-'}</td><td>${email}</td><td>${statusHTML}</td><td>${meatballHTML}</td>`;
-                        targetTbody.appendChild(tr);
-                    } else {
-                        tr.innerHTML = `<td>${name}</td><td>${compSchool || '-'}</td><td>${deptProg || '-'}</td><td>${email}</td><td>${meatballHTML}</td>`;
-                        targetTbody.appendChild(tr);
-                    }
-                }
-
-                // Clear Form & Close
-                document.getElementById('newUserName').value = '';
-                document.getElementById('newUserEmail').value = '';
-                document.getElementById('newUserCompSchool').value = '';
-                document.getElementById('newUserDeptProg').value = '';
-                document.getElementById('newPartnerAddress').value = '';
-                document.getElementById('newPartnerHours').value = '';
-                if (document.getElementById('newPartnerLogoFile')) document.getElementById('newPartnerLogoFile').value = '';
-                addUserModal.classList.remove('active');
-                
-                filterActiveTable(); // Update search constraints if needed
             });
 
             // --- 4. Generate Report (Export to CSV) ---
@@ -651,62 +648,57 @@
                     document.querySelectorAll('.meatball-drop').forEach(d => d.classList.remove('active'));
                 }
                 
-                // Handle Remove
+                // Remove users by archiving them so related records remain intact.
                 if (e.target.closest('.remove-btn')) {
-                    if (confirm("Are you sure you want to remove this user?")) {
-                        const row = e.target.closest('tr');
-                        if (row.classList.contains('partner-row')) {
-                            const next = row.nextElementSibling;
-                            if (next && next.classList.contains('partner-details')) next.remove();
-                        }
-                        row.remove();
-                    }
+                    const row = e.target.closest('tr');
+                    if (!row || !confirm('Are you sure you want to remove this user?')) return;
+
+                    const formData = new FormData();
+                    formData.append('action', 'archive');
+                    formData.append('user_id', row.dataset.userId);
+                    fetch('manage_users.php', { method: 'POST', body: formData })
+                        .then(async response => {
+                            const result = await response.json();
+                            if (!response.ok || !result.success) {
+                                throw new Error(result.error || 'Could not archive this user.');
+                            }
+                            await loadUsers();
+                            alert(result.message);
+                        })
+                        .catch(error => alert(error.message));
+                    return;
                 }
-                
-                // Handle Edit
+
+                // Populate the existing form for a database-backed update.
                 if (e.target.closest('.edit-btn')) {
                     editingRow = e.target.closest('tr');
-                    const cols = editingRow.querySelectorAll('td');
-                    const tabId = editingRow.closest('.tab-content').id;
-
-                    document.querySelector('.task-modal h2').innerText = "Edit User";
-                    document.getElementById('saveNewUserBtn').innerText = "Save Changes";
-                    document.getElementById('newUserName').value = cols[0].innerText;
-                    
-                    if (tabId === 'tab-officer') {
-                        document.getElementById('newUserRole').value = 'officer';
-                        document.getElementById('newUserRole').dispatchEvent(new Event('change'));
-                        document.getElementById('newUserDeptProg').value = cols[1].innerText;
-                        document.getElementById('newUserEmail').value = cols[2].innerText;
-                    } else if (tabId === 'tab-industry') {
-                        document.getElementById('newUserRole').value = 'industry';
-                        document.getElementById('newUserRole').dispatchEvent(new Event('change'));
-                        document.getElementById('newUserCompSchool').value = cols[1].innerText;
-                        document.getElementById('newUserDeptProg').value = cols[2].innerText;
-                        document.getElementById('newUserEmail').value = cols[3].innerText;
-                        
-                        const nextRow = editingRow.nextElementSibling;
-                        if (nextRow && nextRow.classList.contains('partner-details')) {
-                            const statusSpan = nextRow.querySelector('.partner-status-text');
-                            if (statusSpan) document.getElementById('newUserStatus').value = statusSpan.innerText.trim();
-                        }
-                        
-                        document.getElementById('newPartnerAddress').value = '';
-                        document.getElementById('newPartnerHours').value = '';
-                    } else {
-                        const roleVal = tabId === 'tab-exec' ? 'exec' : (tabId === 'tab-prog' ? 'prog' : 'student');
-                        document.getElementById('newUserRole').value = roleVal;
-                        document.getElementById('newUserRole').dispatchEvent(new Event('change'));
-                        document.getElementById('newUserCompSchool').value = cols[1].innerText;
-                        document.getElementById('newUserDeptProg').value = cols[2].innerText;
-                        document.getElementById('newUserEmail').value = cols[3].innerText;
-                        
-                        if (roleVal === 'student' && cols[4]) {
-                            document.getElementById('newUserStatus').value = cols[4].innerText.trim();
-                        }
+                    const user = userDirectory.get(Number(editingRow.dataset.userId));
+                    if (!user) {
+                        editingRow = null;
+                        alert('Could not find this user in the loaded directory.');
+                        return;
                     }
-                    
-                    document.getElementById('addUserModal').classList.add('active');
+
+                    document.querySelector('.task-modal h2').innerText = 'Edit User';
+                    saveNewUserBtn.innerText = 'Save Changes';
+                    roleSelect.value = user.role_key;
+                    roleSelect.disabled = true;
+                    roleSelect.dispatchEvent(new Event('change'));
+                    document.getElementById('newUserName').value = user.name;
+                    document.getElementById('newUserEmail').value = user.email;
+                    document.getElementById('newUserCompSchool').value =
+                        user.role_key === 'exec' || user.role_key === 'prog'
+                            ? user.school_name
+                            : user.company_name;
+                    document.getElementById('newUserDeptProg').value =
+                        user.role_key === 'officer' ? user.intern_count || user.role_detail : user.role_detail;
+                    newUserStatus.value = user.role_key === 'industry'
+                        ? user.company_status
+                        : user.status;
+                    document.getElementById('newPartnerAddress').value = user.business_address;
+                    document.getElementById('newPartnerHours').value = user.business_hours;
+                    document.getElementById('newPartnerLogoFile').value = '';
+                    addUserModal.classList.add('active');
                 }
             });
             
@@ -740,5 +732,6 @@
             setupExpandableRows();
         });
     </script>
+<script src="../login/login-date.js"></script>
 </body>
 </html>
