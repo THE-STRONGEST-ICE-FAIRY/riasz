@@ -137,6 +137,16 @@ function renderNotifications(items, unread) {
     }
 }
 
+async function refreshNotifications() {
+    const response = await fetch('manage_notifications.php?action=notifications', { cache: 'no-store' });
+    const result = await response.json();
+    if (!response.ok || result.status !== 'success') {
+        throw new Error(result.message || 'Could not refresh notifications.');
+    }
+
+    renderNotifications(result.data.notifications, result.data.unread_count);
+}
+
 function populateRecipientFilters(schools, programs) {
     const roleSelect = document.getElementById('taskRole');
     const schoolSelect = document.getElementById('taskSchool');
@@ -207,8 +217,33 @@ loadDashboard().catch(error => {
     alert(error.message);
 });
 
+const notificationRefreshInterval = 15000;
+setInterval(() => {
+    if (document.visibilityState === 'visible') {
+        refreshNotifications().catch(error => {
+            console.error('Could not refresh notifications:', error);
+        });
+    }
+}, notificationRefreshInterval);
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        refreshNotifications().catch(error => {
+            console.error('Could not refresh notifications:', error);
+        });
+    }
+});
+
 bellIcon.addEventListener('click', async (e) => {
     e.stopPropagation();
+    const isOpening = !notifDropdown.classList.contains('active');
+    if (isOpening) {
+        try {
+            await refreshNotifications();
+        } catch (error) {
+            console.error('Could not refresh notifications:', error);
+        }
+    }
     notifDropdown.classList.toggle('active');
     
     if (notifDropdown.classList.contains('active')) {

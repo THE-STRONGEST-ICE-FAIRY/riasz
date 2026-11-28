@@ -91,7 +91,7 @@
                     </div>
                     <div class="panel" style="padding: 25px; text-align: center; border: 2px dashed #eaeaea;">
                         <h3 style="color: #333; font-size: 16px; font-weight: 500;">Evaluation Scores</h3>
-                        <p style="font-size: 12px; color: #777; margin-top: 10px; line-height: 1.5;">Visualize a breakdown of industry partner evaluations, self-assessments, and final grades.</p>
+                        <p style="font-size: 12px; color: #777; margin-top: 10px; line-height: 1.5;">Visualize industry partner evaluation criteria, Internship Officer assessments, and final grades.</p>
                         <button class="add-btn" id="btn-generate-evaluation" style="width: 100%; margin-top: 20px; color: #1e3b99; font-weight: bold;">View Chart &rarr;</button>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
         <div class="task-modal" style="max-width: 700px; width: 90%;">
             <span class="modal-close" id="closeChartModal">&times;</span>
             <h2 style="font-weight: 500; color: #1e3b99; margin-bottom: 5px;">Evaluation Scores Visualization</h2>
-            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">Average scores across all interns based on the 10 criteria.</p>
+            <p id="evaluation-chart-summary" style="color: #666; font-size: 13px; margin-bottom: 15px;">Average scores for submitted evaluation criteria.</p>
             
             <div style="position: relative; height: 350px; width: 100%;">
                 <canvas id="evaluationChart"></canvas>
@@ -137,43 +137,95 @@
             const btnDownloadExcel = document.getElementById('btn-download-excel');
             const btnDownloadImg = document.getElementById('btn-download-img');
             let evalChart = null;
+            let evaluationData = null;
 
-            function downloadCSV(filename, content) {
-                const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
+            async function fetchReport(action) {
+                const response = await fetch(`reports_api.php?action=${encodeURIComponent(action)}`, {
+                    headers: { Accept: 'application/json' }
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'The report could not be loaded.');
+                }
+                return result;
+            }
+
+            function csvCell(value) {
+                let text = value === null || value === undefined ? '' : String(value);
+                if (/^[\u0000-\u0020]*[=+\-@]/.test(text)) text = `'${text}`;
+                return `"${text.replace(/"/g, '""')}"`;
+            }
+
+            function downloadCSV(filename, rows) {
+                const content = rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+                const blob = new Blob(['\ufeff', content], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
                 link.download = filename;
                 link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 0);
             }
 
             if (btnDeployment) {
-                btnDeployment.addEventListener('click', () => {
-                    const csvContent = "Student ID,Last Name,First Name,Email,Contact Number,Program,Partner Company,Supervisor,Status\n2021-10001,Doe,John,john.doe@student.apc.edu.ph,09171234567,BSIT,TechCorp,Sarah Connor,Deployed\n2021-10002,Smith,Jane,jane.s@student.apc.edu.ph,09181234567,BSCS,Innovate Inc,Alan Turing,Waiting\n2021-10003,Johnson,Mark,mark.j@student.apc.edu.ph,09191234567,BSMMA,Creative Studio,Mark Johnson,Undeployed";
-                    downloadCSV('Deployment_Status_Report.csv', csvContent);
+                btnDeployment.addEventListener('click', async () => {
+                    btnDeployment.disabled = true;
+                    try {
+                        const report = await fetchReport('deployment');
+                        const rows = [
+                            ['Student ID', 'Last Name', 'First Name', 'Email', 'Program', 'Partner Company', 'Supervisor', 'Status'],
+                            ...report.rows.map(row => [
+                                row.student_id,
+                                row.last_name,
+                                row.first_name,
+                                row.email,
+                                row.program_name,
+                                row.company_name,
+                                row.supervisor_name,
+                                row.deployment_status
+                            ])
+                        ];
+                        downloadCSV('Deployment_Status_Report.csv', rows);
+                    } catch (error) {
+                        alert(error.message || 'Unable to generate the deployment report.');
+                    } finally {
+                        btnDeployment.disabled = false;
+                    }
                 });
             }
 
-            const evalCsvContent = "Student ID,Last Name,First Name,Technical Skills (1-10),Problem Solving (1-10),Communication Skills (1-10),Teamwork (1-10),Time Management (1-10),Professionalism (1-10),Adaptability (1-10),Initiative (1-10),Quality of Work (1-10),Attendance (1-10),Total Evaluation Score,Final Grade\n2021-10001,Doe,John,9,8,9,10,8,10,9,8,9,10,90,93\n2021-10002,Smith,Jane,8,9,8,8,9,9,8,9,8,10,86,87\n2021-10004,Davis,Emily,9,9,9,9,10,10,9,10,9,10,94,93";
-
             if (btnEvaluation) {
-                btnEvaluation.addEventListener('click', () => {
-                    chartModal.classList.add('active');
-                    
-                    if (evalChart) evalChart.destroy();
-                    
-                    const ctx = document.getElementById('evaluationChart').getContext('2d');
-                    
-                    // Sample average scores derived from the CSV above
-                    const criteria = ['Technical', 'Problem Solving', 'Communication', 'Teamwork', 'Time Mgt', 'Professionalism', 'Adaptability', 'Initiative', 'Quality', 'Attendance'];
-                    const averages = [8.67, 8.67, 8.67, 9.00, 9.00, 9.67, 8.67, 9.00, 8.67, 10.00];
+                btnEvaluation.addEventListener('click', async () => {
+                    btnEvaluation.disabled = true;
+                    try {
+                        evaluationData = await fetchReport('evaluation');
+                    } catch (error) {
+                        alert(error.message || 'Unable to load evaluation scores.');
+                        return;
+                    } finally {
+                        btnEvaluation.disabled = false;
+                    }
 
+                    if (typeof Chart === 'undefined') {
+                        alert('The chart library failed to load. Please check your internet connection.');
+                        return;
+                    }
+
+                    chartModal.classList.add('active');
+                    if (evalChart) evalChart.destroy();
+                    const criteria = evaluationData.criteria || [];
+                    const summary = document.getElementById('evaluation-chart-summary');
+                    summary.textContent = criteria.length
+                        ? `Average scores across ${criteria.length} evaluation criteria with submitted ratings.`
+                        : 'No submitted evaluation scores are available yet.';
+                    const ctx = document.getElementById('evaluationChart').getContext('2d');
                     evalChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: criteria,
+                            labels: criteria.map(item => item.label),
                             datasets: [{
-                                label: 'Average Score (1-10)',
-                                data: averages,
+                                label: 'Average Score',
+                                data: criteria.map(item => item.average_score),
                                 backgroundColor: 'rgba(46, 150, 255, 0.7)',
                                 borderColor: 'rgba(46, 150, 255, 1)',
                                 borderWidth: 1
@@ -184,8 +236,7 @@
                             maintainAspectRatio: false,
                             scales: {
                                 y: {
-                                    beginAtZero: true,
-                                    max: 10
+                                    beginAtZero: true
                                 }
                             }
                         }
@@ -198,32 +249,75 @@
 
             if (btnDownloadExcel) {
                 btnDownloadExcel.addEventListener('click', async () => {
+                    if (!evaluationData) {
+                        alert('Load the evaluation report before downloading it.');
+                        return;
+                    }
                     if (typeof ExcelJS === 'undefined') {
                         alert("ExcelJS library failed to load. Please check your internet connection.");
                         return;
                     }
 
-                    const workbook = new ExcelJS.Workbook();
-                    const worksheet = workbook.addWorksheet('Evaluation Scores');
+                    try {
+                        const criteriaLabels = evaluationData.criteria.map(item => item.label);
+                        const criteriaByInternship = new Map();
+                        evaluationData.criterion_scores.forEach(item => {
+                            if (!criteriaByInternship.has(item.internship_id)) {
+                                criteriaByInternship.set(item.internship_id, new Map());
+                            }
+                            criteriaByInternship.get(item.internship_id).set(item.criterion, item.score);
+                        });
 
-                    // 1. Convert CSV string to an array of arrays and add to Excel
-                    const rows = evalCsvContent.split('\n').map(row => row.split(','));
-                    worksheet.addRows(rows);
+                        const headers = [
+                            'Student ID', 'First Name', 'Last Name', 'Program', 'Partner Company',
+                            'Industry Partner Score', 'Internship Officer Score', 'Final Grade',
+                            ...criteriaLabels
+                        ];
+                        const rows = evaluationData.rows.map(item => {
+                            const scores = criteriaByInternship.get(item.internship_id) || new Map();
+                            return [
+                                item.student_id,
+                                item.first_name,
+                                item.last_name,
+                                item.program_name,
+                                item.company_name,
+                                item.supervisor_grade,
+                                item.io_grade,
+                                item.total_grade,
+                                ...criteriaLabels.map(label => scores.get(label) ?? '')
+                            ];
+                        });
 
-                    // 2. Get the Chart image as Base64 and attach it below the data
-                    const canvas = document.getElementById('evaluationChart');
-                    const base64Image = canvas.toDataURL('image/png');
-                    const imageId = workbook.addImage({ base64: base64Image, extension: 'png' });
-                    
-                    worksheet.addImage(imageId, { tl: { col: 0, row: rows.length + 2 }, ext: { width: 700, height: 350 } });
+                        const workbook = new ExcelJS.Workbook();
+                        const worksheet = workbook.addWorksheet('Evaluation Scores');
+                        worksheet.addRow(headers);
+                        worksheet.addRows(rows);
+                        worksheet.getRow(1).font = { bold: true };
+                        worksheet.views = [{ state: 'frozen', ySplit: 1 }];
 
-                    // 3. Export as .xlsx
-                    const buffer = await workbook.xlsx.writeBuffer();
-                    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = 'Evaluation_Scores_Report_with_Chart.xlsx';
-                    link.click();
+                        const canvas = document.getElementById('evaluationChart');
+                        const imageId = workbook.addImage({
+                            base64: canvas.toDataURL('image/png'),
+                            extension: 'png'
+                        });
+                        worksheet.addImage(imageId, {
+                            tl: { col: 0, row: rows.length + 3 },
+                            ext: { width: 700, height: 350 }
+                        });
+
+                        const buffer = await workbook.xlsx.writeBuffer();
+                        const blob = new Blob([buffer], {
+                            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'Evaluation_Scores_Report.xlsx';
+                        link.click();
+                        setTimeout(() => URL.revokeObjectURL(url), 0);
+                    } catch (error) {
+                        alert(error.message || 'Unable to create the evaluation spreadsheet.');
+                    }
                 });
             }
 

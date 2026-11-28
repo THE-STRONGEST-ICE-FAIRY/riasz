@@ -71,7 +71,7 @@
             </div>
             <div class="nav-item active" onclick="window.location.href='requirements.php'">
               <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                <span class="nav-label">Reports</span>
+                <span class="nav-label">Requirements</span>
             </div>
         </aside>
 
@@ -82,46 +82,47 @@
                 <div class="time-text" id="currentTime">09:30 AM</div>
             </div>
             <div class="header-right">
-                <button class="btn-action" style="background-color: #29429c; color: white; padding: 8px 16px; border-radius: 5px; font-weight: 500;">
-                    + Generate Clearance
+                <button class="btn-action" id="refreshRequirementsBtn" type="button" style="background-color: #29429c; color: white; padding: 8px 16px; border-radius: 5px; font-weight: 500;">
+                    Refresh Checklist
                 </button>
             </div>
         </div>
 
         <div class="stats-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px;">
             <div class="panel stat-panel-accent">
-                <div class="stat-label">Midterm Papers</div>
+                <div class="stat-label">Monthly Attendance Reports</div>
                 <div class="stat-main">
-                    <span class="stat-number">48</span>
-                    <span class="stat-total">/ 50</span>
+                    <span class="stat-number" id="attendance-submitted">—</span>
+                    <span class="stat-total">/ <span id="attendance-due">—</span></span>
                 </div>
-                <div class="stat-subtext">96% Completion</div>
+                <div class="stat-subtext" id="attendance-completion">Loading...</div>
             </div>
 
             <div class="panel stat-panel-accent">
-                <div class="stat-label">Final Papers</div>
+                <div class="stat-label">Monthly Accomplishment Reports</div>
                 <div class="stat-main">
-                    <span class="stat-number">12</span>
-                    <span class="stat-total">/ 50</span>
+                    <span class="stat-number" id="accomplishment-submitted">—</span>
+                    <span class="stat-total">/ <span id="accomplishment-due">—</span></span>
                 </div>
-                <div class="stat-subtext">Collection in progress</div>
+                <div class="stat-subtext" id="accomplishment-completion">Loading...</div>
             </div>
 
             <div class="panel stat-panel-accent" style="border-left-color: #27bda1;">
-                <div class="stat-label">Attendance Logs</div>
+                <div class="stat-label">Final Report + Narrative</div>
                 <div class="stat-main">
-                    <span class="stat-number">Active</span>
-                    <span class=\"pulse-icon\">●</span>
+                    <span class="stat-number" id="final-submitted">—</span>
+                    <span class="stat-total">/ <span id="final-due">—</span></span>
                 </div>
-                <div class="stat-subtext">Link sent: 08:45 AM</div>
+                <div class="stat-subtext" id="final-completion">Required at internship end</div>
             </div>
 
             <div class="panel stat-panel-accent" style="border-left-color: #f1b347;">
-                <div class="stat-label">Clearance Rate</div>
+                <div class="stat-label">Internship Status</div>
                 <div class="stat-main">
-                    <span class="stat-number">24%</span>
+                    <span class="stat-number" id="student-count">—</span>
+                    <span class="stat-total">interns</span>
                 </div>
-                <div class="stat-subtext">12 Interns Cleared</div>
+                <div class="stat-subtext" id="status-breakdown">Loading...</div>
             </div>
         </div>
 
@@ -131,9 +132,9 @@
             <div class="header-controls" style="display: flex; gap: 10px; align-items: center;">
                 <select id="statusFilter" class="filter-select" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; color: #666;">
                     <option value="all">All Submissions</option>
-                    <option value="midterm">Submitted Midterm</option>
-                    <option value="final">Submitted Final</option>
-                    <option value="attendance">Complete Attendance</option>
+                    <option value="attendance">Submitted Attendance</option>
+                    <option value="accomplishment">Submitted Accomplishment</option>
+                    <option value="final">Complete Final Report + Narrative</option>
                     <option value="incomplete">Incomplete Only</option>
                 </select>
 
@@ -144,37 +145,22 @@
             </div>
         </div>
 
-            <div class="table-responsive" style="padding: 10px;">
-                <table class="excel-mapping-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 250px;">Student Name</th>
-                            <th>Attendance today</th>
-                            <th>Midterm Paper</th>
-                            <th>Final Paper</th>
-                            <th>Clearance</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="font-weight: 500;">DELA CRUZ, JUAN A.</td>
-                            <td><b style="color: #ff0000;">Not Submitted</b></td>
-                            <td><span class="status-tag tag-deployed">RECEIVED</span></td>
-                            <td><span class="status-tag tag-waiting">PENDING</span></td>
-                            <td><b style="color: #f1b347;">ONGOING</b></td>
-                            <td style="text-align: center;">
-                                <button class="notify-btn" 
-                                        data-id="101" 
-                                        data-name="DELA CRUZ, JUAN A." 
-                                        onclick="notifyStudent(this)">
-                                    Notify Student
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-responsive" style="padding: 10px;">
+            <table class="excel-mapping-table">
+                <thead>
+                    <tr>
+                        <th style="width: 250px;">Student Name</th>
+                        <th>Monthly Attendance</th>
+                        <th>Monthly Accomplishment</th>
+                        <th>Final Report + Narrative</th>
+                        <th>Internship Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="requirements-list">
+                    <tr><td colspan="6" style="text-align: center; padding: 24px;">Loading student requirements...</td></tr>
+                </tbody>
+            </table>
         </div>
     </main>
 </div>
@@ -184,75 +170,207 @@
         <div class="footer-copy">Copyright © <span id="current-year"></span> <a href="#">Asia Pacific College</a>. All rights reserved.</div>
     </footer>
 
+    <script src="adminscript.js"></script>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('studentSearch');
     const filterSelect = document.getElementById('statusFilter');
-    const tableRows = document.querySelectorAll('.excel-mapping-table tbody tr');
+    const tableBody = document.getElementById('requirements-list');
+    const refreshButton = document.getElementById('refreshRequirementsBtn');
 
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
+    function setSummaryCount(id, count) {
+        document.getElementById(id).textContent = String(count);
+    }
+
+    function completionText(submitted, due) {
+        return due > 0
+            ? `${Math.round((submitted / due) * 100)}% submitted`
+            : 'No reports due yet';
+    }
+
+    function renderSummary(summary) {
+        setSummaryCount('attendance-submitted', summary.attendance_submitted);
+        setSummaryCount('attendance-due', summary.attendance_due);
+        document.getElementById('attendance-completion').textContent =
+            completionText(summary.attendance_submitted, summary.attendance_due);
+
+        setSummaryCount('accomplishment-submitted', summary.accomplishment_submitted);
+        setSummaryCount('accomplishment-due', summary.accomplishment_due);
+        document.getElementById('accomplishment-completion').textContent =
+            completionText(summary.accomplishment_submitted, summary.accomplishment_due);
+
+        setSummaryCount('final-submitted', summary.final_submitted);
+        setSummaryCount('final-due', summary.final_due);
+        document.getElementById('final-completion').textContent =
+            summary.final_due > 0 ? 'Complete when report and narrative are received' : 'Required at internship end';
+
+        setSummaryCount('student-count', summary.student_count);
+        const statuses = summary.status_counts;
+        const statusBreakdown = [
+            `${statuses.ongoing} ongoing`,
+            `${statuses.completed} completed`,
+            `${statuses.failed} failed`,
+            `${statuses.withdrawn} withdrawn`,
+            `${statuses.not_started} not started`
+        ];
+        if (statuses.other > 0) statusBreakdown.push(`${statuses.other} other statuses`);
+        document.getElementById('status-breakdown').textContent = statusBreakdown.join(' · ');
+    }
+
+    function appendBadge(cell, text, tone) {
+        const badge = document.createElement('span');
+        badge.className = 'status-tag';
+        badge.textContent = text;
+        badge.style.color = tone;
+        cell.appendChild(badge);
+    }
+
+    function reportBadgeText(submitted, due) {
+        if (due === 0) return { text: 'Not due', tone: '#888' };
+        if (submitted >= due) return { text: `${submitted} / ${due} submitted`, tone: '#27bda1' };
+        if (submitted > 0) return { text: `${submitted} / ${due} submitted`, tone: '#f1b347' };
+        return { text: `0 / ${due} submitted`, tone: '#e74c3c' };
+    }
+
+    function applyFilters() {
+        const searchTerm = searchInput.value.trim().toLowerCase();
         const filterValue = filterSelect.value;
-
-        tableRows.forEach(row => {
-            const studentName = row.cells[0].textContent.toLowerCase();
-            const midtermStatus = row.cells[1].textContent.toUpperCase();
-            const finalStatus = row.cells[2].textContent.toUpperCase();
-            const clearanceStatus = row.cells[4].textContent.toUpperCase();
-
-            // Check if name matches search
-            const matchesSearch = studentName.includes(searchTerm);
-
-            // Check if row matches filter criteria
+        tableBody.querySelectorAll('tr[data-student-name]').forEach(row => {
+            const matchesSearch = row.dataset.studentName.includes(searchTerm);
             let matchesFilter = true;
-            if (filterValue === 'midterm') matchesFilter = midtermStatus.includes('RECEIVED') || midtermStatus.includes('SUBMITTED');
-            if (filterValue === 'final') matchesFilter = finalStatus.includes('RECEIVED') || finalStatus.includes('SUBMITTED');
-            if (filterValue === 'attendance') matchesFilter = row.cells[3].textContent.includes('600 / 600');
-            if (filterValue === 'incomplete') matchesFilter = clearanceStatus.includes('INCOMPLETE') || clearanceStatus.includes('ONGOING');
-
-            // Show or hide row
-            if (matchesSearch && matchesFilter) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            if (filterValue === 'attendance') matchesFilter = row.dataset.attendanceSubmitted === 'true';
+            if (filterValue === 'accomplishment') matchesFilter = row.dataset.accomplishmentSubmitted === 'true';
+            if (filterValue === 'final') matchesFilter = row.dataset.finalComplete === 'true';
+            if (filterValue === 'incomplete') matchesFilter = row.dataset.incomplete === 'true';
+            row.hidden = !(matchesSearch && matchesFilter);
         });
     }
 
-    // Listen for typing and dropdown changes
-    searchInput.addEventListener('keyup', filterTable);
-    filterSelect.addEventListener('change', filterTable);
+    async function sendReminder(button, userId) {
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Sending...';
+        try {
+            const response = await fetch('requirements_api.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'The reminder could not be sent.');
+            }
+            button.textContent = 'Reminder Sent';
+        } catch (error) {
+            button.disabled = false;
+            button.textContent = originalText;
+            alert(error.message || 'The reminder could not be sent.');
+        }
+    }
 
-    function notifyStudent(btn) {
-    const studentName = btn.getAttribute('data-name');
-    const studentId = btn.getAttribute('data-id'); // For future DB query
+    function renderStudents(students) {
+        tableBody.replaceChildren();
+        if (students.length === 0) {
+            const row = tableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 6;
+            cell.style.textAlign = 'center';
+            cell.style.padding = '24px';
+            cell.textContent = 'No active interns found.';
+            return;
+        }
 
-    // Change button state to show "Sending"
-    const originalText = btn.innerText;
-    btn.innerText = "Sending...";
-    btn.disabled = true;
-    btn.style.opacity = "0.7";
+        students.forEach(student => {
+            const row = tableBody.insertRow();
+            const studentName = `${student.last_name}, ${student.first_name}`.trim().toLowerCase();
+            row.dataset.studentName = `${studentName} ${student.student_id} ${student.program_name}`.toLowerCase();
+            row.dataset.attendanceSubmitted = String(student.attendance_submitted > 0);
+            row.dataset.accomplishmentSubmitted = String(student.accomplishment_submitted > 0);
+            row.dataset.finalComplete = String(student.final_complete);
+            row.dataset.incomplete = String(
+                student.requirements_due > student.requirements_submitted
+            );
 
-    // Simulate an AJAX/Database call
-    setTimeout(() => {
-        // Here is where you will eventually put your fetch() or $.ajax() 
-        // to a PHP file (e.g., send_notification.php)
-        
-        btn.innerText = "Notified!";
-        btn.style.backgroundColor = "#27bda1"; // Success Green
-        btn.style.color = "white";
-        
-        console.log(`Notification sent to ${studentName} (ID: ${studentId})`);
+            const studentCell = row.insertCell();
+            studentCell.style.fontWeight = '500';
+            const name = document.createElement('div');
+            name.textContent = `${student.last_name}, ${student.first_name}`.trim();
+            studentCell.appendChild(name);
+            const details = document.createElement('small');
+            details.style.display = 'block';
+            details.style.marginTop = '4px';
+            details.style.color = '#888';
+            details.textContent = [
+                student.student_id,
+                student.program_name,
+                student.internship_year ? `Year ${student.internship_year}` : ''
+            ].filter(Boolean).join(' · ');
+            studentCell.appendChild(details);
 
-        // Reset the button after 3 seconds
-        setTimeout(() => {
-            btn.innerText = originalText;
-            btn.disabled = false;
-            btn.style.opacity = "1";
-            btn.style.backgroundColor = ""; // Resets to CSS default
-            btn.style.color = "";
-        }, 3000);
-    }, 1000);
-}
+            const attendanceCell = row.insertCell();
+            const attendance = reportBadgeText(student.attendance_submitted, student.attendance_due);
+            appendBadge(attendanceCell, attendance.text, attendance.tone);
+
+            const accomplishmentCell = row.insertCell();
+            const accomplishment = reportBadgeText(student.accomplishment_submitted, student.accomplishment_due);
+            appendBadge(accomplishmentCell, accomplishment.text, accomplishment.tone);
+
+            const finalCell = row.insertCell();
+            if (!student.final_due) {
+                appendBadge(finalCell, 'Not due', '#888');
+            } else if (student.final_complete) {
+                appendBadge(finalCell, 'Report + narrative received', '#27bda1');
+            } else if (student.final_report_submitted) {
+                appendBadge(finalCell, 'Report received · narrative pending', '#f1b347');
+            } else if (student.final_narrative_submitted) {
+                appendBadge(finalCell, 'Narrative received · report pending', '#f1b347');
+            } else {
+                appendBadge(finalCell, 'Pending', '#e74c3c');
+            }
+
+            const statusCell = row.insertCell();
+            statusCell.textContent = student.internship_status;
+
+            const actionCell = row.insertCell();
+            actionCell.style.textAlign = 'center';
+            const notifyButton = document.createElement('button');
+            notifyButton.type = 'button';
+            notifyButton.className = 'notify-btn';
+            notifyButton.textContent = 'Notify Student';
+            notifyButton.disabled = student.requirements_due <= student.requirements_submitted;
+            notifyButton.addEventListener('click', () => sendReminder(notifyButton, student.user_id));
+            actionCell.appendChild(notifyButton);
+        });
+
+        applyFilters();
+    }
+
+    async function loadRequirements() {
+        refreshButton.disabled = true;
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 24px;">Loading student requirements...</td></tr>';
+        try {
+            const response = await fetch('requirements_api.php', { headers: { 'Accept': 'application/json' } });
+            const result = await response.json();
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || 'Student requirements could not be loaded.');
+            }
+            renderSummary(result.summary);
+            renderStudents(result.students);
+        } catch (error) {
+            console.error('Unable to load student requirements:', error);
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 24px; color: #c0392b;">Student requirements could not be loaded. Please try again.</td></tr>';
+            document.getElementById('attendance-completion').textContent = 'Unable to load data';
+            document.getElementById('accomplishment-completion').textContent = 'Unable to load data';
+            document.getElementById('final-completion').textContent = 'Unable to load data';
+            document.getElementById('status-breakdown').textContent = 'Unable to load data';
+        } finally {
+            refreshButton.disabled = false;
+        }
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    filterSelect.addEventListener('change', applyFilters);
+    refreshButton.addEventListener('click', loadRequirements);
+    loadRequirements();
 });
 </script>

@@ -86,11 +86,11 @@
                 
                 <div style="margin-bottom: 40px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span style="font-weight: 500; color: #555; font-size: 14px;">Completion Rate across all programs</span>
-                        <span style="color: #1e3b99; font-weight: bold; font-size: 16px;">65%</span>
+                        <span id="completion-label" style="font-weight: 500; color: #555; font-size: 14px;">Loading completion rate...</span>
+                        <span id="completion-rate" style="color: #1e3b99; font-weight: bold; font-size: 16px;">—</span>
                     </div>
                     <div style="background: #eaeaea; border-radius: 10px; height: 16px; width: 100%; overflow: hidden;">
-                        <div style="background: #1e3b99; height: 100%; width: 65%; transition: width 1s ease-in-out;"></div>
+                        <div id="completion-bar" role="progressbar" aria-label="Overall requirement completion" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="background: #1e3b99; height: 100%; width: 0%; transition: width 1s ease-in-out;"></div>
                     </div>
                 </div>
                 <div class="header-links">
@@ -106,6 +106,39 @@
         <div class="footer-copy">Copyright © <span id="current-year"></span> <a href="#">Asia Pacific College</a>. All rights reserved.</div>
     </footer>
     <script src="adminscript.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const label = document.getElementById('completion-label');
+            const rate = document.getElementById('completion-rate');
+            const bar = document.getElementById('completion-bar');
+
+            try {
+                const response = await fetch('progress_api.php', {
+                    headers: { Accept: 'application/json' }
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || 'Unable to load internship progress.');
+                }
+
+                if (result.requirements_due === 0) {
+                    label.textContent = 'No internship requirements due yet';
+                    rate.textContent = '—';
+                    return;
+                }
+
+                const percentage = Math.max(0, Math.min(100, Number(result.completion_percent)));
+                label.textContent = `Completion Rate across all programs (${result.requirements_submitted} of ${result.requirements_due} due)`;
+                rate.textContent = `${percentage}%`;
+                bar.style.width = `${percentage}%`;
+                bar.setAttribute('aria-valuenow', String(percentage));
+            } catch (error) {
+                label.textContent = 'Unable to load requirement progress';
+                rate.textContent = '—';
+                console.error(error);
+            }
+        });
+    </script>
 <script src="../login/login-date.js"></script>
 </body>
 </html>

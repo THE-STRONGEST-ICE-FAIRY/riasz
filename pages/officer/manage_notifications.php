@@ -104,6 +104,39 @@ function evaluationReport(PDO $db)
     return $rows;
 }
 
+function notificationData(PDO $db, $userId)
+{
+    $stmt = $db->prepare("
+        SELECT
+            nr.notifrecip_id AS id,
+            n.notif_type AS type,
+            n.notif_message AS message,
+            n.notif_date_created AS created_at,
+            nr.notifrecip_is_read AS is_read
+        FROM notificationrecipients nr
+        JOIN notifications n ON n.notification_id = nr.notification_id
+        WHERE nr.user_id = ?
+        ORDER BY n.notif_date_created DESC, nr.notifrecip_id DESC
+        LIMIT 50
+    ");
+    $stmt->execute([$userId]);
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $unreadCount = 0;
+    foreach ($notifications as &$notification) {
+        $notification['id'] = (int)$notification['id'];
+        $notification['is_read'] = (int)$notification['is_read'];
+        if ($notification['is_read'] === 0) {
+            $unreadCount++;
+        }
+    }
+    unset($notification);
+
+    return [
+        'notifications' => $notifications,
+        'unread_count' => $unreadCount,
+    ];
+}
+
 function dashboardData(PDO $db, $userId)
 {
     $stmt = $db->query("
@@ -216,30 +249,7 @@ function dashboardData(PDO $db, $userId)
     }
     $evaluationProgress['pending'] = $evaluationProgress['total'] - $evaluationProgress['submitted'];
 
-    $stmt = $db->prepare("
-        SELECT
-            nr.notifrecip_id AS id,
-            n.notif_type AS type,
-            n.notif_message AS message,
-            n.notif_date_created AS created_at,
-            nr.notifrecip_is_read AS is_read
-        FROM notificationrecipients nr
-        JOIN notifications n ON n.notification_id = nr.notification_id
-        WHERE nr.user_id = ?
-        ORDER BY n.notif_date_created DESC, nr.notifrecip_id DESC
-        LIMIT 50
-    ");
-    $stmt->execute([$userId]);
-    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $unreadCount = 0;
-    foreach ($notifications as &$notification) {
-        $notification['id'] = (int)$notification['id'];
-        $notification['is_read'] = (int)$notification['is_read'];
-        if ($notification['is_read'] === 0) {
-            $unreadCount++;
-        }
-    }
-    unset($notification);
+    $notificationData = notificationData($db, $userId);
 
     $schools = $db->query('SELECT school_id AS id, school_name AS name FROM schools ORDER BY school_name')->fetchAll(PDO::FETCH_ASSOC);
     $programs = $db->query('SELECT program_id AS id, program_name AS name, school_id FROM programs ORDER BY program_name')->fetchAll(PDO::FETCH_ASSOC);
@@ -255,8 +265,8 @@ function dashboardData(PDO $db, $userId)
             'label' => $academicYearLabel,
         ],
         'events' => $events,
-        'notifications' => $notifications,
-        'unread_count' => $unreadCount,
+        'notifications' => $notificationData['notifications'],
+        'unread_count' => $notificationData['unread_count'],
         'schools' => $schools,
         'programs' => $programs,
     ];
@@ -465,6 +475,10 @@ $action = $_SERVER['REQUEST_METHOD'] === 'GET'
     : trim((string)($_POST['action'] ?? ''));
 
 try {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'notifications') {
+        respond(['status' => 'success', 'data' => notificationData($conn, $userId)]);
+    }
+
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'dashboard') {
         respond(['status' => 'success', 'data' => dashboardData($conn, $userId)]);
     }
