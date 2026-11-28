@@ -8,7 +8,11 @@
 // Environment
 // ---------------------------------------------------------------------------
 const APP_DEBUG = false;                 // true = show PHP errors (development only)
-const BASE_URL  = 'http://localhost';    // scheme + host, NO trailing slash. Used in emailed links.
+$configuredBaseUrl = getenv('RIAS_BASE_URL');
+define(
+    'BASE_URL',
+    rtrim($configuredBaseUrl !== false && $configuredBaseUrl !== '' ? $configuredBaseUrl : 'http://localhost:8000', '/')
+); // Override RIAS_BASE_URL when deploying outside the local PHP server.
 const LOGIN_PATH = '/backend/login';     // URL path of this folder, NO trailing slash.
 
 define('DB_FILE',    __DIR__ . '/../../../utilities/database/database.php'); // must define $conn (PDO)

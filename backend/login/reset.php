@@ -107,12 +107,12 @@ $minLen = PASSWORD_MIN_LENGTH;
     </div>
   </header>
 
-  <main class="auth-page">
+  <main class="hero reset-hero">
     <div class="auth-card">
 <?php if ($state === 'done'): ?>
       <h1 class="modal-title">Password updated</h1>
       <p class="notice notice-ok" role="status">Your password was set successfully. You can now sign in.</p>
-      <a class="btn btn-primary btn-link" href="login.php">Go to Sign In</a>
+      <a class="btn btn-primary btn-link" href="../../pages/login/login.php">Go to Sign In</a>
 
 <?php elseif ($state === 'form'): ?>
       <h1 class="modal-title">Set your password</h1>
@@ -133,7 +133,8 @@ $minLen = PASSWORD_MIN_LENGTH;
           <label for="password">New password</label>
           <div class="input-wrapper">
             <input type="password" id="password" name="password" minlength="<?= $minLen ?>" autocomplete="new-password" required>
-            <button type="button" class="input-icon toggle-password" aria-label="Show password"
+            <button type="button" class="input-icon toggle-password" aria-label="Show new password" data-target="password"
+                    data-label-show="Show new password" data-label-hide="Hide new password"
                     data-src-show="../../assets/login_password_show.png" data-src-hide="../../assets/login_password.png">
               <img src="../../assets/login_password.png" alt="">
             </button>
@@ -145,6 +146,11 @@ $minLen = PASSWORD_MIN_LENGTH;
           <label for="confirm_password">Confirm password</label>
           <div class="input-wrapper">
             <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" required>
+            <button type="button" class="input-icon toggle-password" aria-label="Show confirmation password" data-target="confirm_password"
+                    data-label-show="Show confirmation password" data-label-hide="Hide confirmation password"
+                    data-src-show="../../assets/login_password_show.png" data-src-hide="../../assets/login_password.png">
+              <img src="../../assets/login_password.png" alt="">
+            </button>
           </div>
           <span class="error" id="match-error" aria-live="polite"></span>
         </div>
@@ -156,8 +162,12 @@ $minLen = PASSWORD_MIN_LENGTH;
       <h1 class="modal-title">Link not valid</h1>
       <p class="notice notice-error" role="alert">This link is invalid, expired, or has already been used.</p>
       <p class="subtitle">Request a new one with <em>Forgot Password?</em> on the sign-in page.</p>
-      <a class="btn btn-primary btn-link" href="login.php">Back to Sign In</a>
+      <a class="btn btn-primary btn-link" href="../../pages/login/login.php">Back to Sign In</a>
 <?php endif; ?>
+    </div>
+    <div class="reset-branding" aria-hidden="true">
+      <span class="reset-brand-title">RIAS</span>
+      <span class="reset-brand-subtitle">RAMS<br>INTERNSHIP<br>ASSESSMENT<br>SYSTEM</span>
     </div>
   </main>
 

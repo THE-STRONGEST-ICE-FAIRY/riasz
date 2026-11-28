@@ -10,17 +10,18 @@
   var matchError = document.getElementById('match-error');
   var minLength = parseInt(pw.getAttribute('minlength'), 10) || 12;
 
-  // Show / hide password
-  var toggle = form.querySelector('.toggle-password');
-  if (toggle) {
+  // Give each password field its own show / hide control.
+  form.querySelectorAll('.toggle-password').forEach(function (toggle) {
+    var input = document.getElementById(toggle.dataset.target);
+    if (!input) return;
+
     toggle.addEventListener('click', function () {
-      var show = pw.type === 'password';
-      pw.type = show ? 'text' : 'password';
-      confirmPw.type = pw.type;
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
       toggle.querySelector('img').src = show ? toggle.dataset.srcShow : toggle.dataset.srcHide;
-      toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      toggle.setAttribute('aria-label', show ? toggle.dataset.labelHide : toggle.dataset.labelShow);
     });
-  }
+  });
 
   function checkMatch() {
     matchError.textContent =

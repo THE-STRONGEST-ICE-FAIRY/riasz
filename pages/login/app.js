@@ -917,29 +917,53 @@ document.addEventListener('DOMContentLoaded', () => {
   
       try {
         blockClicks();
-        const formData = new FormData();
-        formData.append('send_email', 'true');
-        formData.append('email', email);
-  
-        const response = await fetch('changepasswordsendemail.php', {
-          method: 'POST',
-          body: formData
-        });
-  
-        const text = await response.text();
-        if (response.ok) {
-          console.error("text:", text);
-          alert("Reset link sent successfully!\nCheck your inbox.");
-          activateForgotPasswordCooldown(Date.now() / 1000 + 300);
-          openSignInModal();
-          unblockClicks();
-        } else {
-          console.error("🔴 Server error:", text);
-          errorElement.textContent = 'Failed to send reset email. Something exploded. 💥';
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        if (!csrfMeta || !csrfMeta.content) {
+          throw new Error('Your session expired. Reload the page and try again.');
         }
+
+        let tabId = sessionStorage.getItem('tabId');
+        if (!tabId) {
+          if (window.crypto && window.crypto.randomUUID) {
+            tabId = window.crypto.randomUUID();
+          } else {
+            const bytes = new Uint8Array(16);
+            window.crypto.getRandomValues(bytes);
+            tabId = Array.prototype.map.call(bytes, value => ('0' + value.toString(16)).slice(-2)).join('');
+          }
+          sessionStorage.setItem('tabId', tabId);
+        }
+
+        const response = await fetch('../../backend/login/handler.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfMeta.content
+          },
+          body: JSON.stringify({ action: 'resetp', email, tabId })
+        });
+
+        let result;
+        try {
+          result = await response.json();
+        } catch {
+          throw new Error('The server returned an invalid response. Please try again later.');
+        }
+        if (!response.ok || result.status !== 'success') {
+          if (result.code === 'throttled' && Number(result.retry_after) > 0) {
+            activateForgotPasswordCooldown(Date.now() / 1000 + Number(result.retry_after));
+          }
+          throw new Error(result.message || 'Could not request a password reset.');
+        }
+
+        activateForgotPasswordCooldown(Date.now() / 1000 + (Number(result.retry_after) || 300));
+        alert(result.message);
+        openSignInModal();
       } catch (err) {
-        console.error("🐛 JS error:", err);
-        errorElement.textContent = 'Unexpected error. Try again later, meatbag.';
+        console.error('Password reset request failed:', err);
+        errorElement.textContent = err.message || 'Could not request a password reset. Try again later.';
+      } finally {
+        unblockClicks();
       }
     });
   
